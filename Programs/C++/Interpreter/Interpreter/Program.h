@@ -3,9 +3,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <fstream>
-
-//still work in progress
-
+ 
 
 class Program {
 private:
@@ -100,11 +98,6 @@ public:
 			Vector<std::string> _vectorStrOfIfStatement = BuildBodyIfStatement(vecStr,index);
 			Parse(_vectorStrOfIfStatement,_vectorOfIfStatement);
 			vecLines.PushBack(new CLine::IfStatement(_vectorOfIfStatement));
-
-			//vecLines.PushBack(new CLine::IfLineOfCode(BuildBody(vecStr,index)));
-			
-			//Parse(*(vecLines[vecLines._size - 1]->GetBodyString()),
-				//*(vecLines[vecLines._size - 1]->GetBodyLine()));
 		};
 		auto _elifLambda = [&](size_t &index)->void {
 			vecLines.PushBack(new CLine::ElifLineOfCode(BuildBody(vecStr,index)));

@@ -8,7 +8,6 @@ public:
 	explicit Test(void) {};
 	~Test(void) {};
 	void Run(void) {
-		/*
 		//constant initialization
 		TestConstantIntInit();
 		TestConstantCharInit();
@@ -51,7 +50,7 @@ public:
 		TestPrintln();
 		//testing saving to files
 		//TestSave();
-		*/
+		
 		TestIfAndElse();
 	}
 private:
@@ -267,8 +266,9 @@ private:
 		_vec.PushBack("begin");
 		_vec.PushBack("print \"if-ception\n\";");
 		_vec.PushBack("end");
-
+		_vec.PushBack("endif");
 		_vec.PushBack("end");
+		_vec.PushBack("endif");
 
 		Program _program(_vec);
 		_program.ExecuteProgram();
@@ -294,6 +294,7 @@ private:
 		_vec.PushBack("end");
 		
 		_vec.PushBack("end");
+		_vec.PushBack("endif");
 
 
 		_vec.PushBack("print \"\n\";");

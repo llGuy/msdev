@@ -1,7 +1,8 @@
 #pragma once
 #include <iostream>
 //actual variable class that will be stored in llists
-template <class Type> class Variable {
+template <class Type> 
+class Variable {
 public:
 	//if the variable is not initialized
 	//compiler sets it's name to "NULL"

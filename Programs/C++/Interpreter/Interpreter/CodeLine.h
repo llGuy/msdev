@@ -30,7 +30,7 @@ namespace CLine {
 		virtual Vector<std::string>* GetBodyString(void) { return nullptr; };
 		virtual Vector<LineOfCode*>* GetBodyLine(void) { return nullptr; };
 		virtual bool IsStatementTrue(void) { return false; };	//for if statements
-		virtual Vector<LineOfCode*>* GetVectorOfBlocksForIf(void) { return nullptr; };	//for if statements
+		//virtual Vector<LineOfCode*>* GetVectorOfBlocksForIf(void) { return nullptr; };	//for if statements
 	};
 
 	//class for "set" keyword
@@ -690,7 +690,7 @@ namespace CLine {
 		bool IsDependentOfBody(void) { return true; };
 		bool IsVariableCreator(void) { return false; };
 		Vector<LineOfCode*>* GetBodyLine(void) { return &_vectorOfIfAndElseLines; };
-		Vector<LineOfCode*>* GetVectorOfBlocksForIf(void) override { return &_vectorOfIfAndElseLines; };	//for if statements
+		//Vector<LineOfCode*>* GetVectorOfBlocksForIf(void) override { return &_vectorOfIfAndElseLines; };	//for if statements
 	};
 
 	class IfLineOfCode : public LineOfCode {
@@ -1229,7 +1229,7 @@ namespace CLine {
 		}
 		std::string& GetKeyToEncryptWith(const std::string &line) const {
 			std::string _tempStrOfKey = "";
-			size_t _index = 8 + _encryptionStr.length() + 3 + _rsString.length() + 4;
+			 size_t _index = 8 + _encryptionStr.length() + 3 + _rsString.length() + 4;
 			while(line[_index] != ')') {
 				_tempStrOfKey += line[_index];
 				_index++;

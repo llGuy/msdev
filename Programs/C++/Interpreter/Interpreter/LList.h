@@ -71,8 +71,6 @@ namespace llst {
 		}
 		//initializes a variable in the list
 		void AppendInitializedVariable(const Type &inputData,const std::string &name) {
-			//debug purposes
-			if(name == "r") std::cout << "appended variable r\n";
 
 			if(_numOfInitializedVar < _capacity) {
 				FindNode(_numOfInitializedVar,0,_head)->_value = inputData;
