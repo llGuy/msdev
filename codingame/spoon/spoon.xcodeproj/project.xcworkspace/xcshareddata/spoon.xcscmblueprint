@@ -1,0 +1,25 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "d7e0a041-c8c4-4d4f-9109-99fafa7f16e9++505",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "d7e0a041-c8c4-4d4f-9109-99fafa7f16e9++505" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "d7e0a041-c8c4-4d4f-9109-99fafa7f16e9++505" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "F136F9C3-8258-4474-8626-6C44AD53AF17",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "d7e0a041-c8c4-4d4f-9109-99fafa7f16e9++505" : "msdev\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "spoon",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "codingame\/spoon\/spoon.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/roznet.svn.cloudforge.com\/msdev",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "d7e0a041-c8c4-4d4f-9109-99fafa7f16e9++505"
+    }
+  ]
+}
