@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Storage">
+      <UniqueIdentifier>{fc140820-3258-411d-b346-9ee8f0051f5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Storage\datStruct">
+      <UniqueIdentifier>{ad67df97-35e7-4000-bd7f-11e6e3705dc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CLine">
+      <UniqueIdentifier>{744dd3c4-b1d2-4ed4-ab6c-5b0e3ea3201a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CLine\Base">
+      <UniqueIdentifier>{0edde231-1f0d-40a6-8896-9b91654dece5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Misc">
+      <UniqueIdentifier>{e20a7578-c2af-4c24-a180-e10e7e1944fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Storage\datStruct\LList">
+      <UniqueIdentifier>{01de0348-2be1-4e7b-b024-2bba7699e57b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CLine\Body">
+      <UniqueIdentifier>{345d2cca-a851-47f6-96b8-33efe7a3b5bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CLine\Ifs">
+      <UniqueIdentifier>{1775e69a-bb03-4531-9ee2-7c662be28074}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CLine\One-Line">
+      <UniqueIdentifier>{ce2b0928-9939-4eb2-81d6-bb251367a7a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Testing">
+      <UniqueIdentifier>{949e08e0-8d2c-4216-98a8-03f4d778602a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\RSV">
+      <UniqueIdentifier>{004698a4-bbd3-4007-b76a-6f59f3419114}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser">
+      <UniqueIdentifier>{4324d6d4-b7d9-4f9f-9ec9-093f563ab5c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CLine\One-Line\FileIO">
+      <UniqueIdentifier>{2e12fc80-2130-4274-b26a-d43b8d5e813a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CLine\Body\Misc">
+      <UniqueIdentifier>{2ca68a17-8af1-4c9d-a2bf-31c78e59abf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\fileIOTest">
+      <UniqueIdentifier>{3294ade0-2f52-4dd6-adfc-e9ae0d734f06}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="VarHTables.h">
+      <Filter>Header Files\Storage</Filter>
+    </ClInclude>
+    <ClInclude Include="HTable.h">
+      <Filter>Header Files\Storage\datStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Header Files\Storage\datStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="CLine.h">
+      <Filter>Header Files\CLine\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Misc.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="CNSTMacros.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="LList.h">
+      <Filter>Header Files\Storage\datStruct\LList</Filter>
+    </ClInclude>
+    <ClInclude Include="Variable.h">
+      <Filter>Header Files\Storage\datStruct\LList</Filter>
+    </ClInclude>
+    <ClInclude Include="Test.h">
+      <Filter>Header Files\Testing</Filter>
+    </ClInclude>
+    <ClInclude Include="Set.h">
+      <Filter>Header Files\CLine\One-Line</Filter>
+    </ClInclude>
+    <ClInclude Include="Calculator_Parser.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="RSV_Const.h">
+      <Filter>Header Files\RSV</Filter>
+    </ClInclude>
+    <ClInclude Include="RSV_Variable.h">
+      <Filter>Header Files\RSV</Filter>
+    </ClInclude>
+    <ClInclude Include="IncludeRSV.h">
+      <Filter>Header Files\RSV</Filter>
+    </ClInclude>
+    <ClInclude Include="RSV_String.h">
+      <Filter>Header Files\RSV</Filter>
+    </ClInclude>
+    <ClInclude Include="RSV_Operation.h">
+      <Filter>Header Files\RSV</Filter>
+    </ClInclude>
+    <ClInclude Include="IncludeCLine.h">
+      <Filter>Header Files\CLine</Filter>
+    </ClInclude>
+    <ClInclude Include="Mod.h">
+      <Filter>Header Files\CLine\One-Line</Filter>
+    </ClInclude>
+    <ClInclude Include="Print.h">
+      <Filter>Header Files\CLine\One-Line</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files\CLine\One-Line</Filter>
+    </ClInclude>
+    <ClInclude Include="Save.h">
+      <Filter>Header Files\CLine\One-Line\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="Read.h">
+      <Filter>Header Files\CLine\One-Line\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="For.h">
+      <Filter>Header Files\CLine\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="Condition.h">
+      <Filter>Header Files\CLine\Body\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="ScopeVar.h">
+      <Filter>Header Files\CLine\Body\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Program.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="program.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

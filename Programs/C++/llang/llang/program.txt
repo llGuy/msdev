@@ -1,0 +1,15 @@
+set int base = 4;
+set int power = 5;
+
+set int result = base;
+
+set int i = 0;
+
+for [i] < [power - 1]+
+begin
+
+mod result -> result * base;
+
+end
+
+println result;
