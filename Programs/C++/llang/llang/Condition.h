@@ -25,7 +25,7 @@ private:
 		l_operandMap[equ] = '=';
 		l_operandMap[grt] = '>';
 		l_operandMap[less] = '<';
-		l_operandMap[not] = '!';
+		l_operandMap[notequ] = '!';
 		for(auto l_operMapIter = l_operandMap.begin(); l_operMapIter != l_operandMap.end(); ++l_operMapIter) {
 			if(l_operMapIter->second == l_operandChr) {
 				m_operOfCond = l_operMapIter->first;
@@ -75,7 +75,7 @@ private:
 		l_mapOfCompareLam[equ] = l_equLam;
 		l_mapOfCompareLam[grt] = l_grtLam;
 		l_mapOfCompareLam[less] = l_lessLam;
-		l_mapOfCompareLam[not] = l_notLam;
+		l_mapOfCompareLam[notequ] = l_notLam;
 		for(auto l_mapIter = l_mapOfCompareLam.begin(); l_mapIter != l_mapOfCompareLam.end(); ++l_mapIter) {
 			if(l_mapIter->first == m_operOfCond) {
 				m_isCondTrue = l_mapIter->second();
@@ -167,7 +167,7 @@ private:
 		equ = 0,
 		grt = 1,
 		less = 2,
-		not = 3
+		notequ = 3
 	};
 	operand m_operOfCond;
 	bool m_isCondTrue;

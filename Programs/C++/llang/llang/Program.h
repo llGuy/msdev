@@ -75,7 +75,8 @@ private:
 		auto l_inputLam = [&](size_t &p_index)->void {
 			p_vecLine.M_PushBack(new CLine::LineOfCode_Input(p_vecLineStr[p_index])); };
 		auto l_forLam = [&](size_t &p_index)->void {
-			CLine::LineOfCode* l_for = new CLine::LineOfCode_For(M_BuildBody(p_vecLineStr,p_index));
+            Vector<std::string> body(M_BuildBody(p_vecLineStr,p_index));
+			CLine::LineOfCode* l_for = new CLine::LineOfCode_For(body);
 			p_vecLine.M_PushBack(l_for);
 			M_Parse(*(l_for->M_GetBodyStringLines()),
 				*(l_for->M_GetBodyLineObj()));
