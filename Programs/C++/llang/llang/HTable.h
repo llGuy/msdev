@@ -61,7 +61,7 @@ namespace htble {
 				p_nameOfVar,
 				m_vecOfLList[l_valueOfHash].m_head
 			);
-			std::cout << "Find " << p_nameOfVar << ":" << l_valueOfHash << " = " << l_rv << std::endl;
+			//std::cout << "Find " << p_nameOfVar << ":" << l_valueOfHash << " = " << l_rv << std::endl;
 			return l_rv;
 		} 
 		void M_AppendVar(const T p_valOfVar,const std::string& p_nameOfVar) {
@@ -72,7 +72,7 @@ namespace htble {
 			}
 			Hash l_hash(p_nameOfVar);
 			size_t l_valueOfHash = l_hash.M_PerformHash() % m_quantOfLList;
-			std::cout << "Append " << p_nameOfVar << ":" << l_valueOfHash << "linked list at " << &m_vecOfLList[l_valueOfHash] << " hash " << this << std::endl;
+			//std::cout << "Append " << p_nameOfVar << ":" << l_valueOfHash << "linked list at " << &m_vecOfLList[l_valueOfHash] << " hash " << this << std::endl;
 			m_vecOfLList[l_valueOfHash].M_AppendInitializedVar(p_valOfVar,p_nameOfVar);
 			m_quantOfItemsInHTable++;
 		}

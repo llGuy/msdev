@@ -12,4 +12,5 @@ mod result -> result * base;
 
 end
 
+print "Power Result: ";
 println result;
