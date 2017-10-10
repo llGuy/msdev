@@ -55,12 +55,13 @@ namespace CLine {
 			while(m_condObj.M_Compare()) {
 				l_quantScpVar++;
 				for(size_t l_vecLinesIter = 0; l_vecLinesIter < m_vecLine.m_size; l_vecLinesIter++) {
+					m_vecLine[l_vecLinesIter]->M_Translate();
 					if(m_vecLine[l_vecLinesIter]->M_IsVariableCreator()) {
-						ScopeVar l_scpVar(m_vecLine[l_vecLinesIter]);
+						ScopeVar l_scpVar;
+						l_scpVar.M_Update(m_vecLine[l_vecLinesIter]);
 						l_vecScpeVar.M_PushBack(l_scpVar);
 						l_quantScpVar++;
 					}
-					m_vecLine[l_vecLinesIter]->M_Translate();
 				}
 				l_loopIndex++;
 				M_Incr();

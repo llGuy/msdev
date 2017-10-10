@@ -28,6 +28,7 @@ extern std::string G_BuildString(const char p_endCh,size_t p_szetIter,const std:
 	return l_strDest;
 }
 extern inline size_t G_GetQuantOfDigits(size_t p_uint) {
+	if(p_uint == 0) return 1;
 	size_t l_count = 0;
 	while(p_uint != 0) {
 		p_uint /= 10;

@@ -117,43 +117,44 @@ protected:
 		}
 		return l_updatedStr;
 	}
-	std::string M_CheckAndExtractVariable(std::string p_expression) {
-		size_t l_indexOfExp = _NULL;
+	std::string M_CheckAndExtractVariable(std::string p_expression,size_t p_indexOfExp = _NULL) {
 		size_t l_indexOfVarEnd = _NULL;
 		size_t l_indexOfVarStart = _NULL;
 		std::string l_temp;
 		std::string l_expAfterVar;
 		std::string l_expBeforeVar;
 		bool l_foundVar = false;
-		while(p_expression[l_indexOfExp] != '\0') {
-			unsigned char l_currentChar = p_expression[l_indexOfExp];
+		while(p_expression[p_indexOfExp] != '\0') {
+			unsigned char l_currentChar = p_expression[p_indexOfExp];
 			//abbreviation
 			unsigned char l_cc = l_currentChar;
+			//if it's a variable
 			if(l_cc != '(' && l_cc != ')') {
 				if(((size_t)l_cc < g_0ASCII || (size_t)l_cc > g_9ASCII) &&
 					(l_cc != '+' && l_cc != '-' && l_cc != '*' &&l_cc != '/'&&l_cc != '%' && l_cc != ' ')) {
 					l_temp += l_cc;
-					if(!l_foundVar) l_indexOfVarStart = l_indexOfExp;
+					if(!l_foundVar) l_indexOfVarStart = p_indexOfExp;
 					l_foundVar = true;
 				}
 			}
 			if(l_foundVar) {
+				//if it's a variable and the iterator hit a space, ), ( or the end
 				if(l_cc == ' ' || l_cc == '(' || l_cc == ')' || l_cc == '\0') { 
-					l_indexOfVarEnd = l_indexOfExp;
+					l_indexOfVarEnd = p_indexOfExp;
 					l_expBeforeVar = M_ParseStrPrev(l_indexOfVarStart,p_expression);
 					l_expAfterVar = M_ParseStrAfter(l_indexOfVarEnd,p_expression,true);
 					p_expression = l_expBeforeVar +
 						::G_ConvertUIntToStr(VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(l_temp)->m_value) + l_expAfterVar;
-					return M_CheckAndExtractVariable(p_expression);
+					return M_CheckAndExtractVariable(p_expression,p_indexOfExp);
 				}
-				else if(p_expression[l_indexOfExp + 1] == '\0') {
+				else if(p_expression[p_indexOfExp + 1] == '\0') {
 					l_expBeforeVar = M_ParseStrPrev(l_indexOfVarStart,p_expression);
 					p_expression = l_expBeforeVar + 
 						::G_ConvertUIntToStr(VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(l_temp)->m_value);
-					return M_CheckAndExtractVariable(p_expression);
+					return M_CheckAndExtractVariable(p_expression,p_indexOfExp);
 				}
 			}
-			l_indexOfExp++;
+			p_indexOfExp++;
 		}
 		return p_expression;
 	}

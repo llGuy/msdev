@@ -91,17 +91,37 @@ namespace llst {
 			}
 		}
 		void M_DeleteVar(const std::string& p_name) {
+			//if M_GetPositionOfVar returns -1, there is an error
 			signed int l_position = M_GetPositionOfVar(p_name,m_head,0);
+			//if there is an error, break out of function
 			if(l_position < 0) return;
+			//otherwise, position before is the position of the variable - 1
+			//and position after is the position of the variable + 1
 			signed int l_positionBefore = l_position - 1;
 			signed int l_positionAfter = l_position + 1;
-			if(l_positionBefore != 0) l_positionBefore = l_positionAfter + 1;
+
+			//if the position of the variable to delete isn't the first variable
+			//the position before preceeds l_positionAfter
+			if(l_position != 0) l_positionBefore = l_position - 1;
+			//if the position is at the end
+			//then set the one before to a new var
 			if(l_position + 1 == m_capacity) M_FindNode(l_positionBefore,0,m_head)->m_ptrNextVar = new var;
+			//if the position is 0
 			else if(l_position == 0) {
+				//making a new var with the m_ptrNextVar = to the one of m_head
+				//then setting m_head to the new var
 				var_ptr l_varAfterHead = m_head->m_ptrNextVar;
-				m_head = l_varAfterHead;
+				var_ptr l_varNewHead = new var;
+				l_varNewHead->m_ptrNextVar = l_varAfterHead;
+				m_head = l_varNewHead;
 			}
-			else M_FindNode(l_positionBefore,0,m_head)->m_ptrNextVar = M_FindNode(l_positionAfter,0,m_head);
+			//if it's in the middle
+
+			else {
+				var_ptr l_newVar = new var;
+				M_FindNode(l_positionBefore,0,m_head)->m_ptrNextVar = l_newVar;
+				l_newVar = M_FindNode(l_positionAfter,0,m_head);
+			}
 			m_quantInitializedVar--;
 			m_capacity--;
 		}

@@ -168,6 +168,7 @@
     <ClInclude Include="VarHTables.h" />
     <ClInclude Include="Variable.h" />
     <ClInclude Include="Vector.h" />
+    <ClInclude Include="While.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="program.txt" />

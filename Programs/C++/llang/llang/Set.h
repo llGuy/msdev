@@ -42,12 +42,12 @@ namespace CLine {
 			m_RSVStr = ::G_BuildString(';',l_lineIter,m_lineStr);
 		}
 		template<typename T>
-		inline T M_CreateVariable(type p_typeSzet) {
+		inline const T M_CreateVariable(const type p_typeSzet) {
 			RSV_Variable<T> l_variable(m_RSVStr,p_typeSzet);
 			return l_variable.M_GetValOfVar();
 		}
 		template<typename T>
-		inline T M_CreateConstant(type p_typeSzet) {
+		inline const T M_CreateConstant(const type p_typeSzet) {
 			RSV_Const<T> l_constant(m_RSVStr,p_typeSzet);
 			return l_constant.M_GetValueOfRSV();
 		}
@@ -111,7 +111,7 @@ namespace CLine {
 		std::string m_typeStr;
 		std::string m_nameStr;
 	public:
-		bool M_IsVariableCreator(void) override { return true; };
+		const bool M_IsVariableCreator(void) override { return true; };
 		void M_Translate(void) override {
 			for(func_ptr l_funcEssentIter : m_getEssenComponents)
 				(*this.*l_funcEssentIter)();
@@ -120,8 +120,8 @@ namespace CLine {
 					(*this.*m_possibleFunctionsTypeBase[l_possTypesIter])();
 			}
 		}
-		std::string M_GetTypeStr(void) override { return m_typeStr; };
-		std::string M_GetNameStr(void) override { return m_nameStr; };
+		const std::string M_GetTypeStr(void) override { return m_typeStr; };
+		const std::string M_GetNameStr(void) override { return m_nameStr; };
 	};
 }
 #endif

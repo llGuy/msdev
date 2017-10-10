@@ -1,16 +1,9 @@
-set int base = 4;
-set int power = 5;
-
-set int result = base;
-
 set int i = 0;
 
-for [i] < [power - 1]+
+for [i] < [4]+
 begin
 
-mod result -> result * base;
+println "still here";
+set int h = 12;
 
 end
-
-print "Power Result: ";
-println result;

@@ -6,7 +6,6 @@
 
 class Condition {
 public: 
-
 	explicit Condition(void) 
 	{
 	}
@@ -66,7 +65,7 @@ private:
 		}
 	}
 	template<typename T>
-	bool M_PerfOper(T p_comp1,T p_comp2) {
+	const bool M_PerfOper(T p_comp1,T p_comp2) {
 		auto l_equLam = [=](void)->bool {return p_comp1 == p_comp2; };
 		auto l_grtLam = [=](void)->bool {return p_comp1 > p_comp2; };
 		auto l_lessLam = [=](void)->bool {return p_comp1 < p_comp2; };
@@ -150,7 +149,7 @@ public:
 		m_arrComparFunc[2] = &Condition::M_CompBool;
 		m_arrComparFunc[3] = &Condition::M_CompStr;
 	}
-	bool M_Compare(void) {
+	const bool M_Compare(void) {
 		M_GetTypeOfCond();
 		(*this.*m_arrComparFunc[m_typeOfCond])();
 		return m_isCondTrue;

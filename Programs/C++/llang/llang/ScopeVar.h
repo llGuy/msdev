@@ -2,23 +2,23 @@
 #define _SCOPEVAR
 
 #include "Misc.h"
-#include "IncludeCLine.h"
 
 class ScopeVar {
 public:
 	explicit ScopeVar(void)
 	{
 	}
-	explicit ScopeVar(CLine::LineOfCode* p_setLine)
-		: m_nameStr(p_setLine->M_GetNameStr()),m_typeStr(p_setLine->M_GetTypeStr())
-	{
-	}
 	~ScopeVar(void) 
 	{
 	}
 public:
+	void M_Update(CLine::LineOfCode* p_line) {
+		m_nameStr = p_line->M_GetNameStr();
+		m_typeStr = p_line->M_GetTypeStr();
+	}
 	void M_Delete(void) const {
-		auto l_delSzet = [&](void)->void {VarHT::M_Shared().m_hTableOfSzet.M_Delete(m_nameStr); };
+		auto l_delSzet = [&](void)->void {
+			VarHT::M_Shared().m_hTableOfSzet.M_Delete(m_nameStr); };
 		auto l_delChar = [&](void)->void {VarHT::M_Shared().m_hTableOfChar.M_Delete(m_nameStr); };
 		auto l_delBool = [&](void)->void {VarHT::M_Shared().m_hTableOfBool.M_Delete(m_nameStr); };
 		auto l_delStr = [&](void)->void {VarHT::M_Shared().m_hTableOfStr.M_Delete(m_nameStr); };

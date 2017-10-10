@@ -31,9 +31,6 @@
     <Filter Include="Header Files\Storage\datStruct\LList">
       <UniqueIdentifier>{01de0348-2be1-4e7b-b024-2bba7699e57b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\CLine\Body">
-      <UniqueIdentifier>{345d2cca-a851-47f6-96b8-33efe7a3b5bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\CLine\Ifs">
       <UniqueIdentifier>{1775e69a-bb03-4531-9ee2-7c662be28074}</UniqueIdentifier>
     </Filter>
@@ -52,11 +49,14 @@
     <Filter Include="Header Files\CLine\One-Line\FileIO">
       <UniqueIdentifier>{2e12fc80-2130-4274-b26a-d43b8d5e813a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\CLine\Body\Misc">
-      <UniqueIdentifier>{2ca68a17-8af1-4c9d-a2bf-31c78e59abf6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\fileIOTest">
       <UniqueIdentifier>{3294ade0-2f52-4dd6-adfc-e9ae0d734f06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CLine\Body">
+      <UniqueIdentifier>{345d2cca-a851-47f6-96b8-33efe7a3b5bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CLine\Body\Misc">
+      <UniqueIdentifier>{2ca68a17-8af1-4c9d-a2bf-31c78e59abf6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +142,9 @@
     </ClInclude>
     <ClInclude Include="Program.h">
       <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="While.h">
+      <Filter>Header Files\CLine\Body</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

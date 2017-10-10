@@ -2,6 +2,7 @@
 #define _INCLUE_CLINE
 
 #include "CLine.h"
+#include "While.h"
 #include "Print.h"
 #include "Input.h"
 #include "Save.h"
