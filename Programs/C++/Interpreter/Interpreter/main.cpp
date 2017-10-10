@@ -14,7 +14,7 @@ int main(int argc,char* argv[]) {
 #else
 	std::fstream fileReadFrom;
 	//argv[1] = "C:\\Users\\luc\\Desktop\\program.txt";
-	fileReadFrom.open(argv[1]);
+	fileReadFrom.open("program.txt");
 
 	Program programToExecute(fileReadFrom);
 	programToExecute.ExecuteProgram();

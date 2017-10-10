@@ -1,1 +1,11 @@
-print "hi";
+set int i = 0;
+
+
+for [i] < [19]+
+begin
+
+set int h = i;
+
+end
+
+println h;
