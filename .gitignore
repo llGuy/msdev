@@ -1,3 +1,9 @@
-/Programs/C++/llang/Debug
-/Programs/C++/llang/.vs
+.vs
+x64
 Debug
+*~
+\#*#
+.DS_Store
+*.VC.db
+xcuserdata
+*~
