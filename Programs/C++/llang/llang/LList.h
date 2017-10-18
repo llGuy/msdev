@@ -97,17 +97,14 @@ namespace llst {
 			if(l_position < 0) return;
 			//otherwise, position before is the position of the variable - 1
 			//and position after is the position of the variable + 1
-			signed int l_positionBefore = l_position - 1;
-			signed int l_positionAfter = l_position + 1;
+			size_t l_positionOfVar = (size_t)l_position;
+			size_t l_positionBefore = (size_t)l_positionOfVar - 1;
+			size_t l_positionAfter = (size_t)l_positionOfVar + 1;
 
 			//if the position of the variable to delete isn't the first variable
 			//the position before preceeds l_positionAfter
-			if(l_position != 0) l_positionBefore = l_position - 1;
-			//if the position is at the end
-			//then set the one before to a new var
-			if(l_position + 1 == m_capacity) M_FindNode(l_positionBefore,0,m_head)->m_ptrNextVar = new var;
-			//if the position is 0
-			else if(l_position == 0) {
+			if(l_positionOfVar != 0) l_positionBefore = l_positionOfVar - 1;
+			if(l_positionOfVar == 0) {
 				//making a new var with the m_ptrNextVar = to the one of m_head
 				//then setting m_head to the new var
 				var_ptr l_varAfterHead = m_head->m_ptrNextVar;
@@ -115,6 +112,10 @@ namespace llst {
 				l_varNewHead->m_ptrNextVar = l_varAfterHead;
 				m_head = l_varNewHead;
 			}
+			//if the position is at the end
+			//then set the one before to a new var
+			else if(l_positionOfVar + 1 == m_capacity) M_FindNode(l_positionBefore,0,m_head)->m_ptrNextVar = new var;
+			//if the position is 0
 			//if it's in the middle
 
 			else {
@@ -123,7 +124,6 @@ namespace llst {
 				l_newVar = M_FindNode(l_positionAfter,0,m_head);
 			}
 			m_quantInitializedVar--;
-			m_capacity--;
 		}
 	};
 };

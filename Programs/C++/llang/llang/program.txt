@@ -1,9 +1,8 @@
 set int i = 0;
 
-for [i] < [4]+
+for [i] < [10]+
 begin
 
-println "still here";
-set int h = 12;
+println i;
 
 end

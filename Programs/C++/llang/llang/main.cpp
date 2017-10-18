@@ -14,18 +14,17 @@
 int main(int argc,char* argv[]) {
 #if _TESTING
 	//in testing mode
-#if _FILEIO
-	std::fstream l_fileReadFrom;
-	l_fileReadFrom.open("program.txt");
+	#if _FILEIO
+		std::fstream l_fileReadFrom;
+		l_fileReadFrom.open("program.txt");
 
-	Program l_programToExecute(l_fileReadFrom);
-	l_programToExecute.M_Execute();
-	l_fileReadFrom.close();
-#else
-	Test test;
-	test.PerformTest();
-#endif
-
+		Program l_programToExecute(l_fileReadFrom);
+		l_programToExecute.M_Execute();
+		l_fileReadFrom.close();
+	#else
+		Test test;
+		test.PerformTest();
+	#endif
 #else 
 	//not in testing mode
 #endif

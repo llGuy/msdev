@@ -1,5 +1,5 @@
 #ifndef _VAR
-
+#define _VAR
 #include "CNSTMacros.h"
 
 #include <iostream>

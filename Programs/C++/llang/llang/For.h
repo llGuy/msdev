@@ -53,7 +53,6 @@ namespace CLine {
 			size_t l_loopIndex = 0;
 			m_condObj.M_Init();
 			while(m_condObj.M_Compare()) {
-				l_quantScpVar++;
 				for(size_t l_vecLinesIter = 0; l_vecLinesIter < m_vecLine.m_size; l_vecLinesIter++) {
 					m_vecLine[l_vecLinesIter]->M_Translate();
 					if(m_vecLine[l_vecLinesIter]->M_IsVariableCreator()) {
