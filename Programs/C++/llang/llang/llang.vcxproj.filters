@@ -146,6 +146,12 @@
     <ClInclude Include="While.h">
       <Filter>Header Files\CLine\Body</Filter>
     </ClInclude>
+    <ClInclude Include="IfStatement.h">
+      <Filter>Header Files\CLine\Ifs</Filter>
+    </ClInclude>
+    <ClInclude Include="If.h">
+      <Filter>Header Files\CLine\Ifs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="program.txt">

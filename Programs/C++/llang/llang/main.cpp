@@ -8,7 +8,7 @@
 
 #include "IncludeCLine.h"
 
-#define _TESTING true
+#define _TESTING false
 #define _FILEIO true
 
 int main(int argc,char* argv[]) {
@@ -26,6 +26,13 @@ int main(int argc,char* argv[]) {
 		test.PerformTest();
 	#endif
 #else 
-	//not in testing mode
+	std::fstream l_fileRead;
+	l_fileRead.open(argv[1]);
+
+	Program l_program(l_fileRead);
+	l_program.M_Execute();
+	l_fileRead.close();
+
+	std::cin.get();
 #endif
 }
