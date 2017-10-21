@@ -17,6 +17,7 @@
 #include <iostream>
 #include <algorithm>
 #include <math.h>
+#include <unordered_map>
 
 
 using namespace std;
@@ -36,9 +37,6 @@ public:
     Box(istream & ss):m_id(0),m_weight(0),m_volume(0){
         if( ss ){
             ss >> m_id;
-            if( m_id >= 363){
-                
-            }
             ss.ignore();
             ss >> m_weight;
             ss.ignore();
@@ -61,6 +59,7 @@ private:
     vector<Box> m_boxes;
 public:
     typedef vector<Box>::iterator iterator;
+    typedef vector<Box>::const_iterator const_iterator;
 
     Payload(){};
     Payload(istream & ins){
@@ -77,7 +76,9 @@ public:
     
     iterator begin() { return m_boxes.begin(); };
     iterator end() { return m_boxes.end(); };
-    
+    const_iterator begin() const { return m_boxes.begin(); };
+    const_iterator end() const { return m_boxes.end(); };
+
     size_t size() const{
         return m_boxes.size();
     }
@@ -136,12 +137,13 @@ public:
 
 class Truck{
 private:
-    size_t m_id;
+    id_t m_id;
     Payload m_payload;
 public:
     typedef Payload::iterator iterator;
+    typedef Payload::const_iterator const_iterator;
     
-    Truck(size_t i=0) : m_id(i),m_payload() {};
+    Truck(id_t i=0) : m_id(i),m_payload() {};
     bool has_space_for(const Box & box){ return m_payload.volume() + box.volume() < kTruckMaxVolume; };
     bool add(const Box & box){
         bool rv = false;
@@ -155,9 +157,12 @@ public:
     }
     volume_t volume() const { return m_payload.volume(); };
     weight_t weight() const { return m_payload.weight(); };
+    id_t id() const { return m_id; };
     
     iterator begin() { return m_payload.begin(); };
     iterator end() { return m_payload.end(); };
+    const_iterator begin() const{ return m_payload.begin(); };
+    const_iterator end() const{ return m_payload.end(); };
 
     friend ostream &operator<<(ostream & os, const Truck & truck);
 };
@@ -169,8 +174,8 @@ private:
 public:
     typedef vector<Truck>::iterator iterator;
     typedef vector<Truck>::const_iterator const_iterator;
-    Convoy(size_t n){
-        for (size_t i=0; i<n; i++) {
+    Convoy(id_t n){
+        for (id_t i=0; i<n; i++) {
             m_trucks.push_back(Truck(i));
         }
     }
@@ -178,6 +183,22 @@ public:
         sort(m_trucks.begin(), m_trucks.end(), [](const Truck & l, const Truck & r) { return l.weight() < r.weight(); });
     }
 
+    vector<id_t> box_allocation()const{
+        id_t n = 0;
+        unordered_map<id_t,id_t> alloc;
+        for(const_iterator it = m_trucks.begin(); it != m_trucks.end(); it++){
+            for(Truck::const_iterator b_it = it->begin(); b_it != it->end(); b_it++ ){
+                alloc[b_it->id()] = it->id();
+                n++;
+            }
+        }
+        vector<id_t> rv;
+        for(id_t i=0;i<n;i++){
+            rv.push_back( alloc[i] );
+        }
+        return rv;
+    }
+    
     pair<weight_t,weight_t> range_weight()const{
         const_iterator it = m_trucks.begin();
         

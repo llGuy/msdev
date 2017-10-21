@@ -23,5 +23,7 @@ int main(int argc, const char * argv[]) {
     convoy.fill(payload);
     cout << convoy << endl;
     cout << convoy.max_range_diff() << endl;
+    cout << convoy.box_allocation().size() << endl;
+    cout << payload.size() << endl;
     return 0;
 }
