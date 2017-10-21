@@ -34,10 +34,8 @@ private:
     volume_t m_volume;
     
 public:
-    Box(istream & ss):m_id(0),m_weight(0),m_volume(0){
+    Box(istream & ss, id_t ii):m_id(ii),m_weight(0),m_volume(0){
         if( ss ){
-            ss >> m_id;
-            ss.ignore();
             ss >> m_weight;
             ss.ignore();
             ss >> m_volume;
@@ -63,17 +61,20 @@ public:
 
     Payload(){};
     Payload(istream & ins){
-        // skip header
-        ins.ignore(numeric_limits<streamsize>::max(),'\n');
-        
-        while( ins ){
-            Box one(ins);
+        size_t boxCount = 0;
+        ins >> boxCount;
+        //ins.ignore();
+        for (int i = 0; i < boxCount; i++) {
+            Box one(ins,i+1);
             if( one.valid() ){
                 m_boxes.push_back(one);
+            }else{
+                cerr << "Invalid box " << i << endl;
             }
         }
     }
-    
+    Box & back() { return m_boxes.back(); };
+    Box & front() { return m_boxes.front(); };
     iterator begin() { return m_boxes.begin(); };
     iterator end() { return m_boxes.end(); };
     const_iterator begin() const { return m_boxes.begin(); };

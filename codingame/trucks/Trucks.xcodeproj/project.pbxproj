@@ -28,7 +28,7 @@
 		4203441A1F674C6C005248FD /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		420344211F674C8A005248FD /* Trucks.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Trucks.cpp; sourceTree = "<group>"; };
 		420344221F674C8A005248FD /* Trucks.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Trucks.hpp; sourceTree = "<group>"; };
-		420344241F674CF7005248FD /* 20Trucks.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 20Trucks.csv; sourceTree = SOURCE_ROOT; };
+		4208B9331F9B8C7400273F6F /* trucks_1.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = trucks_1.csv; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,12 +61,20 @@
 		420344191F674C6C005248FD /* Trucks */ = {
 			isa = PBXGroup;
 			children = (
-				420344241F674CF7005248FD /* 20Trucks.csv */,
+				4208B9311F9B8C6800273F6F /* Data */,
 				4203441A1F674C6C005248FD /* main.cpp */,
 				420344211F674C8A005248FD /* Trucks.cpp */,
 				420344221F674C8A005248FD /* Trucks.hpp */,
 			);
 			path = Trucks;
+			sourceTree = "<group>";
+		};
+		4208B9311F9B8C6800273F6F /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				4208B9331F9B8C7400273F6F /* trucks_1.csv */,
+			);
+			name = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
