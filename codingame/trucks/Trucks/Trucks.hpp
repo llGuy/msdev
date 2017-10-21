@@ -43,7 +43,7 @@ public:
         }
     }
     
-    bool valid() const { return m_id != 0; };
+    bool valid() const { return true; };
     id_t id() const { return m_id; };
     weight_t weight() const { return m_weight; };
     volume_t volume() const { return m_volume; };
@@ -63,9 +63,9 @@ public:
     Payload(istream & ins){
         size_t boxCount = 0;
         ins >> boxCount;
-        //ins.ignore();
+        ins.ignore();
         for (int i = 0; i < boxCount; i++) {
-            Box one(ins,i+1);
+            Box one(ins,i);
             if( one.valid() ){
                 m_boxes.push_back(one);
             }else{
@@ -144,6 +144,8 @@ public:
     typedef Payload::iterator iterator;
     typedef Payload::const_iterator const_iterator;
     
+    void push_back(const Box & one){ m_payload.add(one); };
+    
     Truck(id_t i=0) : m_id(i),m_payload() {};
     bool has_space_for(const Box & box){ return m_payload.volume() + box.volume() < kTruckMaxVolume; };
     bool add(const Box & box){
@@ -178,6 +180,32 @@ public:
     Convoy(id_t n){
         for (id_t i=0; i<n; i++) {
             m_trucks.push_back(Truck(i));
+        }
+    }
+    Convoy(const Payload & pl, vector<id_t> allocation){
+        id_t n = 0;
+        for(vector<id_t>::const_iterator it=allocation.begin();it != allocation.end();++it){
+            if( *it > n){
+                n = *it;
+            }
+        }
+        n++;
+        for (id_t i=0; i<n; i++) {
+            m_trucks.push_back(Truck(i));
+        }
+        for(Payload::const_iterator it=pl.begin();it!=pl.end();++it){
+            Box one(*it);
+            if( one.id() < allocation.size() ){
+                id_t truck_id = allocation[one.id()];
+                if( truck_id < m_trucks.size()){
+                    m_trucks[truck_id].push_back(one);
+                }else{
+                    cerr << "Bad Truck " << truck_id << endl;
+                }
+            }else{
+                cerr << "Bad alloc " << one << endl;
+            }
+            
         }
     }
     void sortByIncreasingWeight(){

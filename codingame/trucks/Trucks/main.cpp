@@ -20,7 +20,7 @@ void game_output(ifstream & ins){
     convoy.fill(payload);
     vector<id_t> rv = convoy.box_allocation();
     for (size_t i=0; i<rv.size(); i++) {
-        cout << rv[i] << endl;
+        cout << rv[i]+1 << endl;
     }
 }
 
@@ -35,6 +35,9 @@ void test_run(ifstream & ins){
     cout << convoy << endl;
     //cout << convoy.max_range_diff() << endl;
     cout << convoy.box_allocation().size() << endl;
+    cout << endl;
+    Convoy rebuild(payload,convoy.box_allocation());
+    cout << rebuild << endl;
     //cout << payload.size() << endl;
 
 }
