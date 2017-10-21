@@ -21,8 +21,8 @@
 
 
 using namespace std;
-typedef unsigned weight_t;
-typedef unsigned volume_t;
+typedef float weight_t;
+typedef float volume_t;
 typedef unsigned id_t;
 
 const volume_t kTruckMaxVolume = 100;
