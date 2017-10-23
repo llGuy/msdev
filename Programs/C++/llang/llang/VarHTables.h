@@ -8,7 +8,7 @@ class VarHT {
 public:
 	htble::HTable<size_t> m_hTableOfSzet;
 	htble::HTable<char> m_hTableOfChar;
-	htble::HTable<bool> m_hTableOfBool;
+	htble::HTable<bool>m_hTableOfBool;
 	htble::HTable<std::string> m_hTableOfStr;
 
 public:

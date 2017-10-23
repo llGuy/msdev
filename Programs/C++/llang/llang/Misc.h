@@ -9,8 +9,8 @@
 
 #include "VarHTables.h"
 
-extern volatile const size_t g_0ASCII = 48;
-extern volatile const size_t g_9ASCII = 57;
+extern const size_t g_0ASCII = 48;
+extern const size_t g_9ASCII = 57;
 
 enum type {
 	type_int,
@@ -92,23 +92,26 @@ extern inline bool G_CheckForVar(const std::string& p_RSVStr) {
 		l_isVar = l_isVar & l_criteriaToPass[l_arrIter];
 	return l_isVar;
 }
+
 extern inline type G_FetchTypeOfVar(const std::string& p_varStr) {
-	auto l_checkSzet = [=](void)->bool { 
-		return p_varStr == VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(p_varStr)->m_name; };
-	auto l_checkChar = [=](void)->bool { 
-		return p_varStr == VarHT::M_Shared().m_hTableOfChar.M_FindVariable(p_varStr)->m_name; };
-	auto l_checkBool = [=](void)->bool { 
-		return p_varStr == VarHT::M_Shared().m_hTableOfBool.M_FindVariable(p_varStr)->m_name; };
-	auto l_checkStr = [=](void)->bool { 
-		return p_varStr == VarHT::M_Shared().m_hTableOfStr.M_FindVariable(p_varStr)->m_name; };
-	std::unordered_map<type,std::function<bool(void)>> l_lambdasToCheckType;
-	l_lambdasToCheckType[type_int] = l_checkSzet;
-	l_lambdasToCheckType[type_char] = l_checkChar;
-	l_lambdasToCheckType[type_bool] = l_checkBool;
-	l_lambdasToCheckType[type_str] = l_checkStr;
-	for(auto l_mapIter = l_lambdasToCheckType.begin(); l_mapIter != l_lambdasToCheckType.end(); ++l_mapIter) 
-		if(l_mapIter->second()) 
-			return l_mapIter->first;
+	bool l_isVarInTypeHTable[5] = {
+		p_varStr == VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(p_varStr)->M_ID(),
+		p_varStr == VarHT::M_Shared().m_hTableOfChar.M_FindVariable(p_varStr)->M_ID(),
+		p_varStr == VarHT::M_Shared().m_hTableOfBool.M_FindVariable(p_varStr)->M_ID(),
+		p_varStr == VarHT::M_Shared().m_hTableOfStr.M_FindVariable(p_varStr)->M_ID(),
+		true
+	};
+	type l_types[5]{
+		type_int,
+		type_char,
+		type_bool,
+		type_str,
+		type_default
+	};
+
+	for(size_t l_arrIter = 0; l_arrIter < 5; l_arrIter++) {
+		if(l_isVarInTypeHTable[l_arrIter]) return l_types[l_arrIter];
+	}
 	return type_default;
 }
 extern inline type G_FetchTypeOfConst(const std::string& p_RSVStr) {

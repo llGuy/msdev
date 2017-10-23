@@ -19,7 +19,7 @@ public:
 		else return M_GetValueOfConst();
 	}
 private:
-	std::string M_FetchVariable(void) const { return VarHT::M_Shared().m_hTableOfStr.M_FindVariable(m_strRSV)->m_value; };
+	std::string M_FetchVariable(void) const { return VarHT::M_Shared().m_hTableOfStr.M_FindVariable(m_strRSV)->M_Val(); };
 	std::string M_GetValueOfConst(void) const {
 		size_t l_index = 1;
 		std::string l_actualValueOfConst;

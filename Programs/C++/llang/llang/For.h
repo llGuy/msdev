@@ -39,8 +39,8 @@ namespace CLine {
 		}
 		void M_GetOperOfInc(void) { m_iterOper = m_forLine[m_forLine.length() - 1]; };
 		void M_Incr(void) {
-			if(m_iterOper == '+') VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_nameIterStr)->m_value += 1;
-			if(m_iterOper == '-') VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_nameIterStr)->m_value -= 1;
+			if(m_iterOper == '+') VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_nameIterStr)->M_Val() += 1;
+			if(m_iterOper == '-') VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_nameIterStr)->M_Val() -= 1;
 		}
 	public:
 		void M_Translate(void) override {

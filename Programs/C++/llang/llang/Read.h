@@ -37,19 +37,19 @@ namespace CLine {
 	private:
 		void M_ReadSzet(const std::string& p_cont) const {
 			RSV_Const<size_t> l_constSzet(p_cont,type_int);
-			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_RSVStr)->m_value = l_constSzet.M_GetValueOfRSV();
+			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_RSVStr)->M_Val() = l_constSzet.M_GetValueOfRSV();
 		}
 		void M_ReadChar(const std::string& p_cont) const {
 			RSV_Const<char> l_constChar(p_cont,type_char);
-			VarHT::M_Shared().m_hTableOfChar.M_FindVariable(m_RSVStr)->m_value = l_constChar.M_GetValueOfRSV();
+			VarHT::M_Shared().m_hTableOfChar.M_FindVariable(m_RSVStr)->M_Val() = l_constChar.M_GetValueOfRSV();
 		}
 		void M_ReadBool(const std::string& p_cont) const {
 			RSV_Const<bool> l_constBool(p_cont,type_bool);
-			VarHT::M_Shared().m_hTableOfBool.M_FindVariable(m_RSVStr)->m_value = l_constBool.M_GetValueOfRSV();
+			VarHT::M_Shared().m_hTableOfBool.M_FindVariable(m_RSVStr)->M_Val() = l_constBool.M_GetValueOfRSV();
 		}
 		void M_ReadStr(const std::string& p_cont) const {
 			RSV_String l_constStr(p_cont,false);
-			VarHT::M_Shared().m_hTableOfStr.M_FindVariable(m_RSVStr)->m_value = l_constStr.M_GetValue();
+			VarHT::M_Shared().m_hTableOfStr.M_FindVariable(m_RSVStr)->M_Val() = l_constStr.M_GetValue();
 		}
 	public:
 		void M_Translate(void) override {

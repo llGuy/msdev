@@ -50,41 +50,41 @@ namespace CLine {
 			if(::G_CalculateQuantOfWords(m_RSVStr)) {
 				RSV_Operation l_operation(m_RSVStr);
 				size_t l_valueOfOperation = l_operation.M_GetValueOfOperation();
-				VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_nameStr)->m_value = l_valueOfOperation;
+				VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_nameStr)->M_Val() = l_valueOfOperation;
 			}
 			else if(::G_CheckForVar(m_RSVStr)) {
 				size_t l_valueOfVar = M_CreateVariable<size_t>(type_int);
-				VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_nameStr)->m_value = l_valueOfVar;
+				VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_nameStr)->M_Val() = l_valueOfVar;
 			}
 			else {
 				size_t l_valueOfConst = M_CreateConstant<size_t>(type_int);
-				VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_nameStr)->m_value = l_valueOfConst;
+				VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_nameStr)->M_Val() = l_valueOfConst;
 			}
 		}
 		void M_FunctionChar(void) const {
 			if(::G_CheckForVar(m_RSVStr)) {
 				char l_valueOfVar = M_CreateVariable<char>(type_char);
-				VarHT::M_Shared().m_hTableOfChar.M_FindVariable(m_nameStr)->m_value = l_valueOfVar;
+				VarHT::M_Shared().m_hTableOfChar.M_FindVariable(m_nameStr)->M_Val() = l_valueOfVar;
 			}
 			else {
 				char l_valueOfConstant = M_CreateConstant<char>(type_char);
-				VarHT::M_Shared().m_hTableOfChar.M_FindVariable(m_nameStr)->m_value = l_valueOfConstant;
+				VarHT::M_Shared().m_hTableOfChar.M_FindVariable(m_nameStr)->M_Val() = l_valueOfConstant;
 			}
 		}
 		void M_FunctionBool(void) const {
 			if(::G_CheckForVar(m_RSVStr)) {
 				bool l_valueOfVar = M_CreateVariable<bool>(type_bool);
-				VarHT::M_Shared().m_hTableOfBool.M_FindVariable(m_nameStr)->m_value = l_valueOfVar;
+				VarHT::M_Shared().m_hTableOfBool.M_FindVariable(m_nameStr)->M_Val() = l_valueOfVar;
 			}
 			else {
 				bool l_valueOfConstant = M_CreateConstant<bool>(type_bool);
-				VarHT::M_Shared().m_hTableOfBool.M_FindVariable(m_nameStr)->m_value = l_valueOfConstant;
+				VarHT::M_Shared().m_hTableOfBool.M_FindVariable(m_nameStr)->M_Val() = l_valueOfConstant;
 			}
 		}
 		void M_FunctionStr(void) const {
 			RSV_String l_strRSV(m_RSVStr,::G_CheckForVar(m_RSVStr));
 			std::string l_valueOfRSV = l_strRSV.M_GetValue();
-			VarHT::M_Shared().m_hTableOfStr.M_FindVariable(m_nameStr)->m_value = l_valueOfRSV;
+			VarHT::M_Shared().m_hTableOfStr.M_FindVariable(m_nameStr)->M_Val() = l_valueOfRSV;
 		}
 	private:
 		typedef void(LineOfCode_Mod::*func_ptr)(void);

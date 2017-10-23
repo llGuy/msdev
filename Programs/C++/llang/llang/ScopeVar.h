@@ -17,27 +17,30 @@ public:
 		m_typeStr = p_line->M_GetTypeStr();
 	}
 	void M_Delete(void) const {
-		auto l_delSzet = [&](void)->void {
-			VarHT::M_Shared().m_hTableOfSzet.M_Delete(m_nameStr); };
-		auto l_delChar = [&](void)->void {VarHT::M_Shared().m_hTableOfChar.M_Delete(m_nameStr); };
-		auto l_delBool = [&](void)->void {VarHT::M_Shared().m_hTableOfBool.M_Delete(m_nameStr); };
-		auto l_delStr = [&](void)->void {VarHT::M_Shared().m_hTableOfStr.M_Delete(m_nameStr); };
-
-		std::unordered_map<char*,std::function<void(void)>> l_mapOfDelLam;
-		l_mapOfDelLam["int"] = l_delSzet;
-		l_mapOfDelLam["char"] = l_delChar;
-		l_mapOfDelLam["bool"] = l_delBool;
-		l_mapOfDelLam["string"] = l_delStr;
-		for(auto l_lamIter = l_mapOfDelLam.begin(); l_lamIter != l_mapOfDelLam.end(); ++l_lamIter) {
-			if(l_lamIter->first == m_typeStr) {
-				l_lamIter->second();
-				return;
-			}
-		}
+		Del::M_Shared().m_mapDelLam[m_typeStr](m_nameStr);
 	}
 private:
 	std::string m_nameStr;
 	std::string m_typeStr;
+private:
+	struct Del {
+		std::unordered_map<std::string,std::function<void(const std::string&)>> m_mapDelLam;
+	public:
+		static Del& M_Shared(void) {
+			static Del* l_singl = nullptr;
+			if(l_singl == nullptr) {
+				l_singl = new Del();
+				l_singl->M_Init();
+			}
+			return *l_singl;
+		}
+		void M_Init(void) {
+			m_mapDelLam["int"] = [&](const std::string& p_nameStr)->void { VarHT::M_Shared().m_hTableOfSzet.M_Delete(p_nameStr); };
+			m_mapDelLam["char"] = [&](const std::string& p_nameStr)->void { VarHT::M_Shared().m_hTableOfChar.M_Delete(p_nameStr); };
+			m_mapDelLam["bool"] = [&](const std::string& p_nameStr)->void { VarHT::M_Shared().m_hTableOfBool.M_Delete(p_nameStr); };
+			m_mapDelLam["string"] = [&](const std::string& p_nameStr)->void { VarHT::M_Shared().m_hTableOfStr.M_Delete(p_nameStr); };
+		}
+	};
 };
 
 #endif

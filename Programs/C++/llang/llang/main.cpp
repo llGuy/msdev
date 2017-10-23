@@ -1,14 +1,9 @@
 //contains include statements for lib
 //#include "Misc.h"
 
-#include "Test.h"
-#include "HTable.h"
-#include "VarHTables.h"
-#include "RSV_Variable.h"
+#include "Program.h"
 
-#include "IncludeCLine.h"
-
-#define _TESTING false
+#define _TESTING true
 #define _FILEIO true
 
 int main(int argc,char* argv[]) {
@@ -22,6 +17,7 @@ int main(int argc,char* argv[]) {
 		l_programToExecute.M_Execute();
 		l_fileReadFrom.close();
 	#else
+		#include "Test.h"
 		Test test;
 		test.PerformTest();
 	#endif

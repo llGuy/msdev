@@ -82,7 +82,7 @@ public:
 		std::string name ="hi";
 		int val = 12;
 		htable.M_AppendVar(val,name);
-		std::cout << "	" << htable.M_FindVariable(name)->m_name << std::endl;
+		std::cout << "	" << htable.M_FindVariable(name)->M_ID() << std::endl;
 		for(size_t l_index = 0; l_index < 5; l_index++) {
 			htable.M_AppendVar(val,name);
 		}
@@ -91,7 +91,7 @@ public:
 		htable.M_AppendVar(val1,name1);
 		std::cout << "	quant of the htable : " << htable.M_GetQuantOfHTable();
 		std::cout << std::endl;
-		std::cout << "	" << htable.M_FindVariable(name1)->m_value << std::endl;
+		std::cout << "	" << htable.M_FindVariable(name1)->M_Val() << std::endl;
 		std::cout << std::endl;
 	}
 	void M_TestParser(void)  const {
@@ -104,106 +104,106 @@ public:
 		CLine::LineOfCode* l_setConstSzet = new CLine::LineOfCode_Set(l_setLine1);
 		l_setConstSzet->M_Translate();
 		M_AssertEqual<size_t>("> testing set line of code for const int :","size_t",1,
-			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("a")->m_value);
+			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("a")->M_Val());
 	}
 	void M_TestSetSzetVariable(void) const {
 		std::string l_setLine2 = "set int b = a;";
 		CLine::LineOfCode* l_setVarSzet = new CLine::LineOfCode_Set(l_setLine2);
 		l_setVarSzet->M_Translate();
 		M_AssertEqual<size_t>("> testing set line of code for variable int :","sizet",1,
-			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("b")->m_value);
+			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("b")->M_Val());
 	}
 	void M_TestSetSzetOperation(void) const {
 		std::string l_setLine3 = "set int c = 3 * (60 - 12) - 1;";
 		CLine::LineOfCode* l_setOperationSzet = new CLine::LineOfCode_Set(l_setLine3);
 		l_setOperationSzet->M_Translate();
 		M_AssertEqual<size_t>("> testing set line of code for operaiton int :","size_t",143,
-			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("c")->m_value);
+			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("c")->M_Val());
 	}
 	void M_TestSetSzetOperationM(void) const {
 		std::string l_setLineM = "set int bar = c + 1 - 1;";
 		CLine::LineOfCode* l_setOperationSzet = new CLine::LineOfCode_Set(l_setLineM);
 		l_setOperationSzet->M_Translate();
 		M_AssertEqual<size_t>("> testing set line of code for operaiton int :","size_t",3 * (60 - 12) - 1 + 1 - 1,
-			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("c")->m_value);
+			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("c")->M_Val());
 	}
 	void M_TestSetCharConst(void) const {
 		std::string l_setLine4 = "set char d = \'a\';";
 		CLine::LineOfCode* l_setConstChar = new CLine::LineOfCode_Set(l_setLine4);
 		l_setConstChar->M_Translate();
 		M_AssertEqual<char>("> testing set line of code for const char :","char",'a',
-			VarHT::M_Shared().m_hTableOfChar.M_FindVariable("d")->m_value);
+			VarHT::M_Shared().m_hTableOfChar.M_FindVariable("d")->M_Val());
 	}
 	void M_TestSetCharVariable(void) const {
 		std::string l_setLine5 = "set char e = d;";
 		CLine::LineOfCode* l_setVariableChar = new CLine::LineOfCode_Set(l_setLine5);
 		l_setVariableChar->M_Translate();
 		M_AssertEqual<char>("> testing set line of code for variable char :","char",'a',
-			VarHT::M_Shared().m_hTableOfChar.M_FindVariable("e")->m_value);
+			VarHT::M_Shared().m_hTableOfChar.M_FindVariable("e")->M_Val());
 	}
 	void M_TestSetBoolConst(void) const {
 		std::string l_setLine6 = "set bool f = true;";
 		CLine::LineOfCode* l_setConstBool = new CLine::LineOfCode_Set(l_setLine6);
 		l_setConstBool->M_Translate();
 		M_AssertEqual<bool>("> testing set line of code for const bool :","bool",true,
-			VarHT::M_Shared().m_hTableOfBool.M_FindVariable("f")->m_value);
+			VarHT::M_Shared().m_hTableOfBool.M_FindVariable("f")->M_Val());
 	}
 	void M_TestSetBoolVariable(void) const {
 		std::string l_setLine7 = "set bool g = f;";
 		CLine::LineOfCode* l_setConstBool = new CLine::LineOfCode_Set(l_setLine7);
 		l_setConstBool->M_Translate();
 		M_AssertEqual<bool>("> testing set line of code for variable bool :","bool",true,
-			VarHT::M_Shared().m_hTableOfBool.M_FindVariable("g")->m_value);
+			VarHT::M_Shared().m_hTableOfBool.M_FindVariable("g")->M_Val());
 	}
 	void M_TestSetStringConst(void) const {
 		std::string l_setLine8 = "set string h = \"hello world\";";
 		CLine::LineOfCode* l_setConstString = new CLine::LineOfCode_Set(l_setLine8);
 		l_setConstString->M_Translate();
 		M_AssertEqual<std::string>("> testing set line of code for const string :","string","hello world",
-			VarHT::M_Shared().m_hTableOfStr.M_FindVariable("h")->m_value);
+			VarHT::M_Shared().m_hTableOfStr.M_FindVariable("h")->M_Val());
 	}
 	void M_TestSetStringVariable(void) const {
 		std::string l_setLine9 = "set string i = h;";
 		CLine::LineOfCode* l_setVariableString = new CLine::LineOfCode_Set(l_setLine9);
 		l_setVariableString->M_Translate();
 		M_AssertEqual<std::string>("> testing set line of code for variable string :","string","hello world",
-			VarHT::M_Shared().m_hTableOfStr.M_FindVariable("i")->m_value);
+			VarHT::M_Shared().m_hTableOfStr.M_FindVariable("i")->M_Val());
 	}
 	void M_TestModSzetConst(void) const {
 		std::string l_modLine1 = "mod a -> 42;";
 		CLine::LineOfCode* l_modConstSzet = new CLine::LineOfCode_Mod(l_modLine1);
 		l_modConstSzet->M_Translate();
 		M_AssertEqual<size_t>("> testing mod line of code for constant szet :","szet",42,
-			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("a")->m_value);
+			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("a")->M_Val());
 	}
 	void M_TestModSzetVariable(void) const {
 		std::string l_modLine2 = "mod a -> b;";
 		CLine::LineOfCode* l_modVariableSzet = new CLine::LineOfCode_Mod(l_modLine2);
 		l_modVariableSzet->M_Translate();
 		M_AssertEqual<size_t>("testing mod line of code for variable szet :","szet",
-			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("b")->m_value,
-			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("a")->m_value);
+			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("b")->M_Val(),
+			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("a")->M_Val());
 	}
 	void M_TestModSzetOperation(void) const {
 		std::string l_modLine3 = "mod a -> b + 42 * 1;";
 		CLine::LineOfCode* l_modOperationSzet = new CLine::LineOfCode_Mod(l_modLine3);
 		l_modOperationSzet->M_Translate();
 		M_AssertEqual<size_t>("testing mod line of code for operation szet :","szet",1 + 42 * 1,
-			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("a")->m_value);
+			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("a")->M_Val());
 	}
 	void M_TestModChar(void) const {
 		std::string l_modLine4 = "mod e -> \'e\';";
 		CLine::LineOfCode* l_modChar = new CLine::LineOfCode_Mod(l_modLine4);
 		l_modChar->M_Translate();
 		M_AssertEqual<char>("testing mod line of code for char :","char",'e',
-			VarHT::M_Shared().m_hTableOfChar.M_FindVariable("e")->m_value);
+			VarHT::M_Shared().m_hTableOfChar.M_FindVariable("e")->M_Val());
 	}
 	void M_TestModString(void) const {
 		std::string l_modLine5 = "mod h -> \"the answer to life is 42\";";
 		CLine::LineOfCode* l_modString = new CLine::LineOfCode_Mod(l_modLine5);
 		l_modString->M_Translate();
 		M_AssertEqual<std::string>("testing mod line of code for string :","string",
-			"the answer to life is 42",VarHT::M_Shared().m_hTableOfStr.M_FindVariable("h")->m_value);
+			"the answer to life is 42",VarHT::M_Shared().m_hTableOfStr.M_FindVariable("h")->M_Val());
 	}
 	void M_TestPrintSzet(void) const {
 		std::cout << "> testing print szet :\n	";
@@ -269,28 +269,28 @@ public:
 		CLine::LineOfCode* l_read = new CLine::LineOfCode_Read(l_readLine1);
 		l_read->M_Translate();
 		M_AssertEqual<size_t>("testing read line of code for szet :","szet",43,
-			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("a")->m_value);
+			VarHT::M_Shared().m_hTableOfSzet.M_FindVariable("a")->M_Val());
 	}
 	void M_TestReadChar(void) const {
 		std::string l_readLine2 = "read \"test2.txt\" d;";
 		CLine::LineOfCode* l_read = new CLine::LineOfCode_Read(l_readLine2);
 		l_read->M_Translate();
 		M_AssertEqual<char>("testing read line of code for char :","char",'a',
-			VarHT::M_Shared().m_hTableOfChar.M_FindVariable("d")->m_value);
+			VarHT::M_Shared().m_hTableOfChar.M_FindVariable("d")->M_Val());
 	}
 	void M_TestReadBool(void) const {
 		std::string l_readLine3 = "read \"test3.txt\" f;";
 		CLine::LineOfCode* l_read = new CLine::LineOfCode_Read(l_readLine3);
 		l_read->M_Translate();
 		M_AssertEqual<bool>("testing read line of code for bool :","bool",true,
-			VarHT::M_Shared().m_hTableOfBool.M_FindVariable("f")->m_value);
+			VarHT::M_Shared().m_hTableOfBool.M_FindVariable("f")->M_Val());
 	}
 	void M_TestReadStr(void) const {
 		std::string l_readLine4 = "read \"test4.txt\" i;";
 		CLine::LineOfCode* l_read = new CLine::LineOfCode_Read(l_readLine4);
 		l_read->M_Translate();
 		M_AssertEqual<std::string>("testing read line of code for string :","string","hello world",
-			VarHT::M_Shared().m_hTableOfStr.M_FindVariable("i")->m_value);
+			VarHT::M_Shared().m_hTableOfStr.M_FindVariable("i")->M_Val());
 	}
 	void M_TestCondition(void) const {
 		std::string l_cond = "[i] = [h]";

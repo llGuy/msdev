@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#ifdef OLD
 template<typename T>
 class Variable {
 public:
@@ -23,5 +24,5 @@ public:
 		return p_stream;
 	}
 };
-
+#endif
 #endif

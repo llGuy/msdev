@@ -10,9 +10,9 @@
 template<typename T>
 class RSV_Variable {
 protected:
-	T M_FetchValueOfSzetVar(void) const { return (T)VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_strRSV)->m_value; };
-	T M_FetchValueOfCharVar(void) const { return (T)VarHT::M_Shared().m_hTableOfChar.M_FindVariable(m_strRSV)->m_value; };
-	T M_FetchValueOfBoolVar(void) const { return (T)VarHT::M_Shared().m_hTableOfBool.M_FindVariable(m_strRSV)->m_value; };
+	T M_FetchValueOfSzetVar(void) const { return (T)VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_strRSV)->M_Val(); };
+	T M_FetchValueOfCharVar(void) const { return (T)VarHT::M_Shared().m_hTableOfChar.M_FindVariable(m_strRSV)->M_Val(); };
+	T M_FetchValueOfBoolVar(void) const { return (T)VarHT::M_Shared().m_hTableOfBool.M_FindVariable(m_strRSV)->M_Val(); };
 	T M_DefaultFunction(void) const { return _NULL; };
 public:
 	explicit RSV_Variable(void) 

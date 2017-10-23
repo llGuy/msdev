@@ -687,8 +687,8 @@ namespace CLine {
 				_index++;
 			}
 		}
-		bool IsDependentOfBody(void) { return true; };
-		bool IsVariableCreator(void) { return false; };
+		bool IsDependentOfBody(void) override { return true; };
+		bool IsVariableCreator(void) override { return false; };
 		Vector<LineOfCode*>* GetBodyLine(void) { return &_vectorOfIfAndElseLines; };
 		//Vector<LineOfCode*>* GetVectorOfBlocksForIf(void) override { return &_vectorOfIfAndElseLines; };	//for if statements
 	};

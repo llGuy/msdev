@@ -144,13 +144,13 @@ protected:
 					l_expBeforeVar = M_ParseStrPrev(l_indexOfVarStart,p_expression);
 					l_expAfterVar = M_ParseStrAfter(l_indexOfVarEnd,p_expression,true);
 					p_expression = l_expBeforeVar +
-						::G_ConvertUIntToStr(VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(l_temp)->m_value) + l_expAfterVar;
+						::G_ConvertUIntToStr(VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(l_temp)->M_Val()) + l_expAfterVar;
 					return M_CheckAndExtractVariable(p_expression,p_indexOfExp);
 				}
 				else if(p_expression[p_indexOfExp + 1] == '\0') {
 					l_expBeforeVar = M_ParseStrPrev(l_indexOfVarStart,p_expression);
 					p_expression = l_expBeforeVar + 
-						::G_ConvertUIntToStr(VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(l_temp)->m_value);
+						::G_ConvertUIntToStr(VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(l_temp)->M_Val());
 					return M_CheckAndExtractVariable(p_expression,p_indexOfExp);
 				}
 			}
@@ -214,7 +214,7 @@ protected:
 			for(size_t l_vecIter = 0; l_vecIter < l_vecWords.m_size; l_vecIter++) {
 				for(size_t l_typesOfOper = 0; l_typesOfOper < 5; l_typesOfOper++) {
 					if(l_vecWords[l_vecIter][0] == m_CHAR_OPERATORS[l_typesOfOper] && (m_CHAR_OPERATORS[l_typesOfOper] == '*'||
-						m_CHAR_OPERATORS[l_typesOfOper] == '/' && m_CHAR_OPERATORS[l_typesOfOper] == '%')) {
+						m_CHAR_OPERATORS[l_typesOfOper] == '/' || m_CHAR_OPERATORS[l_typesOfOper] == '%')) {
 						std::string l_term1 = l_vecWords[l_vecIter - 1];
 						std::string l_term2 = l_vecWords[l_vecIter];
 						std::string l_term3 = l_vecWords[l_vecIter + 1];

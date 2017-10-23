@@ -21,28 +21,32 @@ namespace CLine {
 		void M_Translate(void) override {
 			M_GetRSVStr();
 			M_GetTypeOfRSV();
-
-			auto l_inpSzet = [&](void)->void {std::cin >> VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(m_RSVStr)->m_value; };
-			auto l_inpChar = [&](void)->void {std::cin >> VarHT::M_Shared().m_hTableOfChar.M_FindVariable(m_RSVStr)->m_value; };
-			auto l_inpBool = [&](void)->void {std::cin >> VarHT::M_Shared().m_hTableOfBool.M_FindVariable(m_RSVStr)->m_value; };
-			auto l_inpStr = [&](void)->void {std::getline(std::cin, VarHT::M_Shared().m_hTableOfStr.M_FindVariable(m_RSVStr)->m_value); };
-			std::unordered_map<type,std::function<void(void)>> l_mapOfTypesInp;
-			l_mapOfTypesInp[type_int] = l_inpSzet;
-			l_mapOfTypesInp[type_char] = l_inpChar;
-			l_mapOfTypesInp[type_bool] = l_inpBool;
-			l_mapOfTypesInp[type_str] = l_inpStr;
-
-			for(auto l_mapIter = l_mapOfTypesInp.begin(); l_mapIter != l_mapOfTypesInp.end(); ++l_mapIter) {
-				if(l_mapIter->first == m_typeOfRSV) {
-					l_mapIter->second();
-					break;
-				}
-			}
+			
+			InpItm::M_Shared().m_mapInp[m_typeOfRSV](m_RSVStr);
 		}
 	private:
 		std::string m_lineStr;
 		std::string m_RSVStr;
 		type m_typeOfRSV;
+	private:
+		struct InpItm {
+			std::unordered_map<type,std::function<void(const std::string&)>> m_mapInp;
+		public:
+			void M_Init(void) {
+				m_mapInp[type_int] = [&](const std::string& p_rsv)->void {std::cin >> VarHT::M_Shared().m_hTableOfSzet.M_FindVariable(p_rsv)->M_Val(); };
+				m_mapInp[type_char] = [&](const std::string& p_rsv)->void {std::cin >> VarHT::M_Shared().m_hTableOfChar.M_FindVariable(p_rsv)->M_Val(); };
+				m_mapInp[type_bool] = [&](const std::string& p_rsv)->void {std::cin >> VarHT::M_Shared().m_hTableOfBool.M_FindVariable(p_rsv)->M_Val(); };
+				m_mapInp[type_str] = [&](const std::string& p_rsv)->void {std::getline(std::cin,VarHT::M_Shared().m_hTableOfStr.M_FindVariable(p_rsv)->M_Val()); };
+			}
+			static InpItm& M_Shared(void) {
+				static InpItm* l_singl = nullptr;
+				if(l_singl == nullptr) {
+					l_singl = new InpItm();
+					l_singl->M_Init();
+				}
+				return *l_singl;
+			}
+		};
 	};
 }
 #endif

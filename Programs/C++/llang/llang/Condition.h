@@ -4,8 +4,9 @@
 #include "Misc.h"
 #include "IncludeRSV.h"
 
+//condition class responsible for comparing items / values
 class Condition {
-public: 
+public:  
 	explicit Condition(void) 
 	{
 	}
@@ -14,28 +15,37 @@ public:
 	{
 	}
 private:
+	//gets the values of the components (e.g. 12, 'a', "hello world!")
 	void M_GetValOfFirstComp(void) { 
 		m_RSVStr[0] = ::G_BuildString(']',1,m_condStr); }
 	void M_GetValOfScndComp(void) { 
 		m_RSVStr[1] = ::G_BuildString(']',1 + m_RSVStr[0].length() + 5,m_condStr); };
-	void M_GetOperand(void) {
-		char l_operandChr = m_condStr[1 + m_RSVStr[0].length() + 2];
-		std::unordered_map<operand,char> l_operandMap;
-		l_operandMap[equ] = '=';
-		l_operandMap[grt] = '>';
-		l_operandMap[less] = '<';
-		l_operandMap[notequ] = '!';
-		for(auto l_operMapIter = l_operandMap.begin(); l_operMapIter != l_operandMap.end(); ++l_operMapIter) {
-			if(l_operMapIter->second == l_operandChr) {
+	
+	//gets the operator of the comparison (e.g. '>', '<')
+	void M_GetOperator(void) {
+		//l_operatorChr = the char at the position at which
+		//the operator would be
+		char l_operatorChr = m_condStr[1 + m_RSVStr[0].length() + 2];
+
+		//usese the unordered_map which contains all the operators as chars
+		//which correspond to the oper value
+		for(auto l_operMapIter = Oper::M_Shared().m_mapOperChar.begin(); 
+			l_operMapIter != Oper::M_Shared().m_mapOperChar.end(); ++l_operMapIter) {
+			if(l_operMapIter->second == l_operatorChr) {
 				m_operOfCond = l_operMapIter->first;
 				return;
 			}
 		}
 	}
+	//gets the type of which the comparison is dealing with
 	void M_GetTypeOfCond(void) {
 		for(size_t l_arrRSVIter = 0; l_arrRSVIter < 2; l_arrRSVIter++) {
+			//the string version of the RSV doesn't correspond to a const
+			//like 12,'a' or "hello world!", G_FetchTypeOfConst will return
+			//type_default
 			type l_tempType = ::G_FetchTypeOfConst(m_RSVStr[l_arrRSVIter]);
 			if(l_tempType == type_default) {
+				//if there are spaces, the RSV is an operation
 				if(::G_CalculateQuantOfWords(m_RSVStr[l_arrRSVIter]) - 1 == 0) {
 					m_isVar[l_arrRSVIter] = true;
 					m_typeOfCond = ::G_FetchTypeOfVar(m_RSVStr[l_arrRSVIter]);
@@ -47,44 +57,28 @@ private:
 			}
 			else {
 				m_isVar[l_arrRSVIter] = false;
-				switch(l_tempType) {
-				case type_int:
-					m_typeOfCond = type_int;
-					return;
-				case type_char:
-					m_typeOfCond = type_char;
-					return;
-				case type_bool:
-					m_typeOfCond = type_bool;
-					return;
-				case type_str:
-					m_typeOfCond = type_str;
-					return;
-				}
+				m_typeOfCond = l_tempType;
+				return;
 			}
 		}
 	}
+	//templated function actually compares the two values
 	template<typename T>
 	const bool M_PerfOper(T p_comp1,T p_comp2) {
-		auto l_equLam = [=](void)->bool {return p_comp1 == p_comp2; };
-		auto l_grtLam = [=](void)->bool {return p_comp1 > p_comp2; };
-		auto l_lessLam = [=](void)->bool {return p_comp1 < p_comp2; };
-		auto l_notLam = [=](void)->bool {return p_comp1 != p_comp2; };
-		std::unordered_map<operand,std::function<bool(void)>> l_mapOfCompareLam;
-		l_mapOfCompareLam[equ] = l_equLam;
-		l_mapOfCompareLam[grt] = l_grtLam;
-		l_mapOfCompareLam[less] = l_lessLam;
-		l_mapOfCompareLam[notequ] = l_notLam;
-		for(auto l_mapIter = l_mapOfCompareLam.begin(); l_mapIter != l_mapOfCompareLam.end(); ++l_mapIter) {
-			if(l_mapIter->first == m_operOfCond) {
-				m_isCondTrue = l_mapIter->second();
-				return m_isCondTrue;
-			}
-		}
-		return false;
+		//Oper has an unordered_map of lambdas which contains the 
+		//methods to compare the values given a specific type of operator
+		Oper::M_Shared().m_mapOperLam[equ] = [=](void)->bool {return p_comp1 == p_comp2; };
+		Oper::M_Shared().m_mapOperLam[grt] = [=](void)->bool {return p_comp1 > p_comp2; };
+		Oper::M_Shared().m_mapOperLam[less] = [=](void)->bool {return p_comp1 < p_comp2; };
+		Oper::M_Shared().m_mapOperLam[notequ] = [=](void)->bool {return p_comp1 != p_comp2; };
+		m_isCondTrue = Oper::M_Shared().m_mapOperLam[m_operOfCond]();
+		return m_isCondTrue;
 	}
+private:
+	//following functions compare items of different types
 	void M_CompSzet(void) {
 		size_t l_bothVal[2];
+		//extract the values of the components
 		for(size_t l_arrIter = 0; l_arrIter < 2; l_arrIter++) {
 			if(::G_CalculateQuantOfWords(m_RSVStr[l_arrIter]) - 1 > 0) {
 				RSV_Operation l_oper(m_RSVStr[l_arrIter]);
@@ -99,6 +93,7 @@ private:
 				l_bothVal[l_arrIter] = l_constSzet.M_GetValueOfRSV();
 			}
 		}
+		//compare
 		M_PerfOper<size_t>(l_bothVal[0],l_bothVal[1]);
 	}
 	void M_CompChar(void) {
@@ -139,9 +134,10 @@ private:
 	}
 public:
 	std::string m_condStr;
+	//function initializes the Condition
 	void M_Init(void) {
 		M_GetValOfFirstComp();
-		M_GetOperand();
+		M_GetOperator();
 		M_GetValOfScndComp();
 
 		m_arrComparFunc[0] = &Condition::M_CompSzet;
@@ -149,11 +145,16 @@ public:
 		m_arrComparFunc[2] = &Condition::M_CompBool;
 		m_arrComparFunc[3] = &Condition::M_CompStr;
 	}
+	//returns a bool which corresponds to the result
+	//of the comparison
 	const bool M_Compare(void) {
 		M_GetTypeOfCond();
 		(*this.*m_arrComparFunc[m_typeOfCond])();
 		return m_isCondTrue;
 	}
+	//if the components change in value,
+	//one must call this function to renew the Condition object
+	//with the new values of the components
 	void M_Update(const std::string& p_newCond) {
 		m_condStr = p_newCond;
 		m_RSVStr[0] = "";
@@ -162,19 +163,40 @@ public:
 		M_GetValOfScndComp();
 	}
 private:
-	enum operand {
+	enum oper {
 		equ = 0,
 		grt = 1,
 		less = 2,
 		notequ = 3
 	};
-	operand m_operOfCond;
+	oper m_operOfCond;
 	bool m_isCondTrue;
 	bool m_isVar[2] = {false,false};
 	std::string m_RSVStr[2] = {"",""};
 	type m_typeOfCond;
 	typedef void(Condition::*func_ptr)(void);
 	func_ptr m_arrComparFunc[4];
+	//contains unordered_map with operator and their char equivalent
+	struct Oper {
+		std::unordered_map<oper,char> m_mapOperChar;
+		std::unordered_map<oper,std::function<bool(void)>> m_mapOperLam;
+	public:
+		void M_Init(void) {
+			m_mapOperChar[equ] = '=';
+			m_mapOperChar[grt] = '>';
+			m_mapOperChar[less] = '<';
+			m_mapOperChar[notequ] = '!';
+		}
+	public:
+		static Oper& M_Shared(void) {
+			static Oper* l_singl = nullptr;
+			if(l_singl == nullptr) {
+				l_singl = new Oper();
+				l_singl->M_Init();
+			}
+			return *l_singl;
+		}
+	};
 };
 
 #endif

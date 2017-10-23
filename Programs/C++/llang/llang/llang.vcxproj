@@ -150,6 +150,7 @@
     <ClInclude Include="CLine.h" />
     <ClInclude Include="CNSTMacros.h" />
     <ClInclude Include="Condition.h" />
+    <ClInclude Include="Else.h" />
     <ClInclude Include="For.h" />
     <ClInclude Include="HTable.h" />
     <ClInclude Include="If.h" />
