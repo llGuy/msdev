@@ -6,7 +6,10 @@ boot:
 	mov ax, 0x3
 	int 0x10
 	lgdt [gdt_pointer]
-	mov eax, cr0
+
+								; move cr0 into eax  = 0b110010100
+
+	mov eax, cr0				; 0b110010100 | 1 -> 0b110010101
 	or eax, 0x1
 	mov cr0, eax
 	jmp CODE_SEG:boot2
@@ -48,7 +51,7 @@ boot2:
 	lodsb
 	or al,al
 	jz halt
-	or eax, 0x0100
+	or eax, 0x0F00
 	mov word [ebx],ax
 	add ebx,2
 	jmp .loop
