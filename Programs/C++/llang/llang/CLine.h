@@ -14,6 +14,7 @@ namespace CLine {
 		explicit LineOfCode(void)
 		{
 		}
+		//Destructor
 		virtual ~LineOfCode(void)
 		{
 		}
