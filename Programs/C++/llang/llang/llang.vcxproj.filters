@@ -23,9 +23,6 @@
     <Filter Include="Header Files\Storage\datStruct\LList">
       <UniqueIdentifier>{01de0348-2be1-4e7b-b024-2bba7699e57b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\CLine\Ifs">
-      <UniqueIdentifier>{1775e69a-bb03-4531-9ee2-7c662be28074}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\CLine\One-Line">
       <UniqueIdentifier>{ce2b0928-9939-4eb2-81d6-bb251367a7a0}</UniqueIdentifier>
     </Filter>
@@ -57,6 +54,9 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files\CLine\Ifs">
+      <UniqueIdentifier>{1775e69a-bb03-4531-9ee2-7c662be28074}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -131,9 +131,6 @@
     <ClInclude Include="Read.h">
       <Filter>Header Files\CLine\One-Line\FileIO</Filter>
     </ClInclude>
-    <ClInclude Include="For.h">
-      <Filter>Header Files\CLine\Body</Filter>
-    </ClInclude>
     <ClInclude Include="Condition.h">
       <Filter>Header Files\CLine\Body\Misc</Filter>
     </ClInclude>
@@ -154,6 +151,9 @@
     </ClInclude>
     <ClInclude Include="Else.h">
       <Filter>Header Files\CLine\Ifs</Filter>
+    </ClInclude>
+    <ClInclude Include="For.h">
+      <Filter>Header Files\CLine\Body</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,8 @@
 #ifndef _PROGRAM
 #define _PROGRAM
 
+#include <chrono>
+
 #include "Misc.h"
 #include "IncludeCLine.h"
 
@@ -31,9 +33,18 @@ public:
 	}
 public:
 	void M_Execute(void) {
+		std::chrono::steady_clock::time_point l_startOfProcess = std::chrono::steady_clock::now();
+
+		//parsing
 		Methods::M_Parse(m_vecLineStr,m_vecLine);
+		//execution
 		for(size_t l_vecIter = 0; l_vecIter < m_vecLine.m_size; l_vecIter++)
 			m_vecLine[l_vecIter]->M_Translate();
+
+		std::chrono::steady_clock::time_point l_endOfProcess = std::chrono::steady_clock::now();
+		std::chrono::steady_clock::duration l_timeElapsed = l_endOfProcess - l_startOfProcess;
+		std::cout << "\n\n\n		time elapsed : ";
+		std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(l_timeElapsed).count() << "ms" << "\n\n" << std::endl;
 	}
 private:
 	Vector<std::string> m_vecLineStr;

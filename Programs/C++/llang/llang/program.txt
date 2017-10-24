@@ -9,27 +9,24 @@ begin
 println "fizzbuzz";
 
 end
-
 elif [i % 5] = [0]
 begin
 
 println "buzz";
 
 end
-
 elif [i % 3] = [0]
 begin
 
 println "fizz";
 
 end
-
-else
+else 
 begin
 
 println i;
-end
 
+end
 endif
 
 end

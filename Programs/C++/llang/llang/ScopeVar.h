@@ -3,6 +3,7 @@
 
 #include "Misc.h"
 
+//class deletes variables when they are out of scope
 class ScopeVar {
 public:
 	explicit ScopeVar(void)
@@ -12,13 +13,16 @@ public:
 	{
 	}
 public:
+	//updates with a LineOfCode*
+	//and uses its name and type to know how to delete it
 	void M_Update(CLine::LineOfCode* p_line) {
 		m_nameStr = p_line->M_GetNameStr();
 		m_typeStr = p_line->M_GetTypeStr();
 	}
-	void M_Delete(void) const {
-		Del::M_Shared().m_mapDelLam[m_typeStr](m_nameStr);
-	}
+	//unordered_map indexes via a type and 
+	//returns a lambda which takes a name and
+	//deletes that variable at the HTable of that type
+	void M_Delete(void) const { Del::M_Shared().m_mapDelLam[m_typeStr](m_nameStr); }
 private:
 	std::string m_nameStr;
 	std::string m_typeStr;

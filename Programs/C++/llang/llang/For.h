@@ -7,15 +7,20 @@
 #include "Condition.h"
 
 namespace CLine {
+	//class is responsible for for loops
 	class LineOfCode_For : public LineOfCode {
 	public:
 		explicit LineOfCode_For(Vector<std::string>& p_vecLineStr) 
 		{
+			//the line which actually contains the 
+			//instruction of the for loop goes in m_forLine
 			m_forLine = p_vecLineStr[0];
 			for(size_t l_vecIter = 1; l_vecIter < p_vecLineStr.m_size; l_vecIter++)
 				m_vecLineStr.M_PushBack(p_vecLineStr[l_vecIter]);
 		}
 	private:
+		//gets the name of the variable
+		//that is being used to iterate
 		void M_GetNameOfIter(void) {
 			size_t l_strIndex = 5;
 			while(m_forLine[l_strIndex] != ']') {
