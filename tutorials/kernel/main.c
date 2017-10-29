@@ -1,6 +1,10 @@
-#include "multiboot.h"
+//#include "multiboot.h"
+#include "monitor.h"
 
-int main(multiboot_info_t *mboot_ptr)
+//int kernel_main(multiboot_info_t * mboot_ptr)
+int kernel_main()
 {
-	return 0xDEADCAFE;
+    monitor_clear();
+    monitor_write( "Hello World!" );
+    return 0xDEADCAFE;
 }
