@@ -76,7 +76,7 @@ void monitor_put(char c)
 void monitor_clear()
 {
     uint8_t attributeByte = (color_bg << 4) | (color_fg & 0x0F);
-    uint16_t blank = 0x20 | (attributeByte << 9);
+    uint16_t blank = 0x20 | (attributeByte << 8);
 
     int i;
     for( i=0; i < 80*25; i++)
