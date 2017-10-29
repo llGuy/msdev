@@ -13,5 +13,14 @@
 
     loader:                         ; the loader label (defined as entry point in linker script)
         mov eax, 0xCAFEBABE         ; place the number 0xCAFEBABE in the register eax
+	mov esp, kernel_stack + KERNET_STACK_SIZE
     .loop:
         jmp .loop                   ; loop forever
+
+KERNEL_STACK_SIZE equ 4096
+
+section .bss
+align 4
+kernel_stack:
+	resb KERNEL_STACK_SIZE
+
