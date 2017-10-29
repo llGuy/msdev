@@ -97,3 +97,25 @@ void monitor_write( char * c )
         monitor_put(c[i++]);
     }
 }
+
+void monitor_write_hex(uint32_t n)
+{
+    int tmp;
+    char noZeroes = 1;
+
+    monitor_write( "0x" );
+
+    int i;
+    for( i=28;i>=0;i-=4)
+    {
+        tmp = (n>>i)&0xF;
+        if( tmp == 0 && noZeroes != 0)
+            continue;
+        noZeroes = 0;
+        if( tmp >= 0xA)
+            monitor_put( tmp-0xA+'a');
+        else
+            monitor_put( tmp+'0');
+    }
+
+}
