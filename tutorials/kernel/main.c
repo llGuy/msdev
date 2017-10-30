@@ -7,7 +7,7 @@
 int kernel_main()
 {
     monitor_clear();
-    monitor_write( "Hello World!" );
+    monitor_write( "Hello World!\n" );
 
     init_gdt();
     init_idt();
