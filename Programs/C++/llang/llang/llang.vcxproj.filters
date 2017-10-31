@@ -58,107 +58,123 @@
     <Filter Include="Header Files\CLine\Ifs">
       <UniqueIdentifier>{1775e69a-bb03-4531-9ee2-7c662be28074}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\CLine\Functions">
+      <UniqueIdentifier>{5f7a793e-d1c4-4bd6-9ca9-abf27577fb7b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClInclude Include="src\cline\base\CLine.h">
+      <Filter>Header Files\CLine\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\blocks\misc\Condition.h">
+      <Filter>Header Files\CLine\Body\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\blocks\misc\ScopeVar.h">
+      <Filter>Header Files\CLine\Body\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\blocks\For.h">
+      <Filter>Header Files\CLine\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\blocks\While.h">
+      <Filter>Header Files\CLine\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\ifs\IfStatement.h">
+      <Filter>Header Files\CLine\Ifs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\ifs\Else.h">
+      <Filter>Header Files\CLine\Ifs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\func\Def.h">
+      <Filter>Header Files\CLine\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\ifs\If.h">
+      <Filter>Header Files\CLine\Ifs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\one-line\Input.h">
+      <Filter>Header Files\CLine\One-Line</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\one-line\Mod.h">
+      <Filter>Header Files\CLine\One-Line</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\one-line\Print.h">
+      <Filter>Header Files\CLine\One-Line</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\one-line\Set.h">
+      <Filter>Header Files\CLine\One-Line</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\one-line\file-io\Read.h">
+      <Filter>Header Files\CLine\One-Line\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\one-line\file-io\Save.h">
+      <Filter>Header Files\CLine\One-Line\FileIO</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\IncludeCLine.h">
+      <Filter>Header Files\CLine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc\CNSTMacros.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc\Misc.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\parsers\Calculator_Parser.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="src\parsers\Program.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rsv\IncludeRSV.h">
+      <Filter>Header Files\RSV</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rsv\RSV_Const.h">
+      <Filter>Header Files\RSV</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rsv\RSV_Operation.h">
+      <Filter>Header Files\RSV</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rsv\RSV_String.h">
+      <Filter>Header Files\RSV</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rsv\RSV_Variable.h">
+      <Filter>Header Files\RSV</Filter>
+    </ClInclude>
+    <ClInclude Include="src\testing\Test.h">
+      <Filter>Header Files\Testing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\var-storage\dat-struct\llist\LList.h">
+      <Filter>Header Files\Storage\datStruct\LList</Filter>
+    </ClInclude>
+    <ClInclude Include="src\var-storage\dat-struct\HTable.h">
+      <Filter>Header Files\Storage\datStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="src\var-storage\dat-struct\Vector.h">
+      <Filter>Header Files\Storage\datStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="src\var-storage\VarHTables.h">
+      <Filter>Header Files\Storage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\func\func-class\func.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\func\func-hash\FuncHT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\func\Ret.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cline\func\Call.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="VarHTables.h">
-      <Filter>Header Files\Storage</Filter>
-    </ClInclude>
-    <ClInclude Include="HTable.h">
-      <Filter>Header Files\Storage\datStruct</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>Header Files\Storage\datStruct</Filter>
-    </ClInclude>
-    <ClInclude Include="CLine.h">
-      <Filter>Header Files\CLine\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Misc.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="CNSTMacros.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="LList.h">
-      <Filter>Header Files\Storage\datStruct\LList</Filter>
-    </ClInclude>
-    <ClInclude Include="Variable.h">
-      <Filter>Header Files\Storage\datStruct\LList</Filter>
-    </ClInclude>
-    <ClInclude Include="Test.h">
-      <Filter>Header Files\Testing</Filter>
-    </ClInclude>
-    <ClInclude Include="Set.h">
-      <Filter>Header Files\CLine\One-Line</Filter>
-    </ClInclude>
-    <ClInclude Include="Calculator_Parser.h">
-      <Filter>Header Files\Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="RSV_Const.h">
-      <Filter>Header Files\RSV</Filter>
-    </ClInclude>
-    <ClInclude Include="RSV_Variable.h">
-      <Filter>Header Files\RSV</Filter>
-    </ClInclude>
-    <ClInclude Include="IncludeRSV.h">
-      <Filter>Header Files\RSV</Filter>
-    </ClInclude>
-    <ClInclude Include="RSV_String.h">
-      <Filter>Header Files\RSV</Filter>
-    </ClInclude>
-    <ClInclude Include="RSV_Operation.h">
-      <Filter>Header Files\RSV</Filter>
-    </ClInclude>
-    <ClInclude Include="IncludeCLine.h">
-      <Filter>Header Files\CLine</Filter>
-    </ClInclude>
-    <ClInclude Include="Mod.h">
-      <Filter>Header Files\CLine\One-Line</Filter>
-    </ClInclude>
-    <ClInclude Include="Print.h">
-      <Filter>Header Files\CLine\One-Line</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Header Files\CLine\One-Line</Filter>
-    </ClInclude>
-    <ClInclude Include="Save.h">
-      <Filter>Header Files\CLine\One-Line\FileIO</Filter>
-    </ClInclude>
-    <ClInclude Include="Read.h">
-      <Filter>Header Files\CLine\One-Line\FileIO</Filter>
-    </ClInclude>
-    <ClInclude Include="Condition.h">
-      <Filter>Header Files\CLine\Body\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="ScopeVar.h">
-      <Filter>Header Files\CLine\Body\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="Program.h">
-      <Filter>Header Files\Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="While.h">
-      <Filter>Header Files\CLine\Body</Filter>
-    </ClInclude>
-    <ClInclude Include="IfStatement.h">
-      <Filter>Header Files\CLine\Ifs</Filter>
-    </ClInclude>
-    <ClInclude Include="If.h">
-      <Filter>Header Files\CLine\Ifs</Filter>
-    </ClInclude>
-    <ClInclude Include="Else.h">
-      <Filter>Header Files\CLine\Ifs</Filter>
-    </ClInclude>
-    <ClInclude Include="For.h">
-      <Filter>Header Files\CLine\Body</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="program.txt">
+    <Text Include="test-programs\fizzbuzz.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="test-programs\general-testing.txt" />
   </ItemGroup>
 </Project>

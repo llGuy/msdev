@@ -143,42 +143,47 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Calculator_Parser.h" />
-    <ClInclude Include="CLine.h" />
-    <ClInclude Include="CNSTMacros.h" />
-    <ClInclude Include="Condition.h" />
-    <ClInclude Include="Else.h" />
-    <ClInclude Include="For.h" />
-    <ClInclude Include="HTable.h" />
-    <ClInclude Include="If.h" />
-    <ClInclude Include="IfStatement.h" />
-    <ClInclude Include="IncludeCLine.h" />
-    <ClInclude Include="IncludeRSV.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="LList.h" />
-    <ClInclude Include="Misc.h" />
-    <ClInclude Include="Mod.h" />
-    <ClInclude Include="Print.h" />
-    <ClInclude Include="Program.h" />
-    <ClInclude Include="Read.h" />
-    <ClInclude Include="RSV_Const.h" />
-    <ClInclude Include="RSV_Operation.h" />
-    <ClInclude Include="RSV_String.h" />
-    <ClInclude Include="RSV_Variable.h" />
-    <ClInclude Include="Save.h" />
-    <ClInclude Include="ScopeVar.h" />
-    <ClInclude Include="Set.h" />
-    <ClInclude Include="Test.h" />
-    <ClInclude Include="VarHTables.h" />
-    <ClInclude Include="Variable.h" />
-    <ClInclude Include="Vector.h" />
-    <ClInclude Include="While.h" />
+    <ClInclude Include="src\cline\func\Call.h" />
+    <ClInclude Include="src\cline\func\func-class\func.h" />
+    <ClInclude Include="src\cline\func\func-hash\FuncHT.h" />
+    <ClInclude Include="src\cline\func\Ret.h" />
+    <ClInclude Include="src\parsers\Calculator_Parser.h" />
+    <ClInclude Include="src\cline\base\CLine.h" />
+    <ClInclude Include="src\misc\CNSTMacros.h" />
+    <ClInclude Include="src\cline\blocks\misc\Condition.h" />
+    <ClInclude Include="src\cline\func\Def.h" />
+    <ClInclude Include="src\cline\ifs\Else.h" />
+    <ClInclude Include="src\cline\blocks\For.h" />
+    <ClInclude Include="src\var-storage\dat-struct\HTable.h" />
+    <ClInclude Include="src\cline\ifs\If.h" />
+    <ClInclude Include="src\cline\ifs\IfStatement.h" />
+    <ClInclude Include="src\cline\IncludeCLine.h" />
+    <ClInclude Include="src\rsv\IncludeRSV.h" />
+    <ClInclude Include="src\cline\one-line\Input.h" />
+    <ClInclude Include="src\var-storage\dat-struct\llist\LList.h" />
+    <ClInclude Include="src\misc\Misc.h" />
+    <ClInclude Include="src\cline\one-line\Mod.h" />
+    <ClInclude Include="src\cline\one-line\Print.h" />
+    <ClInclude Include="src\parsers\Program.h" />
+    <ClInclude Include="src\cline\one-line\file-io\Read.h" />
+    <ClInclude Include="src\rsv\RSV_Const.h" />
+    <ClInclude Include="src\rsv\RSV_Operation.h" />
+    <ClInclude Include="src\rsv\RSV_String.h" />
+    <ClInclude Include="src\rsv\RSV_Variable.h" />
+    <ClInclude Include="src\cline\one-line\file-io\Save.h" />
+    <ClInclude Include="src\cline\blocks\misc\ScopeVar.h" />
+    <ClInclude Include="src\cline\one-line\Set.h" />
+    <ClInclude Include="src\testing\Test.h" />
+    <ClInclude Include="src\var-storage\VarHTables.h" />
+    <ClInclude Include="src\var-storage\dat-struct\Vector.h" />
+    <ClInclude Include="src\cline\blocks\While.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="program.txt" />
+    <Text Include="test-programs\fizzbuzz.txt" />
+    <Text Include="test-programs\general-testing.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,0 +1,32 @@
+set int i = 1;
+
+for [i] < [101]+
+begin
+
+if [i % 15] = [0]
+begin
+
+println "fizzbuzz";
+
+end
+elif [i % 5] = [0]
+begin
+
+println "buzz";
+
+end
+elif [i % 3] = [0]
+begin
+
+println "fizz";
+
+end
+else
+begin
+
+println i;
+
+end
+endif
+
+end
