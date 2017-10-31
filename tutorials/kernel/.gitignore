@@ -1,1 +1,5 @@
 *.bin
+*.o
+*.iso
+*.elf
+*.log
