@@ -2,7 +2,7 @@
 #include "monitor.h"
 #include "gdt.h"
 #include "idt.h"
-
+#include "timer.h"
 //int kernel_main(multiboot_info_t * mboot_ptr)
 int kernel_main()
 {
@@ -14,5 +14,7 @@ int kernel_main()
 
     asm volatile ( "int $0x3" );
     asm volatile ( "int $0x4" );
+
+    init_timer(50);
     return 0xDEADCAFE;
 }
