@@ -12,9 +12,11 @@ int kernel_main()
     init_gdt();
     init_idt();
 
+
+    init_timer(20);
     asm volatile ( "int $0x3" );
     asm volatile ( "int $0x4" );
-
-    init_timer(50);
+    asm volatile ( "int $0x20" );
+    asm volatile ( "int $0x28" );
     return 0xDEADCAFE;
 }

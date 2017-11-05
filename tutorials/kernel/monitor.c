@@ -97,7 +97,32 @@ void monitor_write( char * c )
         monitor_put(c[i++]);
     }
 }
+/*
+void monitor_write_f( char * c, ... )
+{
+    //va_list ap;
+    //va_list(ap, fmt);
 
+    uint32_t ival;
+    char c;
+
+    for(p=fmt;*p;p++)
+    {
+        switch( *++p )
+        {
+            case 'x':
+                ival = va_arg(ap, uint32_t);
+                monitor_write_hex(ival);
+                break;
+            default:
+                monitor_put(*p);
+                break;
+        }
+    }
+    va_end(ap);
+                      
+}
+*/
 void monitor_write_hex(uint32_t n)
 {
     int tmp;

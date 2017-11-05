@@ -120,7 +120,7 @@ extern irq_handler
 irq_common_stub:
     pusha
     mov ax, ds
-    push eax
+    push eax ; save data segment
 
     mov ax, 0x10
     mov ds, ax
