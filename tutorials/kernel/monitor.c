@@ -97,32 +97,72 @@ void monitor_write( char * c )
         monitor_put(c[i++]);
     }
 }
-/*
-void monitor_write_f( char * c, ... )
+void printf( char * fmt, ... )
 {
-    //va_list ap;
-    //va_list(ap, fmt);
 
+    uint8_t * argp = (uint8_t*)&fmt;
+    argp += 4;
+ 
     uint32_t ival;
-    char c;
-
+    char * p;
     for(p=fmt;*p;p++)
     {
-        switch( *++p )
+        switch( *p )
         {
-            case 'x':
-                ival = va_arg(ap, uint32_t);
-                monitor_write_hex(ival);
+            case '%':
+                switch( *++p)
+                {
+                    case '%':
+                        monitor_put( '%' );
+                        break;
+                    case 'i':
+                        ival = (uint32_t)*argp;
+                        argp+=4;
+                        monitor_write_dec(ival);
+                        break;
+                    case 'x':
+                        ival = (uint32_t)*argp;
+                        argp+=4;
+                        monitor_write_hex(ival);
+                        break;
+                    default:
+                        monitor_put( *p );
+                        break;
+                }
                 break;
             default:
                 monitor_put(*p);
                 break;
         }
     }
-    va_end(ap);
                       
 }
-*/
+void monitor_write_dec(uint32_t n)
+{
+    if( n==0)
+    {
+        monitor_put('0');
+        return;
+    }
+    uint32_t acc = n;
+    char c[32];
+    int i = 0;
+    while( acc > 0 )
+    {
+        c[i] = '0' + acc%10;
+        acc /= 10;
+        i++;
+    }
+    c[i] = 0;
+    char c2[32];
+    c2[i--] = 0;
+    int j = 0;
+    while( i >= 0)
+    {
+        c2[i--] = c[j++];
+    }
+    monitor_write(c2);
+}
 void monitor_write_hex(uint32_t n)
 {
     int tmp;
@@ -144,3 +184,4 @@ void monitor_write_hex(uint32_t n)
     }
 
 }
+

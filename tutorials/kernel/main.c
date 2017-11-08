@@ -12,7 +12,7 @@ int kernel_main()
     init_gdt();
     init_idt();
 
-
+    printf("Hello Format HEX: %x  DEC: %i\n", 20, 20 );
     init_timer(20);
     asm volatile ( "int $0x3" );
     asm volatile ( "int $0x4" );
