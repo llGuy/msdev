@@ -16,7 +16,7 @@ int kernel_main()
     init_timer(20);
     asm volatile ( "int $0x3" );
     asm volatile ( "int $0x4" );
-    asm volatile ( "int $0x20" );
-    asm volatile ( "int $0x28" );
+    // start interrupt...
+    asm volatile ( "sti" );
     return 0xDEADCAFE;
 }
