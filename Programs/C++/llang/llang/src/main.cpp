@@ -9,7 +9,7 @@
 #include "cline/func/Call.h"
 
 
-#define _TESTING true
+#define _TESTING false
 #define _FILEIO true
 
 int main(int argc,char* argv[]) {

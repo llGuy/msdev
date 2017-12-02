@@ -12,7 +12,7 @@ LSB_Encoding::LSB_Encoding(string input_string)
 	
 }
 
-unsigned LSB_Encoding::ModByte(unsigned byte_of_img,unsigned bit) const {
+unsigned int LSB_Encoding::ModByte(unsigned int byte_of_img,unsigned int bit) const {
 	if(bit) {
 		byte_of_img |= bit;
 		return byte_of_img;
@@ -28,13 +28,13 @@ void LSB_Encoding::WriteToImage() {
 	unchar_t * _arr_bytes = new unchar_t[_input_str.size()];
 	for(int i = 0; i < _input_str.size(); i++) {
 		for(int x = 7; x >= 0; x--) {
-			unsigned _temp = (unsigned)_input_str[i];
+			unsigned int _temp = (unsigned int)_input_str[i];
 			ModByte(_temp, GetNthBit(x, _temp));
 		}
 	}
 }
 
-unsigned LSB_Encoding::GetNthBit(unsigned shifter, unsigned byte)const {
+unsigned int LSB_Encoding::GetNthBit(unsigned int shifter, unsigned int byte)const {
 	return (byte>>shifter)%2;
 }
 
