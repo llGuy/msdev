@@ -12,15 +12,23 @@ void init_isr()
 
 void isr_handler(registers_t * regs)
 {
-    monitor_write( "received interrupt ");
+    monitor_write( "isr ");
     monitor_write_hex( regs->int_no );
     monitor_put( '\n');
+
+    if( interrupt_handlers[regs->int_no] != 0)
+    {
+        isr_t handler = interrupt_handlers[regs->int_no];
+        handler(*regs);
+    }
 }
 
 
 void irq_handler(registers_t * regs)
 {
-    monitor_write( "irq\n");
+    monitor_write( "irq ");
+    monitor_write_hex( regs->int_no );
+    monitor_put( '\n');
     if( regs->int_no >= 40)
     {
         outb(0xA0, 0x20); // send reset signal to slave
