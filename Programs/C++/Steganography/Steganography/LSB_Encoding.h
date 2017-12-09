@@ -23,15 +23,15 @@ public:
 	unchar_t * _pntr_fst_pix;
 
 	//area of the image
-	unsigned _area;
+	unsigned int _area;
 
 	//number of characters that can be stored in the image
-	unsigned _num_char_pos;
+	unsigned int _num_char_pos;
 
 	//changes least important bit of byte to 1 or 0
-	unsigned ModByte(unsigned byte_of_img, unsigned bit) const;
+	unsigned int ModByte(unsigned int byte_of_img, unsigned int bit) const;
 
-	unsigned GetNthBit(unsigned shifter, unsigned byte) const;
+	unsigned GetNthBit(unsigned int shifter, unsigned int byte) const;
 
 	//this function writes the _input_str to the image
 	void WriteToImage();
