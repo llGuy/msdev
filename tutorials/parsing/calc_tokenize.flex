@@ -1,0 +1,23 @@
+%option noyywrap
+%{
+#include <iostream>
+#include <memory>
+using namespace std;
+#include "calc_ast.h"
+#include "calc_grammar.hpp"
+%}
+%%
+"+"	{ return ADD; }
+"-" { return SUB; }
+"*"	{ return MUL; }
+"/" { return DIV; }
+"|" { return ABS; }
+[0-9]+ { yylval.node = new AST_value(atoi( yytext )); return NUMBER; }
+\n { return EOL; }
+[ \t]		{ /* ignore */ }
+. { std::cout << "Bad char " << *yytext << std::endl; }
+%%
+
+void parse_string( const char * str ){
+	yy_switch_to_buffer( yy_scan_string( str ) );
+}

@@ -1,0 +1,10 @@
+*.o
+*.d
+*.dSYM
+count.cpp
+calc.cpp
+count
+calc
+calc_grammar.cpp
+calc_grammar.hpp
+calc_tokenize.cpp
