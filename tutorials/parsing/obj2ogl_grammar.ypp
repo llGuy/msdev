@@ -37,8 +37,7 @@ vertex:	tVERTEX vec3 {  };
 
 material:		tMATERIAL_NAME str { };
 usematerial: 	tUSE_MATERIAL str {};
-index: 			tVERTEX_INDEX indices3 indices3 indices3 {}
-				| tVERTEX_INDEX indices2 indices2 indices2 {}
+index: 			tVERTEX_INDEX indiceslist {}
 vertex_param:	tVERTEX_PARAM vec3 {};
 vertex_normal: 	tVERTEX_NORMAL vec3 {};
 smooth: 		tSMOOTH str {};
@@ -48,8 +47,18 @@ texture:		tTEXTURE_COORD vec2 {}
 vec2:	tNUMBER tNUMBER {  };
 vec3:	tNUMBER tNUMBER tNUMBER {  };
 str:			tSTRING_VALUE
+indiceslist: indices1
+			 | indices2
+			 | indices3
+			 | indices2x
+			 | indiceslist indices1
+			 | indiceslist indices2
+			 | indiceslist indices3
+			 | indiceslist indices2x;
+indices1: tINTEGER
+indices2: tINTEGER tSLASH tINTEGER {  };
 indices3: tINTEGER tSLASH tINTEGER tSLASH tINTEGER {  };
-indices2: tINTEGER tDOUBLE_SLASH tINTEGER {  };
+indices2x: tINTEGER tDOUBLE_SLASH tINTEGER {  };
 
 //
 object:			tOBJECT_NAME tSTRING_VALUE;
