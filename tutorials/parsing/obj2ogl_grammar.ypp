@@ -1,0 +1,17 @@
+
+%{
+
+extern int yylex();
+extern void yyerror(char*);
+
+%}
+
+%token tFLOAT
+%token tVERTEX tVERTEX_PARAM tVERTEX_INDEX
+%token tNUMBER
+
+%%
+
+vertex: tVERTEX tNUMBER tNUMBER tNUMBER {}
+
+%%

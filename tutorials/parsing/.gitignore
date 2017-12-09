@@ -8,3 +8,7 @@ calc
 calc_grammar.cpp
 calc_grammar.hpp
 calc_tokenize.cpp
+obj2ogl_grammar.cpp
+obj2ogl_grammar.hpp
+obj2ogl_tokenize.cpp
+obj2ogl
