@@ -15,8 +15,12 @@ OBJ2OGL_BISONSRC=obj2ogl_grammar.ypp
 OBJ2OGL_OBJS=$(OBJ2OGL_SRC:.cpp=.o) $(OBJ2OGL_FLEXSRC:.flex=.o) $(OBJ2OGL_BISONSRC:.ypp=.o)
 OBJ2OGL_DEPS=$(OBJ2OGL_OBJS:.o=.d)
 
+FLEXSRC=$(CALC_FLEXSRC) $(COUNT_FLEXSRC) $(OBJ2OGL_FLEXSRC)
+BISONSRC=$(CALC_BISONSRC) $(COUNT_BISONSRC) $(OBJ2OGL_BISONSRC)
+
 DEPS=$(CALC_DEPS) $(COUNT_DEPS) $(OBJ2OGL_DEPS)
 
+INTERMEDIARIES=$(FLEXSRC:.flex=.cpp) $(BISONSRC:.ypp=.cpp) $(BISONSRC:.ypp=.hpp)
 
 CXX=clang++
 CFLAGS=-g
@@ -55,7 +59,8 @@ obj2ogl: $(OBJ2OGL_OBJS)
 	$(CXX) $(CPPFLAGS) -o $@ $(OBJ2OGL_OBJS)
 .PHONY: clean
 clean:
-	rm -fr calc count *.o *~ *.d count.dSYM calc.dSYM
+	rm -fr calc count *.o *~ *.d count.dSYM calc.dSYM $(INTERMEDIARIES)
+
 
 .PHONY: depend
 depend: $(DEPS)
