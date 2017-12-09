@@ -1,17 +1,57 @@
 
-%{
 
+%{
+#include <iostream>
+using namespace std;
 extern int yylex();
 extern void yyerror(char*);
 
 %}
 
 %token tFLOAT
-%token tVERTEX tVERTEX_PARAM tVERTEX_INDEX
-%token tNUMBER
+%token tVERTEX tVERTEX_PARAM tVERTEX_INDEX   tVERTEX_NORMAL tTEXTURE_COORD
+%token tMATERIAL_NAME tOBJECT_NAME tUSE_MATERIAL tSMOOTH tGROUP_NAME
+%token tNUMBER tINTEGER
+%token tSTRING_VALUE
+%token tEOL
+%token tDOUBLE_SLASH tSLASH
 
 %%
 
-vertex: tVERTEX tNUMBER tNUMBER tNUMBER {}
+file: line
+	  | file line
+
+line: vertex {  }
+	  | material {  }
+	  | object
+	  | vertex_param
+	  | usematerial
+	  | index
+	  | vertex_normal
+	  | smooth
+	  | texture
+	  ;
+
+vertex:	tVERTEX vec3 {  };
+
+
+material:		tMATERIAL_NAME str { };
+usematerial: 	tUSE_MATERIAL str {};
+index: 			tVERTEX_INDEX indices3 indices3 indices3 {}
+				| tVERTEX_INDEX indices2 indices2 indices2 {}
+vertex_param:	tVERTEX_PARAM vec3 {};
+vertex_normal: 	tVERTEX_NORMAL vec3 {};
+smooth: 		tSMOOTH str {};
+texture:		tTEXTURE_COORD vec2 {}
+				| tTEXTURE_COORD vec3 {}
+
+vec2:	tNUMBER tNUMBER {  };
+vec3:	tNUMBER tNUMBER tNUMBER {  };
+str:			tSTRING_VALUE
+indices3: tINTEGER tSLASH tINTEGER tSLASH tINTEGER {  };
+indices2: tINTEGER tDOUBLE_SLASH tINTEGER {  };
+
+//
+object:			tOBJECT_NAME tSTRING_VALUE;
 
 %%
