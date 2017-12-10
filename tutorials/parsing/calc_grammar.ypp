@@ -6,6 +6,7 @@ extern int yylex();
 #include "calc_ast.h"
 using namespace std;
 extern AST * root;
+#pragma clang diagnostic ignored "-Wwritable-strings"
 %}
 
 %union {

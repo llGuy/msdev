@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace std;
 #include "obj2ogl_grammar.hpp"
-
+#pragma clang diagnostic ignored "-Wdeprecated-register"
 %}
 
 %x COMMENT

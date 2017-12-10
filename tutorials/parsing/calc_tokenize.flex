@@ -5,6 +5,10 @@
 using namespace std;
 #include "calc_ast.h"
 #include "calc_grammar.hpp"
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-register"
+
 %}
 %%
 "+"	{ return ADD; }
@@ -21,3 +25,5 @@ using namespace std;
 void parse_string( const char * str ){
 	yy_switch_to_buffer( yy_scan_string( str ) );
 }
+
+#pragma clang diagnostic pop

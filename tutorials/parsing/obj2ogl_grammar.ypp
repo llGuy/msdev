@@ -5,7 +5,7 @@
 using namespace std;
 extern int yylex();
 extern void yyerror(char*);
-
+#pragma clang diagnostic ignored "-Wwritable-strings"
 %}
 
 %token tFLOAT
