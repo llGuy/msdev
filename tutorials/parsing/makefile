@@ -23,8 +23,8 @@ DEPS=$(CALC_DEPS) $(COUNT_DEPS) $(OBJ2OGL_DEPS)
 INTERMEDIARIES=$(FLEXSRC:.flex=.cpp) $(BISONSRC:.ypp=.cpp) $(BISONSRC:.ypp=.hpp)
 
 CXX=clang++
-CFLAGS=-g
-CPPFLAGS=-g
+CFLAGS=-g 
+CPPFLAGS=-g -std=c++11
 FLEX=flex
 FFLAGS=
 BISON=bison
@@ -37,9 +37,6 @@ BISON=bison
 
 %.d: %.cpp
 	$(CXX) $(CPPFLAGS) -MMD -MF $@ -c $^
-
-%.o: %.cpp
-	$(CXX) $(CFLAGS) $< -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

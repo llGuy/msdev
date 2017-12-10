@@ -31,7 +31,7 @@ factor: term
 	;
 
 term: NUMBER 
-	| ABS term { $$ = $2 }
+	| ABS term { $$ = $2; }
 	;
 %%
 
