@@ -258,8 +258,10 @@ void Window::Draw(void)
 	glClearColor(0.0f,0.0f,0.2f,1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glDrawElementsInstanced(GL_TRIANGLES,numIndices,GL_UNSIGNED_SHORT,0, 5);
+	//glDrawElementsInstanced(GL_TRIANGLES,numIndices,GL_UNSIGNED_SHORT,0, 5);
+	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
 }
+
 
 const bool Window::IsWindowOpen(void)
 {
