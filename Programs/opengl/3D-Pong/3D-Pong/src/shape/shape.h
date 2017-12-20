@@ -15,17 +15,17 @@ public:
 	{
 	}
 protected:
-	void CreateBuffer(void)
+	void CreateBuffer(unsigned int size, void* data)
 	{
 		glGenBuffers(1, &m_bufferID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_bufferID);
-		glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(float) * m_numVertices, m_vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	}
-	void CreateIndexBuffer(void)
+	void CreateIndexBuffer(unsigned int size, void* data)
 	{
 		glGenBuffers(1, &m_indexBufferID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * m_numIndices, m_indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	}
 	void CreateVertexBufferObject(void)
 	{

@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\shape\shape-data\shapegen.cpp" />
     <ClCompile Include="src\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -139,7 +140,10 @@
     <ClInclude Include="src\shaders\shader.h" />
     <ClInclude Include="src\shaders\shprogram.h" />
     <ClInclude Include="src\shape\ball.h" />
+    <ClInclude Include="src\shape\shape-data\shape-data.h" />
+    <ClInclude Include="src\shape\shape-data\shapegen.h" />
     <ClInclude Include="src\shape\shape.h" />
+    <ClInclude Include="src\vertex.h" />
     <ClInclude Include="src\window\window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

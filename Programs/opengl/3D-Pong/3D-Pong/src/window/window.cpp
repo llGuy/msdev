@@ -17,7 +17,7 @@ void Window::Update(void)
 void Window::Draw(void)
 {
 	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	m_game.Draw();
 }
@@ -29,6 +29,7 @@ void Window::Init(void)
 void Window::AfterGLEWInit(void)
 {
 	m_game.Init();
+	glEnable(GL_DEPTH_BUFFER|GL_DEPTH_TEST);
 }
 const bool Window::FailedToCreateWindow(void)
 {
