@@ -2,67 +2,69 @@
 #define BALL_HEADER
 
 #include "shape.h"
+#include <glm\gtx\transform.hpp>
 
 class Ball
 	: public Shape
 {
 public:
-	explicit Ball(void) //for the moment doesn't take ball direction vec3
+	explicit Ball(Color color)
+		: m_transformMatrix(1.0f)
 	{
 		glm::vec3 stackVerts[] = {
-			glm::vec3(-1.0f, +1.0f, +1.0f), // 0
-			glm::vec3(+1.0f, +0.0f, +0.0f), // Color
-			glm::vec3(+1.0f, +1.0f, +1.0f), // 1
-			glm::vec3(+0.0f, +1.0f, +0.0f), // Color
-			glm::vec3(+1.0f, +1.0f, -1.0f), // 2
-			glm::vec3(+0.0f, +0.0f, +1.0f), // Color
-			glm::vec3(-1.0f, +1.0f, -1.0f), // 3
-			glm::vec3(+1.0f, +1.0f, +1.0f), // Color
+			glm::vec3(-m_radius, +m_radius, +m_radius), // 0
+			color.m_colorPs, // Color
+			glm::vec3(+m_radius, +m_radius, +m_radius), // 1
+			color.m_colorPs, // Color
+			glm::vec3(+m_radius, +m_radius, -m_radius), // 2
+			color.m_colorPs, // Color
+			glm::vec3(-m_radius, +m_radius, -m_radius), // 3
+			color.m_colorPs, // Color
 			
-			glm::vec3(-1.0f, +1.0f, -1.0f), // 4
-			glm::vec3(+1.0f, +0.0f, +1.0f), // Color
-			glm::vec3(+1.0f, +1.0f, -1.0f), // 5
-			glm::vec3(+0.0f, +0.5f, +0.2f), // Color
-			glm::vec3(+1.0f, -1.0f, -1.0f), // 6
-			glm::vec3(+0.8f, +0.6f, +0.4f), // Color
-			glm::vec3(-1.0f, -1.0f, -1.0f), // 7
-			glm::vec3(+0.3f, +1.0f, +0.5f), // Color
+			glm::vec3(-m_radius, +m_radius, -m_radius), // 4
+			color.m_colorPs, // Color
+			glm::vec3(+m_radius, +m_radius, -m_radius), // 5
+			color.m_colorPs, // Color
+			glm::vec3(+m_radius, -m_radius, -m_radius), // 6
+			color.m_colorPs, // Color
+			glm::vec3(-m_radius, -m_radius, -m_radius), // 7
+			color.m_colorPs, // Color
 			
-			glm::vec3(+1.0f, +1.0f, -1.0f), // 8
-			glm::vec3(+0.2f, +0.5f, +0.2f), // Color
-			glm::vec3(+1.0f, +1.0f, +1.0f), // 9
-			glm::vec3(+0.9f, +0.3f, +0.7f), // Color
-			glm::vec3(+1.0f, -1.0f, +1.0f), // 10
-			glm::vec3(+0.3f, +0.7f, +0.5f), // Color
-			glm::vec3(+1.0f, -1.0f, -1.0f), // 11
-			glm::vec3(+0.5f, +0.7f, +0.5f), // Color
+			glm::vec3(+m_radius, +m_radius, -m_radius), // 8
+			color.m_colorFB, // Color
+			glm::vec3(+m_radius, +m_radius, +m_radius), // 9
+			color.m_colorFB, // Color
+			glm::vec3(+m_radius, -m_radius, +m_radius), // 10
+			color.m_colorFB, // Color
+			glm::vec3(+m_radius, -m_radius, -m_radius), // 11
+			color.m_colorFB, // Color
 			
-			glm::vec3(-1.0f, +1.0f, +1.0f), // 12
-			glm::vec3(+0.7f, +0.8f, +0.2f), // Color
-			glm::vec3(-1.0f, +1.0f, -1.0f), // 13
-			glm::vec3(+0.5f, +0.7f, +0.3f), // Color
-			glm::vec3(-1.0f, -1.0f, -1.0f), // 14
-			glm::vec3(+0.4f, +0.7f, +0.7f), // Color
-			glm::vec3(-1.0f, -1.0f, +1.0f), // 15
-			glm::vec3(+0.2f, +0.5f, +1.0f), // Color
+			glm::vec3(-m_radius, +m_radius, +m_radius), // 12
+			color.m_colorFB, // Color
+			glm::vec3(-m_radius, +m_radius, -m_radius), // 13
+			color.m_colorFB, // Color
+			glm::vec3(-m_radius, -m_radius, -m_radius), // 14
+			color.m_colorFB, // Color
+			glm::vec3(-m_radius, -m_radius, +m_radius), // 15
+			color.m_colorFB, // Color
 			
-			glm::vec3(+1.0f, +1.0f, +1.0f), // 16
-			glm::vec3(+0.6f, +1.0f, +0.7f), // Color
-			glm::vec3(-1.0f, +1.0f, +1.0f), // 17
-			glm::vec3(+0.6f, +0.4f, +0.8f), // Color
-			glm::vec3(-1.0f, -1.0f, +1.0f), // 18
-			glm::vec3(+0.2f, +0.8f, +0.7f), // Color
-			glm::vec3(+1.0f, -1.0f, +1.0f), // 19
-			glm::vec3(+0.2f, +0.7f, +1.0f), // Color
+			glm::vec3(+m_radius, +m_radius, +m_radius), // 16
+			color.m_colorSs, // Color
+			glm::vec3(-m_radius, +m_radius, +m_radius), // 17
+			color.m_colorSs, // Color
+			glm::vec3(-m_radius, -m_radius, +m_radius), // 18
+			color.m_colorSs, // Color
+			glm::vec3(+m_radius, -m_radius, +m_radius), // 19
+			color.m_colorSs, // Color
 			
-			glm::vec3(+1.0f, -1.0f, -1.0f), // 20
-			glm::vec3(+0.8f, +0.3f, +0.7f), // Color
-			glm::vec3(-1.0f, -1.0f, -1.0f), // 21
-			glm::vec3(+0.8f, +0.9f, +0.5f), // Color
-			glm::vec3(-1.0f, -1.0f, +1.0f), // 22
-			glm::vec3(+0.5f, +0.8f, +0.5f), // Color
-			glm::vec3(+1.0f, -1.0f, +1.0f), // 23
-			glm::vec3(+0.9f, +1.0f, +0.2f), // Color
+			glm::vec3(+m_radius, -m_radius, -m_radius), // 20
+			color.m_colorSs, // Color
+			glm::vec3(-m_radius, -m_radius, -m_radius), // 21
+			color.m_colorSs, // Color
+			glm::vec3(-m_radius, -m_radius, +m_radius), // 22
+			color.m_colorSs, // Color
+			glm::vec3(+m_radius, -m_radius, +m_radius), // 23
+			color.m_colorSs, // Color
 		};
 
 		unsigned short stackIndices[] = {
@@ -87,23 +89,19 @@ public:
 		memcpy(m_indices, stackIndices, currentIndexBufferSize);
 
 		CreateBuffer(currentVertexBufferSize);
-
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-
-
+		CreateVertexArrayObject();
 		CreateIndexBuffer(currentIndexBufferSize);
-		//CreateVertexArrayObject();
 	}
 public:
-	void Draw(void) override
+	void Draw(glm::mat4 worldToViewMatrix, unsigned int uniformLocation) override
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);
-		//glBindVertexArray(m_vertexArrayID);
+		glBindVertexArray(m_vertexArrayID);
+
+		m_transformMatrix = worldToViewMatrix * glm::translate(glm::vec3(2.0f, 2.0f, -7.0f));
+
+		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &m_transformMatrix[0][0]);
 
 		glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_SHORT, 0);
 	}
@@ -116,6 +114,12 @@ protected:
 	{
 		return m_numIndices * sizeof(unsigned short);
 	}
+private:
+	glm::vec3 m_translateVector;
+
+	const float m_radius = 0.2f;
+
+	glm::mat4 m_transformMatrix;
 };
 
 #endif

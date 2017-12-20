@@ -47,6 +47,9 @@
     <ClInclude Include="src\shape\ball.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\shape\color\color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\vsh.shader" />

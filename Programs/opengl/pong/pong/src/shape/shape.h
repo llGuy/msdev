@@ -1,6 +1,8 @@
 #ifndef SHAPE_HEADER
 #define SHAPE_HEADER
 
+#include "color\color.h"
+
 #include <glm\glm.hpp>
 #include <GL\glew.h>
 
@@ -10,7 +12,7 @@ public:
 	virtual ~Shape(void)
 	{
 	}
-	virtual void Draw(void)
+	virtual void Draw(glm::mat4 worldToViewMatrix, unsigned int uniformLocation)
 	{
 	}
 protected:
@@ -38,6 +40,7 @@ protected:
 	{
 		glGenVertexArrays(1, &m_vertexArrayID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
+		glBindVertexArray(m_vertexArrayID);
 
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

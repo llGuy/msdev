@@ -40,6 +40,10 @@ public:
 			glUseProgram(m_programID);
 		}
 	}
+	unsigned int ProgramID(void)
+	{
+		return m_programID;
+	}
 private:
 	bool CheckShaderStatus(GLuint shaderID)
 	{

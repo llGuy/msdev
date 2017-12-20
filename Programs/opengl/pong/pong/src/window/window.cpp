@@ -26,7 +26,7 @@ void Window::Init(void)
 }
 void Window::InitAfterGLEWInit(void)
 {
-	m_game->Init();
+	m_game->Init(m_width, m_height);
 	glEnable(GL_DEPTH_TEST);
 }
 void Window::Draw(void)
