@@ -15,29 +15,29 @@ public:
 	{
 	}
 protected:
-	void CreateBuffer(unsigned int* bufferID, unsigned int size, glm::vec3* verts)
+	void CreateBuffer(void)
 	{
-		glGenBuffers(1, bufferID);
-		glBindBuffer(GL_ARRAY_BUFFER, *bufferID);
-		glBufferData(GL_ARRAY_BUFFER, size, verts, GL_STATIC_DRAW);
+		glGenBuffers(1, &m_bufferID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_bufferID);
+		glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(float) * m_numVertices, m_vertices, GL_STATIC_DRAW);
 	}
-	void CreateVertexArrayObject(unsigned int* vaoID, unsigned int* bufferID)
+	void CreateIndexBuffer(void)
 	{
-		glGenVertexArrays(1, vaoID);
-		glBindVertexArray(*vaoID);
+		glGenBuffers(1, &m_indexBufferID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * m_numIndices, m_indices, GL_STATIC_DRAW);
+	}
+	void CreateVertexBufferObject(void)
+	{
+		glGenVertexArrays(1, &m_vertexArrayObjectID);	
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayObjectID);
 
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, *bufferID);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(sizeof(float) * 3));
-	}
-	void CreateIndexBuffer(unsigned int* indexBufferID, unsigned int size, unsigned short* indices)
-	{
-		glGenBuffers(1, indexBufferID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *indexBufferID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (float*)(3 * sizeof(float)));
 	}
 protected:
 	unsigned int m_bufferID;
@@ -45,7 +45,7 @@ protected:
 	unsigned int m_vertexArrayObjectID;
 
 	glm::vec3* m_vertices;
-	//unsigned short* m_indices;
+	unsigned short* m_indices;
 
 	unsigned int m_numIndices;
 	unsigned int m_numVertices;
