@@ -31,6 +31,8 @@
   <ItemGroup>
     <None Include="src\VertexShaderCode.glsl" />
     <None Include="src\FragmentShaderCode.glsl" />
+    <None Include="FragmentShaderCode.glsl" />
+    <None Include="VertexShaderCode.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\glfwwindow.h">
