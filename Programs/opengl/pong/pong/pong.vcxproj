@@ -132,6 +132,7 @@
     <ClInclude Include="src\shader\shprogram.h" />
     <ClInclude Include="src\shape\ball.h" />
     <ClInclude Include="src\shape\color\color.h" />
+    <ClInclude Include="src\shape\paddle.h" />
     <ClInclude Include="src\shape\shape.h" />
     <ClInclude Include="src\window\window.h" />
   </ItemGroup>

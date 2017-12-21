@@ -9,11 +9,34 @@
 class Shape
 {
 public:
+	struct ShapeVertices
+	{
+		float m_top;
+		float m_bottom;
+
+		float m_right;
+		float m_left;
+	};
 	virtual ~Shape(void)
 	{
 	}
-	virtual void Draw(glm::mat4 worldToViewMatrix, unsigned int uniformLocation)
+	virtual void Draw(glm::mat4 worldToViewMatrix, unsigned int uniformLocation,
+		ShapeVertices* left = nullptr, ShapeVertices* right = nullptr)
 	{
+	}
+	//for paddles only
+	enum action_t
+	{
+		MOVE_UP,
+
+		MOVE_DOWN
+	};
+	virtual void Action(action_t action)
+	{
+	}
+	virtual Shape::ShapeVertices ShapeVerts(void)
+	{
+		return { 0 };
 	}
 protected:
 	virtual unsigned int VertexBufferSize(void)

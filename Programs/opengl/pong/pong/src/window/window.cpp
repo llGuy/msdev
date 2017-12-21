@@ -40,8 +40,37 @@ void Window::Update(void)
 {
 	glfwSwapBuffers(m_glfwWindow);
 	glfwPollEvents();
+
+	PollKeys();
 }
 const bool Window::WindowIsOpen(void)
 {
 	return !glfwWindowShouldClose(m_glfwWindow);
+}
+void Window::PollKeys(void)
+{
+	PollPaddleLeftMovement();
+	PollPaddleRightMovement();
+}
+void Window::PollPaddleLeftMovement(void)
+{
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_W))
+	{
+		m_game->PaddleLeft()->Action(Shape::MOVE_UP);
+	}
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))
+	{
+		m_game->PaddleLeft()->Action(Shape::MOVE_DOWN);
+	}
+}
+void Window::PollPaddleRightMovement(void)
+{
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_UP))
+	{
+		m_game->PaddleRight()->Action(Shape::MOVE_UP);
+	}
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_DOWN))
+	{
+		m_game->PaddleRight()->Action(Shape::MOVE_DOWN);
+	}
 }

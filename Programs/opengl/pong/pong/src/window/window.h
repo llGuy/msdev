@@ -12,11 +12,15 @@ public:
 		const char* title);
 	~Window(void);
 public:
-	void Init(void);
-	void InitAfterGLEWInit(void);
 	void Draw(void);
 	void Update(void);
 	const bool WindowIsOpen(void);
+private:
+	void Init(void);
+	void InitAfterGLEWInit(void);
+	void PollKeys(void);
+	void PollPaddleLeftMovement(void);
+	void PollPaddleRightMovement(void);
 private:
 	unsigned int m_width;
 	unsigned int m_height;

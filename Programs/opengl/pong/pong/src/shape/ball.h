@@ -8,8 +8,13 @@ class Ball
 	: public Shape
 {
 public:
-	explicit Ball(Color color)
-		: m_transformMatrix(1.0f)
+	explicit Ball(Color color, glm::vec3 translateVector, glm::vec3 ballDirection,
+		const float top, const float bottom)
+		: m_transformMatrix(1.0f),
+		  m_translateVector(translateVector),
+		  m_ballDirection(ballDirection),
+		  m_ballSpeed(glm::vec3(0.01f, 0.01f, 0.0f)),
+		  m_topGamePlane(top), m_bottomGamePlane(bottom)
 	{
 		glm::vec3 stackVerts[] = {
 			glm::vec3(-m_radius, +m_radius, +m_radius), // 0
@@ -67,6 +72,9 @@ public:
 			color.m_colorSs, // Color
 		};
 
+		m_originalShapeVertices = { +m_radius, -m_radius, 
+							+m_radius, -m_radius };
+
 		unsigned short stackIndices[] = {
 			0,   1,  2,  0,  2,  3, // Top
 			4,   5,  6,  4,  6,  7, // Front
@@ -91,15 +99,20 @@ public:
 		CreateBuffer(currentVertexBufferSize);
 		CreateVertexArrayObject();
 		CreateIndexBuffer(currentIndexBufferSize);
+
+		UpdateShapeVertices();
 	}
 public:
-	void Draw(glm::mat4 worldToViewMatrix, unsigned int uniformLocation) override
+	void Draw(glm::mat4 worldToViewMatrix, unsigned int uniformLocation,
+		ShapeVertices* left = nullptr, ShapeVertices* right = nullptr) override
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);
 		glBindVertexArray(m_vertexArrayID);
 
-		m_transformMatrix = worldToViewMatrix * glm::translate(glm::vec3(2.0f, 2.0f, -7.0f));
+		Move(left, right);
+
+		m_transformMatrix = worldToViewMatrix * glm::translate(m_translateVector);
 
 		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &m_transformMatrix[0][0]);
 
@@ -114,12 +127,92 @@ protected:
 	{
 		return m_numIndices * sizeof(unsigned short);
 	}
+	void Move(ShapeVertices* left = nullptr, ShapeVertices* right = nullptr)
+	{
+		UpdateShapeVertices();
+		if (YObstacleIsHit())
+			ReverseYDirection();
+
+		if (XObstacleIsHit(true, left))
+			ReverseXDirection();
+		if (XObstacleIsHit(false, right))
+			ReverseXDirection();
+
+		m_translateVector += m_ballDirection * m_ballSpeed; 
+	}
+	const bool YObstacleIsHit(void)
+	{
+		return (m_translateVector.y > m_topGamePlane || m_translateVector.y < m_bottomGamePlane);
+	}
+	const bool XObstacleIsHit(const bool isLeft, ShapeVertices* obstacle = nullptr)
+	{
+		if (obstacle == nullptr || obstacle == nullptr)
+			Log("forgot to pass left paddle and right paddle vertices");
+
+		if (isLeft)
+		{
+			if (fabs(obstacle->m_right - m_currentShapeVertices.m_left) < 0.0001f)
+			{
+				if (BallTopIsInBetweenPaddlePoles(obstacle) || BallBottomIsInBetweenPaddlePoles(obstacle))
+				{
+					return true;
+				}
+			}
+		}
+		else
+		{
+			if (fabs(obstacle->m_left - m_currentShapeVertices.m_right) < 0.0001f)
+			{
+				if (BallTopIsInBetweenPaddlePoles(obstacle) || BallBottomIsInBetweenPaddlePoles(obstacle))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	const bool BallTopIsInBetweenPaddlePoles(ShapeVertices* obstacle)
+	{
+		return (m_currentShapeVertices.m_top < obstacle->m_top && m_currentShapeVertices.m_top > obstacle->m_bottom);
+	}
+	const bool BallBottomIsInBetweenPaddlePoles(ShapeVertices* obstacle)
+	{
+		return (m_currentShapeVertices.m_bottom < obstacle->m_top && m_currentShapeVertices.m_bottom > obstacle->m_bottom);
+	}
+	void ReverseYDirection(void)
+	{
+		m_ballDirection.y *= -1.0f;
+	}
+	void ReverseXDirection(void)
+	{
+		m_ballDirection.x *= -1.0f;
+	}
+	void UpdateShapeVertices(void)
+	{
+		glm::vec4 vertsTop = glm::vec4(m_originalShapeVertices.m_right, m_originalShapeVertices.m_top, -1.0f, 1.0f);
+		glm::vec4 vertsBottom = glm::vec4(m_originalShapeVertices.m_left, m_originalShapeVertices.m_bottom, -1.0f, 1.0f);
+
+		glm::vec4 translatedTop = glm::translate(m_translateVector) * vertsTop;
+		glm::vec4 translatedBottom = glm::translate(m_translateVector) * vertsBottom;
+
+		m_currentShapeVertices = { translatedTop.y, translatedBottom.y,
+			translatedTop.x, translatedBottom.x };
+	}
 private:
 	glm::vec3 m_translateVector;
 
 	const float m_radius = 0.2f;
 
 	glm::mat4 m_transformMatrix;
+
+	glm::vec3 m_ballSpeed;
+	glm::vec3 m_ballDirection;
+
+	const float m_topGamePlane;
+	const float m_bottomGamePlane;
+
+	Shape::ShapeVertices m_originalShapeVertices;
+	Shape::ShapeVertices m_currentShapeVertices;
 };
 
 #endif
