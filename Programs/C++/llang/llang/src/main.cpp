@@ -5,12 +5,12 @@
 
 
 //testing
-#include "cline/func/Def.h"
-#include "cline/func/Call.h"
+//#include "cline/func/Def.h"
+//#include "cline/func/Call.h
+#include "testing/Test.h"
 
-
-#define _TESTING false
-#define _FILEIO true
+#define _TESTING true
+#define _FILEIO false
 
 int main(int argc,char* argv[]) {
 #if _TESTING
@@ -23,9 +23,10 @@ int main(int argc,char* argv[]) {
 		l_programToExecute.M_Execute();
 		l_fileReadFrom.close();
 	#else
-		#include "Test.h"
 		Test test;
 		test.PerformTest();
+
+		std::cin.get();
 	#endif
 #else 
 	std::fstream l_fileRead;
