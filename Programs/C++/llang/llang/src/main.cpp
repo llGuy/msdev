@@ -17,7 +17,7 @@ int main(int argc,char* argv[]) {
 	//in testing mode
 	#if _FILEIO
 		std::fstream l_fileReadFrom;
-		l_fileReadFrom.open("C:\\Users\\luc\\Development\\msdev\\Programs\\C++\\llang\\llang\\test-programs\\fizzbuzz.txt");
+		l_fileReadFrom.open("C:\\Users\\lucro\\Development\\msdev\\Programs\\C++\\llang\\llang\\test-programs\\fizzbuzz.txt");
 
 		Program l_programToExecute(l_fileReadFrom);
 		l_programToExecute.M_Execute();
