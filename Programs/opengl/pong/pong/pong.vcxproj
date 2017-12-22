@@ -125,6 +125,7 @@
     <ClCompile Include="src\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\camera\camera.h" />
     <ClInclude Include="src\game\game.h" />
     <ClInclude Include="src\init.h" />
     <ClInclude Include="src\misc.h" />

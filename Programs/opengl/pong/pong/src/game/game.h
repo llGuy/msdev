@@ -3,6 +3,7 @@
 
 #include "..\shader\shprogram.h"
 #include "..\shape\ball.h"
+#include "..\camera\camera.h"
 #include "..\shape\paddle.h"
 
 #include <glm\gtx\transform.hpp>
@@ -19,7 +20,7 @@ public:
 	void Init(unsigned int width, unsigned int height)
 	{
 		m_balls.push_back(new Ball(MAGENTA, 
-			glm::vec3(0.0f, 0.0f, m_zValueOfAllCloseVerts), glm::vec3(1.0f, 1.0f, 0.0f),
+			glm::vec3(0.0f, 0.0f, m_zValueOfAllCloseVerts), glm::vec3(1.0f, -0.7f, 0.0f),
 			m_topGamePlane, m_bottomGamePlane));
 
 		m_paddles.push_back(new Paddle(RED, glm::vec3(m_xValPaddleLeft, 0.0f, m_zValueOfAllCloseVerts)));
@@ -27,15 +28,16 @@ public:
 
 		m_program.Compile();
 		m_program.Link();
-
-		m_worldToViewProjectionMatrix = 
-			glm::perspective(glm::radians(60.0f), (float)width / height, 0.1f, 30.0f);
 	}
 public:
-	void Draw(void)
+	void Draw(unsigned int width, unsigned int height, Camera* camera)
 	{
 		unsigned int location = glGetUniformLocation(m_program.ProgramID(), "transformMatrix");
 		
+		m_worldToViewProjectionMatrix =
+			glm::perspective(glm::radians(60.0f), (float)width / height, 0.1f, 40.0f) *
+			camera->GetWorldToViewMatrix();
+
 		for (auto& ballIterator : m_balls)
 			ballIterator->Draw(m_worldToViewProjectionMatrix, location, 
 				&m_paddles[0]->ShapeVerts(), &m_paddles[1]->ShapeVerts());
@@ -63,7 +65,7 @@ private:
 	const float m_xValPaddleLeft		= -4.0f;
 	const float m_xValPaddleRight		= +4.0f;
 	const float m_topGamePlane			= +3.399f;
-	const float m_bottomGamePlane		= -3.399f;
+	const float m_bottomGamePlane		= -3.7f;
 };
 
 #endif

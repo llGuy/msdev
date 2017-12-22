@@ -53,6 +53,9 @@
     <ClInclude Include="src\shape\paddle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\camera\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\vsh.shader" />

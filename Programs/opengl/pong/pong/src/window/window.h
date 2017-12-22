@@ -1,8 +1,11 @@
 #ifndef WINDOW_HEADER
 #define WINDOW_HEADER
 
+#include <glm\glm.hpp>
+
 class GLFWwindow;
 class Game;
+class Camera;
 
 class Window
 {
@@ -15,6 +18,7 @@ public:
 	void Draw(void);
 	void Update(void);
 	const bool WindowIsOpen(void);
+	void UpdateMouse(glm::vec2 newPosition);
 private:
 	void Init(void);
 	void InitAfterGLEWInit(void);
@@ -28,6 +32,7 @@ private:
 
 	GLFWwindow* m_glfwWindow;
 	Game* m_game;
+	Camera* m_camera;
 };
 
 #endif

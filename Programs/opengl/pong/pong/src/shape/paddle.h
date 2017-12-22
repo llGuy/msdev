@@ -94,6 +94,8 @@ public:
 		CreateBuffer(currentVertexBufferSize);
 		CreateVertexArrayObject();
 		CreateIndexBuffer(currentIndexBufferSize);
+
+		UpdateShapeVertices();
 	}
 public:
 	Shape::ShapeVertices ShapeVerts(void) override
