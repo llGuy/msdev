@@ -24,8 +24,11 @@ public:
 	void MouseUpdate(const glm::vec2& newMousePosition)
 	{
 		glm::vec2 mouseDelta = newMousePosition - m_oldMousePosition;
-		m_viewDirection = glm::mat3(glm::rotate(glm::radians(mouseDelta.x) * 0.02f, m_UP_VECTOR)) * m_viewDirection;
-		//m_viewDirection = glm::mat3(glm::rotate(glm::radians(mouseDelta.y) * 0.02f, m_UP_VECTOR)) * m_viewDirection;
+		m_viewDirection = glm::mat3(glm::rotate(-glm::radians(mouseDelta.x) * 0.02f, m_UP_VECTOR)) * m_viewDirection;
+		
+		glm::vec3 toRotateAround = glm::cross(m_viewDirection, m_UP_VECTOR);
+		m_viewDirection = glm::mat3(glm::rotate(-glm::radians(mouseDelta.y) * 0.02f, toRotateAround)) * m_viewDirection;
+
 		m_oldMousePosition = newMousePosition;
 	}
 	glm::mat4 GetWorldToViewMatrix(void) const
