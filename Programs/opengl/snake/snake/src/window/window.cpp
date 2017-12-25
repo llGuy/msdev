@@ -39,7 +39,10 @@ static void KeyCallback(GLFWwindow* window, int key, int, int action, int )
 		{
 			p->GameObj()->MoveSnake(Snake::MOVE_DOWN);
 		}
-		p->CameraObj()->IsLookingAtCenterOfGrid() = true;
+		if (key == GLFW_KEY_C)
+		{
+			p->CameraObj()->IsLookingAtCenterOfGrid() = true;
+		}
 	}
 }
 

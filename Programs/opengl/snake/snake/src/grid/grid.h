@@ -27,15 +27,15 @@ private:
 	{
 		m_x = new Line(glm::vec3(-m_radius, 0.0f, 0.0f), 
 			glm::vec3(m_radius, 0.0f, 0.0f), 
-			glm::vec3(0.0f, 0.0f, m_center));
+			glm::vec3(0.0f, 0.0f, m_center), YELLOW);
 
 		m_y = new Line(glm::vec3(0.0f, -m_radius, 0.0f),
 			glm::vec3(0.0f, m_radius, 0.0f),
-			glm::vec3(0.0f, 0.0f, m_center));
+			glm::vec3(0.0f, 0.0f, m_center), GREEN);
 
 		m_z = new Line(glm::vec3(0.0f, 0.0f, -m_radius),
 			glm::vec3(0.0f, 0.0f, m_radius),
-			glm::vec3(0.0f, 0.0f, m_center));
+			glm::vec3(0.0f, 0.0f, m_center), RED);
 	}
 private:
 	Shape* m_x;

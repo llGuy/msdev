@@ -10,6 +10,11 @@ class Cube
 	: public Shape
 {
 public:
+	struct Movement
+	{
+		glm::vec3 m_directitonChangingPoint;
+		bool m_isFinished;
+	};
 	explicit Cube(Color color, float radius, glm::vec3 direction, glm::vec3 translateVector)
 		: m_translateVector(translateVector), m_radius(radius), m_cubeSpeed(0.005f), m_cubeDirection(direction),
 		m_isChangingDirection(false)
@@ -61,11 +66,11 @@ public:
 				m_currentShapeVertices.m_top, m_currentShapeVertices.m_front);
 			//std::cout << "currentTopRightPoint " << currentTopRightPoint.x << " " << currentTopRightPoint.y << " " << currentTopRightPoint.z << "\n";
 			//std::cout << "changingTopRightPoint " << m_topRightChangingPoint.x << " " << m_topRightChangingPoint.y << " " << m_topRightChangingPoint.z << "\n";
-			if (fabs(currentTopRightPoint.x - m_topRightChangingPoint.x) < 0.001f)
+			if (fabs(currentTopRightPoint.x - m_topRightChangingPoint.x) < 0.01f)
 			{
-				if (fabs(currentTopRightPoint.y - m_topRightChangingPoint.y) < 0.001f)
+				if (fabs(currentTopRightPoint.y - m_topRightChangingPoint.y) < 0.01f)
 				{
-					if (fabs(currentTopRightPoint.z - m_topRightChangingPoint.z) < 0.001f)
+					if (fabs(currentTopRightPoint.z - m_topRightChangingPoint.z) < 0.01f)
 					{
 						ChangeDirection();
 						m_isChangingDirection = false;
@@ -200,6 +205,8 @@ private:
 	bool m_isChangingDirection;
 	glm::vec3 m_topRightChangingPoint;
 	glm::vec3 m_nextDirectionChange;
+	std::vector<Movement> m_pendingMovements;
+	unsigned short m_movementIndex;
 };
 
 #endif

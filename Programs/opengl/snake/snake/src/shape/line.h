@@ -5,20 +5,21 @@
 #include <glm\gtx\transform.hpp>
 
 #include "shape.h"
+#include "color\color.h"
 
 class Line
 	: public Shape
 {
 public:
-	explicit Line(glm::vec3 vert1, glm::vec3 vert2, glm::vec3 translateVector)
+	explicit Line(glm::vec3 vert1, glm::vec3 vert2, glm::vec3 translateVector, Color color)
 	{
 		glm::vec3 verts[]
 		{
 			vert1,
-			glm::vec3(1.0f, 1.0f, 1.0f),
+			color.m_colorFB,
 
 			vert2,
-			glm::vec3(1.0f, 1.0f, 1.0f)
+			color.m_colorFB
 		};
 
 		m_numVertices = sizeof(verts) / sizeof(glm::vec3);
