@@ -27,7 +27,7 @@ public:
 		CreateIndexBuffer(IndexBufferSize());
 	}
 public:
-	void Draw(glm::mat4 viewProjectionMatrix, unsigned int location) override
+	void Draw(glm::mat4 viewProjectionMatrix, unsigned int location, Shape* apple = nullptr) override
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);

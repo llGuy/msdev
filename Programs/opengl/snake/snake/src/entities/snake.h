@@ -19,11 +19,11 @@ public:
 
 		MOVE_DOWN
 	};
-	explicit Snake(float speed)
+	explicit Snake(float speed, float radiusOfGrid)
 		: m_xzDirectionOfSnake(1.0f, 0.0f, 0.0f), 
 		m_xyzDirectionOfSnake(1.0f, 0.0f, 0.0f), m_isChangingDirection(false),
 		m_colorDelta(0.05f, 0.05f, 0.05f), m_indexRightVectors(0), m_indexLeftVectors(0),
-		m_isMovingInAltitude(false), m_speed(speed)
+		m_isMovingInAltitude(false), m_speed(speed), m_radiusOfGrid(radiusOfGrid, radiusOfGrid, radiusOfGrid)
 	{
 		Init();
 	}
@@ -34,6 +34,9 @@ public:
 			cubeIter->Move();
 		for (auto& cubeIter : m_cubes)
 			cubeIter->Draw(viewProjectionMatrix, location);
+
+		if (SurpassedLimit())
+			Log("game is finished");
 	}
 	Shape* Head(void)
 	{
@@ -184,6 +187,17 @@ private:
 		AddCube();
 		AddCube();
 		
+		//glm::vec3(0.0f, 0.0f, 1.0f);
+		//glm::vec3(-1.0f, 0.0f, 0.0f);
+		//glm::vec3(0.0f, 0.0f, -1.0f);
+		//glm::vec3(1.0f, 0.0f, 0.0f);
+		
+		//glm::vec3(0.0f, 0.0f, -1.0f);
+		//glm::vec3(-1.0f, 0.0f, 0.0f);
+		//glm::vec3(0.0f, 0.0f, 1.0f);
+		//glm::vec3(1.0f, 0.0f, 0.0f);
+
+
 		m_turningRightVectors[0] = glm::vec3(0.0f, 0.0f, 1.0f);
 		m_turningRightVectors[1] = glm::vec3(-1.0f, 0.0f, 0.0f);
 		m_turningRightVectors[2] = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -194,9 +208,51 @@ private:
 		m_turningLeftVectors[2] = glm::vec3(0.0f, 0.0f, 1.0f);
 		m_turningLeftVectors[3] = glm::vec3(1.0f, 0.0f, 0.0f);
 	}
-	float Normal(float f)
+	void SnakeAteApple(Shape* apple)
 	{
-		return f;
+		Shape::ShapeVertices vertsOfApple = apple->ShapeVerts();
+		glm::vec3 posXPosYPosZ = glm::vec3(vertsOfApple.m_right, vertsOfApple.m_top, vertsOfApple.m_front);
+		glm::vec3 negXNegYNegZ = glm::vec3(vertsOfApple.m_left, vertsOfApple.m_bottom, vertsOfApple.m_back);
+		glm::vec3 vecToUse;
+
+		if (Vec3HasAllPos(m_xyzDirectionOfSnake))
+		{	
+			vecToUse = negXNegYNegZ;
+
+		}	
+		else
+		{
+			vecToUse = posXPosYPosZ;
+		}
+	}
+	glm::vec3 VecToCompare(glm::vec3 vecToUse)
+	{
+		if (glm::all(glm::lessThan(glm::abs(glm::vec3(1.0f, 0.0f, 0.0f) - m_xzDirectionOfSnake), glm::vec3(0.01f))))
+		{
+
+		}
+	}
+	const bool Vec3HasAllPos(glm::vec3 vec)
+	{
+		if (vec.x > 0.0f &&
+			vec.y > 0.0f &&
+			vec.z > 0.0f)
+		{
+			return true;
+		}
+		return false;
+	}
+	const bool SurpassedLimit(void)
+	{
+		if (m_cubes[0]->ShapeVerts().m_top > m_radiusOfGrid.y ||
+			fabs(m_cubes[0]->ShapeVerts().m_bottom) > m_radiusOfGrid.y ||
+			m_cubes[0]->ShapeVerts().m_right > m_radiusOfGrid.x ||
+			fabs(m_cubes[0]->ShapeVerts().m_left) > m_radiusOfGrid.x ||
+			m_cubes[0]->ShapeVerts().m_front > m_radiusOfGrid.z ||
+			fabs(m_cubes[0]->ShapeVerts().m_front > m_radiusOfGrid.z))
+		{
+			return true;
+		}
 	}
 private:
 	std::vector<Shape*> m_cubes;
@@ -217,6 +273,8 @@ private:
 
 	bool m_isMovingInAltitude;
 	float m_speed;
+
+	glm::vec3 m_radiusOfGrid;
 };
 
 #endif
