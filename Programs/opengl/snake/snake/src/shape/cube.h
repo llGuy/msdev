@@ -10,8 +10,9 @@ class Cube
 	: public Shape
 {
 public:
-	explicit Cube(Color color, float radius, glm::vec3 direction)
-		: m_translateVector(0.0f, 0.0f, -10.0f), m_radius(radius), m_cubeSpeed(0.005f), m_cubeDirection(direction)
+	explicit Cube(Color color, float radius, glm::vec3 direction, glm::vec3 translateVector)
+		: m_translateVector(translateVector), m_radius(radius), m_cubeSpeed(0.005f), m_cubeDirection(direction),
+		m_isChangingDirection(false)
 	{	
 		CreateVertices(color);
 		CreateIndices();
@@ -29,6 +30,8 @@ public:
 		//Move();
 		UpdateShapeVertices();
 
+		PollDirectionChange();
+
 		m_transformMatrix = viewProjectionMatrix * glm::translate(m_translateVector);
 
 		glUniformMatrix4fv(location, 1, GL_FALSE, &m_transformMatrix[0][0]);
@@ -42,9 +45,42 @@ public:
 	}
 public:
 	//movements
-	void ChangeDirection(glm::vec3 newDirection) override
+	void ToggleChangingDirection(glm::vec3 newDirection, glm::vec3 topRightChangingPoint) override
 	{
-		m_cubeDirection = newDirection;
+		m_isChangingDirection = true;
+		
+		m_topRightChangingPoint = topRightChangingPoint;
+
+		m_nextDirectionChange = newDirection;
+	}
+	void PollDirectionChange(void)
+	{
+		if (m_isChangingDirection)
+		{
+			glm::vec3 currentTopRightPoint = glm::vec3(m_currentShapeVertices.m_right,
+				m_currentShapeVertices.m_top, m_currentShapeVertices.m_front);
+			//std::cout << "currentTopRightPoint " << currentTopRightPoint.x << " " << currentTopRightPoint.y << " " << currentTopRightPoint.z << "\n";
+			//std::cout << "changingTopRightPoint " << m_topRightChangingPoint.x << " " << m_topRightChangingPoint.y << " " << m_topRightChangingPoint.z << "\n";
+			if (fabs(currentTopRightPoint.x - m_topRightChangingPoint.x) < 0.001f)
+			{
+				if (fabs(currentTopRightPoint.y - m_topRightChangingPoint.y) < 0.001f)
+				{
+					if (fabs(currentTopRightPoint.z - m_topRightChangingPoint.z) < 0.001f)
+					{
+						ChangeDirection();
+						m_isChangingDirection = false;
+					}
+				}
+			}
+		}
+	}
+	void ChangeDirection(void) override
+	{
+		m_cubeDirection = m_nextDirectionChange;
+	}
+	glm::vec3* TranslateVector(void) override
+	{
+		return &m_translateVector;
 	}
 private:
 	unsigned int VertexBufferSize(void) override
@@ -161,6 +197,9 @@ private:
 	glm::vec3 m_cubeDirection;
 	Shape::ShapeVertices m_currentShapeVertices;
 	Shape::ShapeVertices m_originalShapeVertices;
+	bool m_isChangingDirection;
+	glm::vec3 m_topRightChangingPoint;
+	glm::vec3 m_nextDirectionChange;
 };
 
 #endif

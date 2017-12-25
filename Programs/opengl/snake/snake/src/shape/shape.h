@@ -26,8 +26,15 @@ public:
 	{
 		return { 0 };
 	}
-	virtual void ChangeDirection(glm::vec3 newDirection)
+	virtual void ChangeDirection(void)
 	{
+	}
+	virtual void ToggleChangingDirection(glm::vec3 newDirection, glm::vec3 topRightChanging)
+	{
+	}
+	virtual glm::vec3* TranslateVector(void)
+	{
+		return nullptr;
 	}
 
 	virtual void Move(void)
