@@ -5,7 +5,7 @@
 
 int main(int argc, char* argv[])
 {
-	Window window(1200, 400, "Graphics Pad");
+	Window window(2000, 1400, "Graphics Pad");
 	while(window.IsWindowOpen())
 	{
 		window.Draw();

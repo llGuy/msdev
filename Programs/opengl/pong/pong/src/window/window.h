@@ -19,6 +19,7 @@ public:
 	void Update(void);
 	const bool WindowIsOpen(void);
 	void UpdateMouse(glm::vec2 newPosition);
+	void AddBall(void);
 private:
 	void Init(void);
 	void InitAfterGLEWInit(void);

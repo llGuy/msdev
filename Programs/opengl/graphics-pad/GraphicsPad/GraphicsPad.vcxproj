@@ -157,6 +157,7 @@
     <ClCompile Include="src\meshader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\ShapeGenerator.h" />
     <ClInclude Include="src\ShapeData.h" />
     <ClInclude Include="src\vertex.h" />

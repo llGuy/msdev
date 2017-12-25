@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "vertex.h"
+#include "camera.h"
 #include "ShapeGenerator.h"
 #include <glm/gtc/constants.hpp>
 #include <glm/gtx/transform.hpp>
@@ -22,6 +23,8 @@ constexpr unsigned int TRI_SIZE =					NUM_VERTICES_PER_TRI * NUM_FLOATS_PER_VERT
 unsigned int numTriangles =							0;
 
 unsigned int numIndices = 0;
+
+Camera camera;
 
 static GLuint programID;
 
@@ -158,21 +161,8 @@ void Window::SendDataToOpenGL(void)
 	//bind the buffer to the GL_ARRAY_BUFFER binding point
 	glBindBuffer(GL_ARRAY_BUFFER, transformationMatrixBufferID);
 
-	//projection matrix
-	glm::mat4 projectionMatrix = glm::perspective(glm::radians(60.0f),((float)m_width) / m_height,0.1f,10.0f);
-
-	//the full transforms of each cube (2 cubes)
-	glm::mat4 fullTransforms[] 
-	{
-		projectionMatrix * glm::translate(glm::vec3(-1.0f,0.0f,-4.0f)) * glm::rotate(glm::radians(30.0f),glm::vec3(1.0f,0.0f,0.0f)),
-		projectionMatrix * glm::translate(glm::vec3(1.0f,0.0f,-4.75f)) * glm::rotate(glm::radians(30.0f),glm::vec3(0.0f,1.0f,0.0f)),
-		projectionMatrix * glm::translate(glm::vec3(4.0f,1.0f,-5.0f)) * glm::rotate(glm::radians(30.0f),glm::vec3(0.0f,0.0f,1.0f)),
-		projectionMatrix * glm::translate(glm::vec3(-6.0f,1.0f,-8.0f)) * glm::rotate(glm::radians(30.0f),glm::vec3(0.0f,0.5f,1.0f)),
-		projectionMatrix * glm::translate(glm::vec3(-7.0f,1.0f,-4.0f)) * glm::rotate(glm::radians(30.0f),glm::vec3(1.0f,1.0f,1.0f))
-	};
-
 	//fill the buffer data size of 2 mat4s with fullTransforms array
-	glBufferData(GL_ARRAY_BUFFER, 5 * sizeof(glm::mat4), fullTransforms, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 5 * sizeof(glm::mat4), 0, GL_DYNAMIC_DRAW);
 	
 	//largest number of attributes per attribute pointer has to be <= 4 
 	//that is why we need to create 4 pointers
@@ -242,6 +232,8 @@ const bool Window::Initialize(void)
 	SendDataToOpenGL();
 	InstallShader();
 
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	return true;
 }
 
@@ -258,8 +250,23 @@ void Window::Draw(void)
 	glClearColor(0.0f,0.0f,0.2f,1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//glDrawElementsInstanced(GL_TRIANGLES,numIndices,GL_UNSIGNED_SHORT,0, 5);
-	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
+	//projection matrix
+	glm::mat4 projectionMatrix = glm::perspective(glm::radians(60.0f), ((float)m_width) / m_height, 0.1f, 10.0f);
+
+	//the full transforms of each cube (2 cubes)
+	glm::mat4 fullTransforms[]
+	{
+		projectionMatrix * camera.GetWorldToViewMatrix() * glm::translate(glm::vec3(-1.0f,0.0f,-4.0f)) * glm::rotate(glm::radians(30.0f),glm::vec3(1.0f,0.0f,0.0f)),
+		projectionMatrix * camera.GetWorldToViewMatrix() * glm::translate(glm::vec3(1.0f,0.0f,-4.75f)) * glm::rotate(glm::radians(30.0f),glm::vec3(0.0f,1.0f,0.0f)),
+		projectionMatrix * camera.GetWorldToViewMatrix() * glm::translate(glm::vec3(4.0f,1.0f,-5.0f)) * glm::rotate(glm::radians(30.0f),glm::vec3(0.0f,0.0f,1.0f)),
+		projectionMatrix * camera.GetWorldToViewMatrix() * glm::translate(glm::vec3(-6.0f,1.0f,-8.0f)) * glm::rotate(glm::radians(30.0f),glm::vec3(0.0f,0.5f,1.0f)),
+		projectionMatrix * camera.GetWorldToViewMatrix() * glm::translate(glm::vec3(-7.0f,1.0f,-4.0f)) * glm::rotate(glm::radians(30.0f),glm::vec3(1.0f,1.0f,1.0f))
+	};
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(fullTransforms), fullTransforms, GL_DYNAMIC_DRAW);
+
+	glDrawElementsInstanced(GL_TRIANGLES,numIndices,GL_UNSIGNED_SHORT,0, 5);
+	//glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
 }
 
 
@@ -272,4 +279,32 @@ void Window::Update(void)
 {
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();
+	double x, y;
+	glfwGetCursorPos(m_window, &x, &y);
+	camera.MouseUpdate(glm::vec2(x, y));
+
+	if (glfwGetKey(m_window, GLFW_KEY_W))
+	{
+		camera.MoveForward();
+	}
+	if (glfwGetKey(m_window, GLFW_KEY_S))
+	{
+		camera.MoveBackward();
+	}
+	if (glfwGetKey(m_window, GLFW_KEY_A))
+	{
+		camera.MoveLeft();
+	}
+	if (glfwGetKey(m_window, GLFW_KEY_D))
+	{
+		camera.MoveRight();
+	}
+	if (glfwGetKey(m_window, GLFW_KEY_SPACE))
+	{
+		camera.MoveUp();
+	}
+	if (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT))
+	{
+		camera.MoveDown();
+	}
 }

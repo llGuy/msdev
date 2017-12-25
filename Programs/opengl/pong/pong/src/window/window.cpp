@@ -5,12 +5,23 @@
 
 #include <GLFW\glfw3.h>
 
+//function gets called when the cursur moves
 static void CursurPositionCallback(GLFWwindow* window, double x, double y)
 {
 	Window* p = (Window*)glfwGetWindowUserPointer(window);
 
 	glm::vec2 newPosition = glm::vec2(x, y);
+	//updates the view direction of the camera
 	p->UpdateMouse(newPosition);
+}
+
+static void AddBallCallback(GLFWwindow* window, int key, int, int, int)
+{
+	Window* p = (Window*)glfwGetWindowUserPointer(window);
+	if (key == GLFW_KEY_SPACE)
+	{
+		p->AddBall();
+	}
 }
 
 Window::Window(unsigned int width,
@@ -40,6 +51,7 @@ void Window::Init(void)
 	glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glfwSetWindowUserPointer(m_glfwWindow, this);
+	glfwSetKeyCallback(m_glfwWindow, AddBallCallback);
 }
 void Window::InitAfterGLEWInit(void)
 {
@@ -52,6 +64,8 @@ void Window::Draw(void)
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//need to input the width and height because the 
+	//draw function calls the glm::perspective function
 	m_game->Draw(m_width, m_height, m_camera);
 }
 void Window::Update(void)
@@ -60,11 +74,11 @@ void Window::Update(void)
 	glfwPollEvents();
 
 	PollKeys();
-	//CheckMousePosition();
 }
 const bool Window::WindowIsOpen(void)
 {
-	return !glfwWindowShouldClose(m_glfwWindow);
+	return !glfwWindowShouldClose(m_glfwWindow) 
+		&& !(glfwGetKey(m_glfwWindow, GLFW_KEY_ESCAPE));
 }
 void Window::UpdateMouse(glm::vec2 newPosition)
 {
@@ -96,4 +110,8 @@ void Window::PollPaddleRightMovement(void)
 	{
 		m_game->PaddleRight()->Action(Shape::MOVE_DOWN);
 	}
+}
+void Window::AddBall(void)
+{
+	m_game->AddBall();
 }
