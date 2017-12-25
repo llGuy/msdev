@@ -17,8 +17,8 @@ public:
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
 
-		m_oldMousePosition.x = x;
-		m_oldMousePosition.y = y;
+		m_oldMousePosition.x = (float)x;
+		m_oldMousePosition.y = (float)y;
 	}
 	bool& IsLookingAtCenterOfGrid(void)
 	{

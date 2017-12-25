@@ -31,7 +31,6 @@ public:
 		memcpy(m_vertices, verts, currentVertexBufferSize);
 
 		CreateBuffer(currentVertexBufferSize);
-		//CreateIndexBuffer(currentIndexBufferSize);
 		CreateVertexArrayObject();
 
 		m_translateMatrix = glm::translate(translateVector);

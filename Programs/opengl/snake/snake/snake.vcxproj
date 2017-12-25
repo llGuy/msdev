@@ -126,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera\camera.h" />
+    <ClInclude Include="src\entities\apple.h" />
     <ClInclude Include="src\entities\snake.h" />
     <ClInclude Include="src\game\game.h" />
     <ClInclude Include="src\grid\grid.h" />

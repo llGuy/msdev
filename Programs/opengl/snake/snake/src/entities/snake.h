@@ -19,11 +19,11 @@ public:
 
 		MOVE_DOWN
 	};
-	explicit Snake(void)
+	explicit Snake(float speed)
 		: m_xzDirectionOfSnake(1.0f, 0.0f, 0.0f), 
 		m_xyzDirectionOfSnake(1.0f, 0.0f, 0.0f), m_isChangingDirection(false),
 		m_colorDelta(0.05f, 0.05f, 0.05f), m_indexRightVectors(0), m_indexLeftVectors(0),
-		m_isMovingInAltitude(false)
+		m_isMovingInAltitude(false), m_speed(speed)
 	{
 		Init();
 	}
@@ -45,23 +45,28 @@ public:
 		{
 			CreateRightChangingPoint();
 			MoveRight(m_topRightChangingPoints);
+			//std::cout << "going to right" << std::endl;
 		}
 		if (movement == MOVE_LEFT)
 		{
 			CreateLeftChangingPoint();
 			MoveLeft(m_topRightChangingPoints);
+			//std::cout << "going to left" << std::endl;
 		}
 		if (movement == MOVE_UP)
 		{
 			CreateRightChangingPoint();
 			MoveUp(m_topRightChangingPoints);
+			//std::cout << "going to up" << std::endl;
 		}
 		if (movement == MOVE_DOWN)
 		{
 			CreateRightChangingPoint();
 			MoveDown(m_topRightChangingPoints);
+			//	std::cout << "going to down" << std::endl;
 		}
 	}
+private:
 	void AddCube(void)
 	{
 		Color color(GREEN);
@@ -69,7 +74,8 @@ public:
 		color.m_colorPs -= m_colorDelta;
 		color.m_colorSs -= m_colorDelta;
 
-		m_cubes.push_back(new Cube(color, 0.5f, m_xyzDirectionOfSnake, *m_cubes[m_cubes.size() - 1]->TranslateVector() - m_xyzDirectionOfSnake));
+		m_cubes.push_back(new Cube(color, 0.5f, m_xyzDirectionOfSnake, 
+			*m_cubes[m_cubes.size() - 1]->TranslateVector() - m_xyzDirectionOfSnake, m_speed));
 		m_colorDelta += 0.05f;
 	}
 	void MoveRight(glm::vec3 topRightChangingPoints[])
@@ -173,8 +179,7 @@ public:
 private:
 	void Init(void)
 	{
-		m_cubes.push_back(new Cube(GREEN, 0.5f, m_xzDirectionOfSnake, glm::vec3(0.0f, 0.0f, -10.0f)));
-		AddCube();
+		m_cubes.push_back(new Cube(GREEN, 0.5f, m_xzDirectionOfSnake, glm::vec3(0.0f, 0.0f, -10.0f), m_speed));
 		AddCube();
 		AddCube();
 		AddCube();
@@ -211,6 +216,7 @@ private:
 	unsigned short m_indexLeftVectors;
 
 	bool m_isMovingInAltitude;
+	float m_speed;
 };
 
 #endif

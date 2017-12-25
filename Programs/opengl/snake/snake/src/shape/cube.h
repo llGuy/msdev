@@ -16,9 +16,9 @@ public:
 		glm::vec3 m_directitonChangingPoint;
 		unsigned int m_index;
 	};
-	explicit Cube(Color color, float radius, glm::vec3 direction, glm::vec3 translateVector)
-		: m_translateVector(translateVector), m_radius(radius), m_cubeSpeed(0.005f), m_cubeDirection(direction),
-		m_isChangingDirection(false)
+	explicit Cube(Color color, float radius, glm::vec3 direction, glm::vec3 translateVector, float speed, bool mobile = true)
+		: m_translateVector(translateVector), m_radius(radius), m_cubeSpeed(speed), m_cubeDirection(direction),
+		m_isChangingDirection(false), m_mobile(mobile)
 	{	
 		CreateVertices(color);
 		CreateIndices();
@@ -33,10 +33,10 @@ public:
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);
 		glBindVertexArray(m_vertexArrayID);
 
-		//Move();
 		UpdateShapeVertices();
 
-		PollDirectionChange();
+		if(m_mobile)
+			PollDirectionChange();
 
 		m_transformMatrix = viewProjectionMatrix * glm::translate(m_translateVector);
 
@@ -60,11 +60,11 @@ public:
 		{
 			glm::vec3 currentTopRightPoint = glm::vec3(m_currentShapeVertices.m_right,
 				m_currentShapeVertices.m_top, m_currentShapeVertices.m_front);
-			if (fabs(currentTopRightPoint.x - m_pendingMovements[m_movementIndex].m_directitonChangingPoint.x) < 0.01f)
+			if (fabs(currentTopRightPoint.x - m_pendingMovements[m_movementIndex].m_directitonChangingPoint.x) < 0.02f)
 			{
-				if (fabs(currentTopRightPoint.y - m_pendingMovements[m_movementIndex].m_directitonChangingPoint.y) < 0.01f)
+				if (fabs(currentTopRightPoint.y - m_pendingMovements[m_movementIndex].m_directitonChangingPoint.y) < 0.02f)
 				{
-					if (fabs(currentTopRightPoint.z - m_pendingMovements[m_movementIndex].m_directitonChangingPoint.z) < 0.01f)
+					if (fabs(currentTopRightPoint.z - m_pendingMovements[m_movementIndex].m_directitonChangingPoint.z) < 0.02f)
 					{
 						ChangeDirection();
 						std::cout << m_pendingMovements[0].m_index << std::endl;;
@@ -202,6 +202,7 @@ private:
 	//glm::vec3 m_nextDirectionChange;
 	std::vector<Movement> m_pendingMovements;
 	unsigned short m_movementIndex = 0;
+	bool m_mobile;
 };
 
 #endif
