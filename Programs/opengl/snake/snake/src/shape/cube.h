@@ -12,8 +12,9 @@ class Cube
 public:
 	struct Movement
 	{
+		glm::vec3 m_nextDirection;
 		glm::vec3 m_directitonChangingPoint;
-		bool m_isFinished;
+		unsigned int m_index;
 	};
 	explicit Cube(Color color, float radius, glm::vec3 direction, glm::vec3 translateVector)
 		: m_translateVector(translateVector), m_radius(radius), m_cubeSpeed(0.005f), m_cubeDirection(direction),
@@ -42,7 +43,6 @@ public:
 		glUniformMatrix4fv(location, 1, GL_FALSE, &m_transformMatrix[0][0]);
 
 		glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_SHORT, 0);
-
 	}
 	Shape::ShapeVertices ShapeVerts(void) override
 	{
@@ -52,28 +52,23 @@ public:
 	//movements
 	void ToggleChangingDirection(glm::vec3 newDirection, glm::vec3 topRightChangingPoint) override
 	{
-		m_isChangingDirection = true;
-		
-		m_topRightChangingPoint = topRightChangingPoint;
-
-		m_nextDirectionChange = newDirection;
+		m_pendingMovements.push_back({newDirection, topRightChangingPoint,m_pendingMovements.size()});
 	}
 	void PollDirectionChange(void)
 	{
-		if (m_isChangingDirection)
+		if (m_pendingMovements.size() > 0)
 		{
 			glm::vec3 currentTopRightPoint = glm::vec3(m_currentShapeVertices.m_right,
 				m_currentShapeVertices.m_top, m_currentShapeVertices.m_front);
-			//std::cout << "currentTopRightPoint " << currentTopRightPoint.x << " " << currentTopRightPoint.y << " " << currentTopRightPoint.z << "\n";
-			//std::cout << "changingTopRightPoint " << m_topRightChangingPoint.x << " " << m_topRightChangingPoint.y << " " << m_topRightChangingPoint.z << "\n";
-			if (fabs(currentTopRightPoint.x - m_topRightChangingPoint.x) < 0.01f)
+			if (fabs(currentTopRightPoint.x - m_pendingMovements[m_movementIndex].m_directitonChangingPoint.x) < 0.01f)
 			{
-				if (fabs(currentTopRightPoint.y - m_topRightChangingPoint.y) < 0.01f)
+				if (fabs(currentTopRightPoint.y - m_pendingMovements[m_movementIndex].m_directitonChangingPoint.y) < 0.01f)
 				{
-					if (fabs(currentTopRightPoint.z - m_topRightChangingPoint.z) < 0.01f)
+					if (fabs(currentTopRightPoint.z - m_pendingMovements[m_movementIndex].m_directitonChangingPoint.z) < 0.01f)
 					{
 						ChangeDirection();
-						m_isChangingDirection = false;
+						std::cout << m_pendingMovements[0].m_index << std::endl;;
+						m_pendingMovements.erase(m_pendingMovements.begin() + m_movementIndex);
 					}
 				}
 			}
@@ -81,7 +76,7 @@ public:
 	}
 	void ChangeDirection(void) override
 	{
-		m_cubeDirection = m_nextDirectionChange;
+		m_cubeDirection = m_pendingMovements[m_movementIndex].m_nextDirection;
 	}
 	glm::vec3* TranslateVector(void) override
 	{
@@ -204,9 +199,9 @@ private:
 	Shape::ShapeVertices m_originalShapeVertices;
 	bool m_isChangingDirection;
 	glm::vec3 m_topRightChangingPoint;
-	glm::vec3 m_nextDirectionChange;
+	//glm::vec3 m_nextDirectionChange;
 	std::vector<Movement> m_pendingMovements;
-	unsigned short m_movementIndex;
+	unsigned short m_movementIndex = 0;
 };
 
 #endif
