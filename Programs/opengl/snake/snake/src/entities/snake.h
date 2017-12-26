@@ -26,13 +26,13 @@ public:
 
 		MOVE_DOWN
 	};
-	explicit Snake(float speed, float radiusOfGrid)
+	explicit Snake(float speed, float radiusOfGrid, Apple* apple)
 		: m_xzDirectionOfSnake(1.0f, 0.0f, 0.0f), 
 		m_xyzDirectionOfSnake(1.0f, 0.0f, 0.0f), m_isChangingDirection(false),
 		m_colorDelta(0.05f, 0.05f, 0.05f), m_indexRightVectors(0), m_indexLeftVectors(0),
 		m_isMovingInAltitude(false), m_speed(speed), m_radiusOfGrid(radiusOfGrid, radiusOfGrid, radiusOfGrid)
 	{
-		Init();
+		Init(apple);
 	}
 public:
 	void Draw(glm::mat4 viewProjectionMatrix, unsigned int location, Apple* apple)
@@ -84,6 +84,7 @@ public:
 		if (fabs(m_xyzDirectionOfSnake.x) > 0.1f)
 		{
 			// collision vector with .left or .right of shape vertices
+
 			if (m_xyzDirectionOfSnake.x < -0.1f)
 			{
 				// direction of snake.x is negative
@@ -118,10 +119,32 @@ public:
 				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
 					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_front};
 			}
+			else if (m_xyzDirectionOfSnake.y > 0.1f)
+			{
+				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
+					shapeVertsOfApple->m_top, shapeVertsOfApple->m_back);
+				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_left,
+					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_back};
+			}
 		}
 		if (fabs(m_xyzDirectionOfSnake.z) > 0.1f)
 		{
 			// collision vector with .back or .fron of shaoe vertices
+
+			if (m_xyzDirectionOfSnake.z < -0.1f)
+			{
+				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
+					shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
+				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
+					&shapeVertsOfSnakeHead->m_top, &shapeVertsOfSnakeHead->m_back };
+			}
+			else if (m_xyzDirectionOfSnake.z > 0.1f)
+			{
+				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
+					shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
+				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_left,
+					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_front};
+			}
 		}
 	}
 private:
@@ -235,23 +258,12 @@ private:
 		}
 	}
 private:
-	void Init(void)
+	void Init(Apple* apple)
 	{
 		m_cubes.push_back(new Cube(GREEN, 0.5f, m_xzDirectionOfSnake, glm::vec3(0.0f, 0.0f, -10.0f), m_speed));
 		AddCube();
 		AddCube();
 		AddCube();
-		
-		//glm::vec3(0.0f, 0.0f, 1.0f);
-		//glm::vec3(-1.0f, 0.0f, 0.0f);
-		//glm::vec3(0.0f, 0.0f, -1.0f);
-		//glm::vec3(1.0f, 0.0f, 0.0f);
-		
-		//glm::vec3(0.0f, 0.0f, -1.0f);
-		//glm::vec3(-1.0f, 0.0f, 0.0f);
-		//glm::vec3(0.0f, 0.0f, 1.0f);
-		//glm::vec3(1.0f, 0.0f, 0.0f);
-
 
 		m_turningRightVectors[0] = glm::vec3(0.0f, 0.0f, 1.0f);
 		m_turningRightVectors[1] = glm::vec3(-1.0f, 0.0f, 0.0f);
@@ -262,10 +274,29 @@ private:
 		m_turningLeftVectors[1] = glm::vec3(-1.0f, 0.0f, 0.0f);
 		m_turningLeftVectors[2] = glm::vec3(0.0f, 0.0f, 1.0f);
 		m_turningLeftVectors[3] = glm::vec3(1.0f, 0.0f, 0.0f);
+
+		// the beginning of the game the direction of the snake
+		// is always glm::vec3(1.0f, 0.0f, 0.0f);
+
+		Shape::ShapeVertices* shapeVertsOfApple = apple->CubeObj()->ShapeVerts();
+		Shape::ShapeVertices* shapeVertsOfSnakeHead = Head()->ShapeVerts();
+		m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
+			shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
+		m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
+			&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_back };
 	}
 	void SnakeAteApple(Apple* apple)
 	{
-		
+		glm::vec3 currentCompareVecPositionOfSnakeHead = glm::vec3(
+			*m_snakeCollisionVector.m_x,
+			*m_snakeCollisionVector.m_y,
+			*m_snakeCollisionVector.m_z
+		);
+		if (glm::all(glm::lessThan(glm::abs(currentCompareVecPositionOfSnakeHead - m_appleCollisionVector), 
+			glm::vec3(0.2f))))
+		{
+			apple->GenerateNewApple();
+		}
 	}
 	const bool Vec3HasAllPos(glm::vec3 vec)
 	{
