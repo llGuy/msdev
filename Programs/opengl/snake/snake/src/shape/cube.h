@@ -44,9 +44,9 @@ public:
 
 		glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_SHORT, 0);
 	}
-	Shape::ShapeVertices ShapeVerts(void) override
+	Shape::ShapeVertices* ShapeVerts(void) override
 	{
-		return m_currentShapeVertices;
+		return &m_currentShapeVertices;
 	}
 public:
 	//movements

@@ -5,10 +5,17 @@
 #include <math.h>
 
 #include "..\shape\cube.h"
+#include "apple.h"
 
 class Snake
 {
 public:
+	struct LiveVector
+	{
+		float* m_x;
+		float* m_y;
+		float* m_z;
+	};
 	enum movement_t
 	{	
 		MOVE_LEFT,
@@ -28,13 +35,14 @@ public:
 		Init();
 	}
 public:
-	void Draw(glm::mat4 viewProjectionMatrix, unsigned int location)
+	void Draw(glm::mat4 viewProjectionMatrix, unsigned int location, Apple* apple)
 	{
 		for (auto& cubeIter : m_cubes)
 			cubeIter->Move();
 		for (auto& cubeIter : m_cubes)
 			cubeIter->Draw(viewProjectionMatrix, location);
 
+		SnakeAteApple(apple);
 		if (SurpassedLimit())
 			Log("game is finished");
 	}
@@ -42,7 +50,7 @@ public:
 	{
 		return m_cubes[m_headCube];
 	}
-	void Move(movement_t movement)
+	void Move(movement_t movement, Apple* apple)
 	{
 		if (movement == MOVE_RIGHT)
 		{
@@ -67,6 +75,53 @@ public:
 			CreateRightChangingPoint();
 			MoveDown(m_topRightChangingPoints);
 			//	std::cout << "going to down" << std::endl;
+		}
+		// get collision vector
+
+		Shape::ShapeVertices* shapeVertsOfApple = apple->CubeObj()->ShapeVerts();
+		Shape::ShapeVertices* shapeVertsOfSnakeHead = Head()->ShapeVerts();
+
+		if (fabs(m_xyzDirectionOfSnake.x) > 0.1f)
+		{
+			// collision vector with .left or .right of shape vertices
+			if (m_xyzDirectionOfSnake.x < -0.1f)
+			{
+				// direction of snake.x is negative
+				// compare with snake.left 
+				// and apple.right
+
+				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
+					shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
+				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_left,
+					&shapeVertsOfSnakeHead->m_top, &shapeVertsOfSnakeHead->m_front };
+			}
+			else if (m_xyzDirectionOfSnake.x > 0.1f)
+			{
+				// direction of snake.x is positive
+				// compare with snake.right
+				// and apple.left
+
+				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
+					shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
+				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
+					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_back };
+			}
+		}
+		if (fabs(m_xyzDirectionOfSnake.y) > 0.1f)
+		{
+			// collision vector with .bottom or .top of shape vertices
+
+			if(m_xyzDirectionOfSnake.y < -0.1f)
+			{ 
+				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
+					shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
+				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
+					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_front};
+			}
+		}
+		if (fabs(m_xyzDirectionOfSnake.z) > 0.1f)
+		{
+			// collision vector with .back or .fron of shaoe vertices
 		}
 	}
 private:
@@ -132,24 +187,24 @@ private:
 	}
 	void CreateRightChangingPoint(void)
 	{
-		m_topRightChangingPoints[0] = glm::vec3(ceil(m_cubes[0]->ShapeVerts().m_right),
-			m_cubes[0]->ShapeVerts().m_top,
-			m_cubes[0]->ShapeVerts().m_front);
-		m_topRightChangingPoints[1] = glm::vec3(m_cubes[0]->ShapeVerts().m_right,
-			m_cubes[0]->ShapeVerts().m_top,
-			ceil(m_cubes[0]->ShapeVerts().m_front));
-		m_topRightChangingPoints[2] = glm::vec3(floor(m_cubes[0]->ShapeVerts().m_right),
-			m_cubes[0]->ShapeVerts().m_top,
-			m_cubes[0]->ShapeVerts().m_front);
-		m_topRightChangingPoints[3] = glm::vec3(m_cubes[0]->ShapeVerts().m_right,
-			m_cubes[0]->ShapeVerts().m_top,
-			floor(m_cubes[0]->ShapeVerts().m_front));
+		m_topRightChangingPoints[0] = glm::vec3(ceil(m_cubes[0]->ShapeVerts()->m_right),
+			m_cubes[0]->ShapeVerts()->m_top,
+			m_cubes[0]->ShapeVerts()->m_front);
+		m_topRightChangingPoints[1] = glm::vec3(m_cubes[0]->ShapeVerts()->m_right,
+			m_cubes[0]->ShapeVerts()->m_top,
+			ceil(m_cubes[0]->ShapeVerts()->m_front));
+		m_topRightChangingPoints[2] = glm::vec3(floor(m_cubes[0]->ShapeVerts()->m_right),
+			m_cubes[0]->ShapeVerts()->m_top,
+			m_cubes[0]->ShapeVerts()->m_front);
+		m_topRightChangingPoints[3] = glm::vec3(m_cubes[0]->ShapeVerts()->m_right,
+			m_cubes[0]->ShapeVerts()->m_top,
+			floor(m_cubes[0]->ShapeVerts()->m_front));
 
 		if (m_isMovingInAltitude)
 		{
 			for (unsigned short iter = 0; iter < 4; ++iter)
 			{
-				float yVal = ceil(fabs(m_cubes[0]->ShapeVerts().m_top)) *
+				float yVal = ceil(fabs(m_cubes[0]->ShapeVerts()->m_top)) *
 					m_topRightChangingPoints[iter].y / fabs(m_topRightChangingPoints[iter].y);
 				m_topRightChangingPoints[iter].y = yVal;
 			}
@@ -157,24 +212,24 @@ private:
 	}
 	void CreateLeftChangingPoint(void)
 	{
-		m_topRightChangingPoints[0] = glm::vec3(ceil(m_cubes[0]->ShapeVerts().m_right),
-			m_cubes[0]->ShapeVerts().m_top,
-			m_cubes[0]->ShapeVerts().m_front);
-		m_topRightChangingPoints[1] = glm::vec3(m_cubes[0]->ShapeVerts().m_right,
-			m_cubes[0]->ShapeVerts().m_top,
-			floor(m_cubes[0]->ShapeVerts().m_front));
-		m_topRightChangingPoints[2] = glm::vec3(floor(m_cubes[0]->ShapeVerts().m_right),
-			m_cubes[0]->ShapeVerts().m_top,
-			m_cubes[0]->ShapeVerts().m_front);
-		m_topRightChangingPoints[3] = glm::vec3(m_cubes[0]->ShapeVerts().m_right,
-			m_cubes[0]->ShapeVerts().m_top,
-			ceil(m_cubes[0]->ShapeVerts().m_front));
+		m_topRightChangingPoints[0] = glm::vec3(ceil(m_cubes[0]->ShapeVerts()->m_right),
+			m_cubes[0]->ShapeVerts()->m_top,
+			m_cubes[0]->ShapeVerts()->m_front);
+		m_topRightChangingPoints[1] = glm::vec3(m_cubes[0]->ShapeVerts()->m_right,
+			m_cubes[0]->ShapeVerts()->m_top,
+			floor(m_cubes[0]->ShapeVerts()->m_front));
+		m_topRightChangingPoints[2] = glm::vec3(floor(m_cubes[0]->ShapeVerts()->m_right),
+			m_cubes[0]->ShapeVerts()->m_top,
+			m_cubes[0]->ShapeVerts()->m_front);
+		m_topRightChangingPoints[3] = glm::vec3(m_cubes[0]->ShapeVerts()->m_right,
+			m_cubes[0]->ShapeVerts()->m_top,
+			ceil(m_cubes[0]->ShapeVerts()->m_front));
 
 		if (m_isMovingInAltitude)
 		{
 			for (unsigned short iter = 0; iter < 4; ++iter)
 			{
-				m_topRightChangingPoints[iter].y = ceil(fabs(m_cubes[0]->ShapeVerts().m_top)) *
+				m_topRightChangingPoints[iter].y = ceil(fabs(m_cubes[0]->ShapeVerts()->m_top)) *
 					m_topRightChangingPoints[iter].y / fabs(m_topRightChangingPoints[iter].y);
 			}
 		}
@@ -208,29 +263,9 @@ private:
 		m_turningLeftVectors[2] = glm::vec3(0.0f, 0.0f, 1.0f);
 		m_turningLeftVectors[3] = glm::vec3(1.0f, 0.0f, 0.0f);
 	}
-	void SnakeAteApple(Shape* apple)
+	void SnakeAteApple(Apple* apple)
 	{
-		Shape::ShapeVertices vertsOfApple = apple->ShapeVerts();
-		glm::vec3 posXPosYPosZ = glm::vec3(vertsOfApple.m_right, vertsOfApple.m_top, vertsOfApple.m_front);
-		glm::vec3 negXNegYNegZ = glm::vec3(vertsOfApple.m_left, vertsOfApple.m_bottom, vertsOfApple.m_back);
-		glm::vec3 vecToUse;
-
-		if (Vec3HasAllPos(m_xyzDirectionOfSnake))
-		{	
-			vecToUse = negXNegYNegZ;
-
-		}	
-		else
-		{
-			vecToUse = posXPosYPosZ;
-		}
-	}
-	glm::vec3 VecToCompare(glm::vec3 vecToUse)
-	{
-		if (glm::all(glm::lessThan(glm::abs(glm::vec3(1.0f, 0.0f, 0.0f) - m_xzDirectionOfSnake), glm::vec3(0.01f))))
-		{
-
-		}
+		
 	}
 	const bool Vec3HasAllPos(glm::vec3 vec)
 	{
@@ -244,12 +279,12 @@ private:
 	}
 	const bool SurpassedLimit(void)
 	{
-		if (m_cubes[0]->ShapeVerts().m_top > m_radiusOfGrid.y ||
-			fabs(m_cubes[0]->ShapeVerts().m_bottom) > m_radiusOfGrid.y ||
-			m_cubes[0]->ShapeVerts().m_right > m_radiusOfGrid.x ||
-			fabs(m_cubes[0]->ShapeVerts().m_left) > m_radiusOfGrid.x ||
-			m_cubes[0]->ShapeVerts().m_front > m_radiusOfGrid.z ||
-			fabs(m_cubes[0]->ShapeVerts().m_front > m_radiusOfGrid.z))
+		if (m_cubes[0]->ShapeVerts()->m_top > m_radiusOfGrid.y ||
+			fabs(m_cubes[0]->ShapeVerts()->m_bottom) > m_radiusOfGrid.y ||
+			m_cubes[0]->ShapeVerts()->m_right > m_radiusOfGrid.x ||
+			fabs(m_cubes[0]->ShapeVerts()->m_left) > m_radiusOfGrid.x ||
+			m_cubes[0]->ShapeVerts()->m_front > m_radiusOfGrid.z ||
+			fabs(m_cubes[0]->ShapeVerts()->m_front > m_radiusOfGrid.z))
 		{
 			return true;
 		}
@@ -275,6 +310,9 @@ private:
 	float m_speed;
 
 	glm::vec3 m_radiusOfGrid;
+
+	glm::vec3 m_appleCollisionVector;
+	Snake::LiveVector m_snakeCollisionVector;
 };
 
 #endif

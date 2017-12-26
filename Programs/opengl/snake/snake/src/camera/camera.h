@@ -44,9 +44,9 @@ public:
 		//return glm::mat4(1.0f);
 		//return glm::lookAt(m_cameraPosition, m_cameraPosition + m_viewDirection, m_UP_VECTOR);
 
-		Shape::ShapeVertices verts = snake->Head()->ShapeVerts();
-		m_cameraPosition = glm::vec3(verts.m_right + 3.0f, verts.m_top + 3.0f,
-			verts.m_front);
+		Shape::ShapeVertices* verts = snake->Head()->ShapeVerts();
+		m_cameraPosition = glm::vec3(verts->m_right + 3.0f, verts->m_top + 3.0f,
+			verts->m_front);
 		if (m_isLookingAtCenterOfGrid)
 			LookAtCenterOfGrid();
 		

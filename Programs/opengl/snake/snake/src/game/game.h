@@ -39,14 +39,14 @@ public:
 			glm::radians(60.0f), (float)m_windowWidth / m_windowHeight, 0.1f, 40.0f) *
 			camera->GetWorldToViewMatrix(m_snake);
 
-		m_snake->Draw(m_viewProjectionMatrix, location);
+		m_snake->Draw(m_viewProjectionMatrix, location, m_apple);
 		m_reference->Draw(m_viewProjectionMatrix, location);
 		m_grid->Draw(m_viewProjectionMatrix, location);
 		m_apple->Draw(m_viewProjectionMatrix, location);
 	}
 	void MoveSnake(Snake::movement_t movement)
 	{
-		m_snake->Move(movement);
+		m_snake->Move(movement, m_apple);
 	}
 	Snake* SnakeObj(void)
 	{

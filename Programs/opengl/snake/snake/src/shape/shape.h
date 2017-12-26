@@ -22,9 +22,9 @@ public:
 	{
 	}
 	virtual void Draw(glm::mat4 worldToViewMatrix, unsigned int uniformLocation, Shape* apple = nullptr) = 0;
-	virtual Shape::ShapeVertices ShapeVerts(void)
+	virtual Shape::ShapeVertices* ShapeVerts(void)
 	{
-		return { 0 };
+		return nullptr;
 	}
 	virtual void ChangeDirection(void)
 	{
