@@ -28,7 +28,8 @@ public:
 	virtual ~Shape(void)
 	{
 	}
-	virtual void Draw(glm::mat4 worldToViewMatrix, unsigned int uniformLocation, Shape* apple = nullptr) = 0;
+	virtual void Draw(glm::mat4 worldToViewMatrix, 
+		unsigned int uniformLocation, Shape* apple = nullptr) = 0;
 	virtual Shape::ShapeVertices* ShapeVerts(void)
 	{
 		return nullptr;
@@ -54,9 +55,12 @@ public:
 	virtual void UpdateShapeVertices(void)
 	{
 	}
-
 	virtual void Move(void)
 	{
+	}
+	virtual const bool DetectCollision(Shape*)
+	{
+		return bool();
 	}
 protected:
 	virtual unsigned int VertexBufferSize(void)

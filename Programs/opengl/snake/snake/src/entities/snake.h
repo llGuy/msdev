@@ -41,6 +41,9 @@ public:
 			cubeIter->Move();
 		for (auto& cubeIter : m_cubes)
 			cubeIter->Draw(viewProjectionMatrix, location);
+		for (unsigned int cubeIter = 1; cubeIter < m_cubes.size(); ++cubeIter)
+			if (m_cubes[0]->DetectCollision(m_cubes[cubeIter]))
+				exit(1);
 
 		SnakeAteApple(apple);
 	}
@@ -266,7 +269,7 @@ private:
 	{
 		// the head of the snake
 		m_cubes.push_back(new Cube(GREEN, 0.5f, m_xzDirectionOfSnake, glm::vec3(0.0f, 0.0f, -10.0f), m_speed, std::vector<Shape::Movement>()));
-		for (unsigned int i = 0; i < 3; i++)
+		for (unsigned int i = 0; i < 8; i++)
 			AddCube();
 
 		m_turningRightVectors[0] = glm::vec3(0.0f, 0.0f, 1.0f);

@@ -96,6 +96,86 @@ public:
 	{
 		return m_cubeDirection;
 	}
+	const bool DetectCollision(Shape* other) override
+	{
+		Shape::ShapeVertices shapeVertsOfOtherShape = *(other->ShapeVerts());
+		if (fabs(m_cubeDirection.x) > 0.1f)
+		{
+			float extOfThis[4] = { m_currentShapeVertices.m_top, m_currentShapeVertices.m_bottom,
+				m_currentShapeVertices.m_front, m_currentShapeVertices.m_back };
+			float extOfOther[4] = { shapeVertsOfOtherShape.m_top, shapeVertsOfOtherShape.m_bottom,
+				shapeVertsOfOtherShape.m_front, shapeVertsOfOtherShape.m_back };
+			if (m_cubeDirection.x < -0.1f)
+			{
+				// compare with the other's right side
+				float sideOfThis = m_currentShapeVertices.m_left;
+				float sideOfOther = shapeVertsOfOtherShape.m_right;
+
+				if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
+					return true;
+			}
+			else if (m_cubeDirection.x > 0.1f)
+			{
+				// compare with the other's left side
+				float sideOfThis = m_currentShapeVertices.m_right;
+				float sideOfOther = shapeVertsOfOtherShape.m_left;
+
+				if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
+					return true;
+			}
+		}
+		else if (fabs(m_cubeDirection.y) > 0.1f)
+		{
+			float extOfThis[4] = { m_currentShapeVertices.m_right, m_currentShapeVertices.m_left,
+				m_currentShapeVertices.m_front, m_currentShapeVertices.m_back };
+			float extOfOther[4] = { shapeVertsOfOtherShape.m_right, shapeVertsOfOtherShape.m_left,
+				shapeVertsOfOtherShape.m_front, shapeVertsOfOtherShape.m_back };
+			if (m_cubeDirection.y < -0.1f)
+			{
+				// compare with the other's top side
+				float sideOfThis = m_currentShapeVertices.m_bottom;
+				float sideOfOther = shapeVertsOfOtherShape.m_top;
+
+				if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
+					return true;
+			}
+			else if (m_cubeDirection.y > 0.1f)
+			{
+				// compare with the other's bottom side
+				float sideOfThis = m_currentShapeVertices.m_top;
+				float sideOfOther = shapeVertsOfOtherShape.m_bottom;
+
+				if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
+					return true;
+			}
+		}
+		else if (fabs(m_cubeDirection.z) > 0.1f)
+		{
+			float extOfThis[4] = { m_currentShapeVertices.m_right, m_currentShapeVertices.m_left,
+				m_currentShapeVertices.m_top, m_currentShapeVertices.m_bottom };
+			float extOfOther[4] = { shapeVertsOfOtherShape.m_right, shapeVertsOfOtherShape.m_left,
+				shapeVertsOfOtherShape.m_top, shapeVertsOfOtherShape.m_bottom };
+			if (m_cubeDirection.z < -0.1f)
+			{
+				// compare with the other's front side
+				float sideOfThis = m_currentShapeVertices.m_back;
+				float sideOfOther = shapeVertsOfOtherShape.m_front;
+
+				if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
+					return true;
+			}
+			else if (m_cubeDirection.z > 0.1f)
+			{
+				// compare with the other's back side
+				float sideOfThis = m_currentShapeVertices.m_front;
+				float sideOfOther = shapeVertsOfOtherShape.m_back;
+
+				if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
+					return true;
+			}
+		}
+		return false;
+	}
 private:
 	unsigned int VertexBufferSize(void) override
 	{
@@ -187,10 +267,29 @@ private:
 		unsigned int currentIndexBufferSize = IndexBufferSize();
 		memcpy(m_indices, indices, currentIndexBufferSize);
 	}
-	
 	void Move(void) override
 	{
 		m_translateVector += m_cubeDirection * m_cubeSpeed;
+	}
+	const bool PointContainedInPlane(float faceThis, float faceOther, float vertsOfThis[4], float vertsOfOther[4])
+	{
+		if (fabs(faceThis - faceOther) < 0.01f)
+		{
+			if (IsInBetween(vertsOfThis[0], vertsOfOther[0], vertsOfOther[1]))
+				if (IsInBetween(vertsOfThis[2], vertsOfOther[2], vertsOfOther[3]))
+					return true;
+			if (IsInBetween(vertsOfThis[1], vertsOfOther[0], vertsOfOther[1]))
+				if (IsInBetween(vertsOfThis[3], vertsOfOther[2], vertsOfOther[3]))
+					return true;
+		}
+		return false;
+	}
+	const bool IsInBetween(float point, float ext1, float ext2)
+	{
+		if (point < ext1 + 0.01f)
+			if (point > ext2 - 0.01f)
+				return true;
+		return false;
 	}
 private:
 	float m_radius;
@@ -202,7 +301,6 @@ private:
 	Shape::ShapeVertices m_originalShapeVertices;
 	bool m_isChangingDirection;
 	glm::vec3 m_topRightChangingPoint;
-	//glm::vec3 m_nextDirectionChange;
 	std::vector<Movement> m_pendingMovements;
 	unsigned short m_movementIndex = 0;
 	bool m_mobile;
