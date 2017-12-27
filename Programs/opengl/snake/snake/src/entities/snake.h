@@ -154,76 +154,65 @@ private:
 			return true;
 		return false;
 	}
-	void CreateRightChangingPoint(void)
+	void CreateChangingPoint(float zExt1, float zExt2)
 	{
 		m_topRightChangingPoints[0] = glm::vec3(ceil(m_cubes[0]->ShapeVerts()->m_right),
 			m_cubes[0]->ShapeVerts()->m_top,
 			m_cubes[0]->ShapeVerts()->m_front);
 		m_topRightChangingPoints[1] = glm::vec3(m_cubes[0]->ShapeVerts()->m_right,
 			m_cubes[0]->ShapeVerts()->m_top,
-			ceil(m_cubes[0]->ShapeVerts()->m_front));
+			zExt1);
 		m_topRightChangingPoints[2] = glm::vec3(floor(m_cubes[0]->ShapeVerts()->m_right),
 			m_cubes[0]->ShapeVerts()->m_top,
 			m_cubes[0]->ShapeVerts()->m_front);
 		m_topRightChangingPoints[3] = glm::vec3(m_cubes[0]->ShapeVerts()->m_right,
 			m_cubes[0]->ShapeVerts()->m_top,
+			zExt2);
+	}
+	void ChangeChangingPointYToExtremityOfY(void)
+	{
+		for (unsigned short iter = 0; iter < 4; ++iter)
+		{
+			float yVal;
+			if (m_xyzDirectionOfSnake.y > 0.1f)
+				yVal = ceil(Head()->ShapeVerts()->m_top);
+			else
+				yVal = floor(Head()->ShapeVerts()->m_top);
+
+			m_topRightChangingPoints[iter].y = yVal;
+		}
+	}
+	void CreateRightChangingPoint(void)
+	{
+		CreateChangingPoint(ceil(m_cubes[0]->ShapeVerts()->m_front),
 			floor(m_cubes[0]->ShapeVerts()->m_front));
 
 		if (m_isMovingInAltitude)
-		{
-			for (unsigned short iter = 0; iter < 4; ++iter)
-			{
-				float yVal;
-				if (m_xyzDirectionOfSnake.y > 0.1f)
-				{
-					yVal = ceil(Head()->ShapeVerts()->m_top);
-				}
-				else
-				{
-					yVal = floor(Head()->ShapeVerts()->m_top);
-				}
-
-				m_topRightChangingPoints[iter].y = yVal;
-			}
-		}
+			ChangeChangingPointYToExtremityOfY();
 	}
 	void CreateLeftChangingPoint(void)
 	{
-		m_topRightChangingPoints[0] = glm::vec3(ceil(m_cubes[0]->ShapeVerts()->m_right),
-			m_cubes[0]->ShapeVerts()->m_top,
-			m_cubes[0]->ShapeVerts()->m_front);
-		m_topRightChangingPoints[1] = glm::vec3(m_cubes[0]->ShapeVerts()->m_right,
-			m_cubes[0]->ShapeVerts()->m_top,
-			floor(m_cubes[0]->ShapeVerts()->m_front));
-		m_topRightChangingPoints[2] = glm::vec3(floor(m_cubes[0]->ShapeVerts()->m_right),
-			m_cubes[0]->ShapeVerts()->m_top,
-			m_cubes[0]->ShapeVerts()->m_front);
-		m_topRightChangingPoints[3] = glm::vec3(m_cubes[0]->ShapeVerts()->m_right,
-			m_cubes[0]->ShapeVerts()->m_top,
+		CreateChangingPoint(floor(m_cubes[0]->ShapeVerts()->m_front),
 			ceil(m_cubes[0]->ShapeVerts()->m_front));
 
 		if (m_isMovingInAltitude)
-		{
-			for (unsigned short iter = 0; iter < 4; ++iter)
-			{
-				float yVal;
-				if (m_xyzDirectionOfSnake.y > 0.1f)
-				{
-					yVal = ceil(Head()->ShapeVerts()->m_top);
-				}
-				else
-				{
-					yVal = floor(Head()->ShapeVerts()->m_top);
-				}
-
-				m_topRightChangingPoints[iter].y = yVal;
-			}
-		}
+			ChangeChangingPointYToExtremityOfY();
+	}
+	void SetAppleCollisionVectorToAllGreaterCoords(Shape::ShapeVertices* shapeVertsOfApple)
+	{
+		m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
+			shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
+	}
+	void SetAppleCollisionVectorToAllLesserCoords(Shape::ShapeVertices* shapeVertsOfApple)
+	{
+		m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
+			shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
 	}
 	void GetCompareVector(Apple* apple)
 	{
 		Shape::ShapeVertices* shapeVertsOfApple = apple->CubeObj()->ShapeVerts();
 		Shape::ShapeVertices* shapeVertsOfSnakeHead = Head()->ShapeVerts();
+
 		if (fabs(m_xyzDirectionOfSnake.x) > 0.1f)
 		{
 			// collision vector with .left or .right of shape vertices
@@ -234,8 +223,7 @@ private:
 				// compare with snake.left 
 				// and apple.right
 
-				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
-					shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
+				SetAppleCollisionVectorToAllGreaterCoords(shapeVertsOfApple);
 				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_left,
 					&shapeVertsOfSnakeHead->m_top, &shapeVertsOfSnakeHead->m_front };
 			}
@@ -245,8 +233,7 @@ private:
 				// compare with snake.right
 				// and apple.left
 
-				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
-					shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
+				SetAppleCollisionVectorToAllLesserCoords(shapeVertsOfApple);
 				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
 					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_back };
 			}
@@ -257,15 +244,13 @@ private:
 
 			if (m_xyzDirectionOfSnake.y < -0.1f)
 			{
-				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
-					shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
+				SetAppleCollisionVectorToAllGreaterCoords(shapeVertsOfApple);
 				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
 					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_front };
 			}
 			else if (m_xyzDirectionOfSnake.y > 0.1f)
 			{
-				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
-					shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
+				SetAppleCollisionVectorToAllLesserCoords(shapeVertsOfApple);
 				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_left,
 					&shapeVertsOfSnakeHead->m_top, &shapeVertsOfSnakeHead->m_back };
 			}
@@ -276,46 +261,56 @@ private:
 
 			if (m_xyzDirectionOfSnake.z < -0.1f)
 			{
-				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
-					shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
+				SetAppleCollisionVectorToAllGreaterCoords(shapeVertsOfApple);
 				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
 					&shapeVertsOfSnakeHead->m_top, &shapeVertsOfSnakeHead->m_back };
 			}
 			else if (m_xyzDirectionOfSnake.z > 0.1f)
 			{
-				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
-					shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
+				SetAppleCollisionVectorToAllLesserCoords(shapeVertsOfApple);
 				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_left,
 					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_front };
 			}
 		}
 	}
 private:
+	void InitializeRightTurningVectors(void)
+	{
+		m_turningRightVectors[0] = glm::vec3(0.0f, 0.0f, 1.0f);
+		m_turningRightVectors[1] = glm::vec3(-1.0f, 0.0f, 0.0f);
+		m_turningRightVectors[2] = glm::vec3(0.0f, 0.0f, -1.0f);
+		m_turningRightVectors[3] = glm::vec3(1.0f, 0.0f, 0.0f);
+	}
+	void InitializeLeftTurningVectors(void)
+	{
+		m_turningLeftVectors[0] = glm::vec3(0.0f, 0.0f, -1.0f);
+		m_turningLeftVectors[1] = glm::vec3(-1.0f, 0.0f, 0.0f);
+		m_turningLeftVectors[2] = glm::vec3(0.0f, 0.0f, 1.0f);
+		m_turningLeftVectors[3] = glm::vec3(1.0f, 0.0f, 0.0f);
+	}
+	void InitializeAppleAndSnakeCollisionVectors(Shape::ShapeVertices* shapeVertsOfApple,
+		Shape::ShapeVertices* shapeVertsOfSnakeHead)
+	{
+		m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
+			shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
+		m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
+			&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_back };
+	}
 	void Init(Apple* apple)
 	{
 		// the head of the snake
 		m_cubes.push_back(new Cube(GREEN, 0.5f, m_xzDirectionOfSnake, glm::vec3(0.0f, 0.0f, -10.0f), m_speed, std::vector<Shape::Movement>()));
 		AddCube();
 
-		m_turningRightVectors[0] = glm::vec3(0.0f, 0.0f, 1.0f);
-		m_turningRightVectors[1] = glm::vec3(-1.0f, 0.0f, 0.0f);
-		m_turningRightVectors[2] = glm::vec3(0.0f, 0.0f, -1.0f);
-		m_turningRightVectors[3] = glm::vec3(1.0f, 0.0f, 0.0f);
-
-		m_turningLeftVectors[0] = glm::vec3(0.0f, 0.0f, -1.0f);
-		m_turningLeftVectors[1] = glm::vec3(-1.0f, 0.0f, 0.0f);
-		m_turningLeftVectors[2] = glm::vec3(0.0f, 0.0f, 1.0f);
-		m_turningLeftVectors[3] = glm::vec3(1.0f, 0.0f, 0.0f);
-
+		InitializeRightTurningVectors();
+		InitializeLeftTurningVectors();
 		// the beginning of the game the direction of the snake
 		// is always glm::vec3(1.0f, 0.0f, 0.0f);
 
 		Shape::ShapeVertices* shapeVertsOfApple = apple->CubeObj()->ShapeVerts();
 		Shape::ShapeVertices* shapeVertsOfSnakeHead = Head()->ShapeVerts();
-		m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
-			shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
-		m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
-			&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_back };
+
+		InitializeAppleAndSnakeCollisionVectors(shapeVertsOfApple, shapeVertsOfSnakeHead);
 	}
 	void SnakeAteApple(Apple* apple)
 	{

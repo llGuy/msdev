@@ -96,83 +96,99 @@ public:
 	{
 		return m_cubeDirection;
 	}
+	const bool DetectedCollisionOnXExtremities(Shape::ShapeVertices shapeVertsOfOtherShape)
+	{
+		float extOfThis[4] = { m_currentShapeVertices.m_top, m_currentShapeVertices.m_bottom,
+			m_currentShapeVertices.m_front, m_currentShapeVertices.m_back };
+		float extOfOther[4] = { shapeVertsOfOtherShape.m_top, shapeVertsOfOtherShape.m_bottom,
+			shapeVertsOfOtherShape.m_front, shapeVertsOfOtherShape.m_back };
+		if (m_cubeDirection.x < -0.1f)
+		{
+			// compare with the other's right side
+			float sideOfThis = m_currentShapeVertices.m_left;
+			float sideOfOther = shapeVertsOfOtherShape.m_right;
+
+			if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
+				return true;
+		}
+		else if (m_cubeDirection.x > 0.1f)
+		{
+			// compare with the other's left side
+			float sideOfThis = m_currentShapeVertices.m_right;
+			float sideOfOther = shapeVertsOfOtherShape.m_left;
+
+			if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
+				return true;
+		}
+		return false;
+	}
+	const bool DetectedCollisionOnYExtremities(Shape::ShapeVertices shapeVertsOfOtherShape)
+	{
+		float extOfThis[4] = { m_currentShapeVertices.m_right, m_currentShapeVertices.m_left,
+			m_currentShapeVertices.m_front, m_currentShapeVertices.m_back };
+		float extOfOther[4] = { shapeVertsOfOtherShape.m_right, shapeVertsOfOtherShape.m_left,
+			shapeVertsOfOtherShape.m_front, shapeVertsOfOtherShape.m_back };
+		if (m_cubeDirection.y < -0.1f)
+		{
+			// compare with the other's top side
+			float sideOfThis = m_currentShapeVertices.m_bottom;
+			float sideOfOther = shapeVertsOfOtherShape.m_top;
+
+			if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
+				return true;
+		}
+		else if (m_cubeDirection.y > 0.1f)
+		{
+			// compare with the other's bottom side
+			float sideOfThis = m_currentShapeVertices.m_top;
+			float sideOfOther = shapeVertsOfOtherShape.m_bottom;
+
+			if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
+				return true;
+		}
+	}
+	const bool DetectedCollisionOnZExtremities(Shape::ShapeVertices shapeVertsOfOtherShape)
+	{
+		float extOfThis[4] = { m_currentShapeVertices.m_right, m_currentShapeVertices.m_left,
+			m_currentShapeVertices.m_top, m_currentShapeVertices.m_bottom };
+		float extOfOther[4] = { shapeVertsOfOtherShape.m_right, shapeVertsOfOtherShape.m_left,
+			shapeVertsOfOtherShape.m_top, shapeVertsOfOtherShape.m_bottom };
+		if (m_cubeDirection.z < -0.1f)
+		{
+			// compare with the other's front side
+			float sideOfThis = m_currentShapeVertices.m_back;
+			float sideOfOther = shapeVertsOfOtherShape.m_front;
+
+			if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
+				return true;
+		}
+		else if (m_cubeDirection.z > 0.1f)
+		{
+			// compare with the other's back side
+			float sideOfThis = m_currentShapeVertices.m_front;
+			float sideOfOther = shapeVertsOfOtherShape.m_back;
+
+			if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
+				return true;
+		}
+	}
 	const bool DetectCollision(Shape* other) override
 	{
 		Shape::ShapeVertices shapeVertsOfOtherShape = *(other->ShapeVerts());
 		if (fabs(m_cubeDirection.x) > 0.1f)
 		{
-			float extOfThis[4] = { m_currentShapeVertices.m_top, m_currentShapeVertices.m_bottom,
-				m_currentShapeVertices.m_front, m_currentShapeVertices.m_back };
-			float extOfOther[4] = { shapeVertsOfOtherShape.m_top, shapeVertsOfOtherShape.m_bottom,
-				shapeVertsOfOtherShape.m_front, shapeVertsOfOtherShape.m_back };
-			if (m_cubeDirection.x < -0.1f)
-			{
-				// compare with the other's right side
-				float sideOfThis = m_currentShapeVertices.m_left;
-				float sideOfOther = shapeVertsOfOtherShape.m_right;
-
-				if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
-					return true;
-			}
-			else if (m_cubeDirection.x > 0.1f)
-			{
-				// compare with the other's left side
-				float sideOfThis = m_currentShapeVertices.m_right;
-				float sideOfOther = shapeVertsOfOtherShape.m_left;
-
-				if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
-					return true;
-			}
+			if (DetectedCollisionOnXExtremities(shapeVertsOfOtherShape))
+				return true;
 		}
 		else if (fabs(m_cubeDirection.y) > 0.1f)
 		{
-			float extOfThis[4] = { m_currentShapeVertices.m_right, m_currentShapeVertices.m_left,
-				m_currentShapeVertices.m_front, m_currentShapeVertices.m_back };
-			float extOfOther[4] = { shapeVertsOfOtherShape.m_right, shapeVertsOfOtherShape.m_left,
-				shapeVertsOfOtherShape.m_front, shapeVertsOfOtherShape.m_back };
-			if (m_cubeDirection.y < -0.1f)
-			{
-				// compare with the other's top side
-				float sideOfThis = m_currentShapeVertices.m_bottom;
-				float sideOfOther = shapeVertsOfOtherShape.m_top;
-
-				if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
-					return true;
-			}
-			else if (m_cubeDirection.y > 0.1f)
-			{
-				// compare with the other's bottom side
-				float sideOfThis = m_currentShapeVertices.m_top;
-				float sideOfOther = shapeVertsOfOtherShape.m_bottom;
-
-				if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
-					return true;
-			}
+			if (DetectedCollisionOnYExtremities(shapeVertsOfOtherShape))
+				return true;
 		}
 		else if (fabs(m_cubeDirection.z) > 0.1f)
 		{
-			float extOfThis[4] = { m_currentShapeVertices.m_right, m_currentShapeVertices.m_left,
-				m_currentShapeVertices.m_top, m_currentShapeVertices.m_bottom };
-			float extOfOther[4] = { shapeVertsOfOtherShape.m_right, shapeVertsOfOtherShape.m_left,
-				shapeVertsOfOtherShape.m_top, shapeVertsOfOtherShape.m_bottom };
-			if (m_cubeDirection.z < -0.1f)
-			{
-				// compare with the other's front side
-				float sideOfThis = m_currentShapeVertices.m_back;
-				float sideOfOther = shapeVertsOfOtherShape.m_front;
-
-				if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
-					return true;
-			}
-			else if (m_cubeDirection.z > 0.1f)
-			{
-				// compare with the other's back side
-				float sideOfThis = m_currentShapeVertices.m_front;
-				float sideOfOther = shapeVertsOfOtherShape.m_back;
-
-				if (PointContainedInPlane(sideOfThis, sideOfOther, extOfThis, extOfOther))
-					return true;
-			}
+			if (DetectedCollisionOnZExtremities(shapeVertsOfOtherShape))
+				return true;
 		}
 		return false;
 	}
