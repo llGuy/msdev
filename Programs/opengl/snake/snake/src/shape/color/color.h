@@ -14,9 +14,9 @@ enum color_t
 
 	BLUE,
 
-	YELLOW,
+	MAGENTA,
 
-	MAGENTA
+	YELLOW
 };
 
 struct Color

@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 {
 	Log("Welcome to Snake in 3D!!!");
 	
-	Window window(1800, 1200, "snake");
+	Window window(3100, 1900, "snake");
 	while (window.WindowIsOpen())
 	{
 		window.Draw();

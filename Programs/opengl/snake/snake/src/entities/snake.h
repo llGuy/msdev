@@ -30,20 +30,17 @@ public:
 		: m_xzDirectionOfSnake(1.0f, 0.0f, 0.0f), 
 		m_xyzDirectionOfSnake(1.0f, 0.0f, 0.0f), m_isChangingDirection(false),
 		m_colorDelta(0.05f, 0.05f, 0.05f), m_indexRightVectors(0), m_indexLeftVectors(0),
-		m_isMovingInAltitude(false), m_speed(speed), m_radiusOfGrid(radiusOfGrid, radiusOfGrid, radiusOfGrid)
+		m_isMovingInAltitude(false), m_speed(speed), m_radiusOfGrid(radiusOfGrid, radiusOfGrid, radiusOfGrid),
+		m_currentBaseColor(GREEN)
 	{
 		Init(apple);
 	}
 public:
 	void Draw(glm::mat4 viewProjectionMatrix, unsigned int location, Apple* apple)
 	{
-		for (auto& cubeIter : m_cubes)
-			cubeIter->Move();
-		for (auto& cubeIter : m_cubes)
-			cubeIter->Draw(viewProjectionMatrix, location);
-		for (unsigned int cubeIter = 1; cubeIter < m_cubes.size(); ++cubeIter)
-			if (m_cubes[0]->DetectCollision(m_cubes[cubeIter]))
-				exit(1);
+		MoveTheCubes();
+		DrawTheCubes(viewProjectionMatrix, location);
+		if (IsSnakeDead()) exit(1); 
 
 		SnakeAteApple(apple);
 	}
@@ -54,92 +51,102 @@ public:
 	void Move(movement_t movement, Apple* apple)
 	{
 		if (movement == MOVE_RIGHT)
-		{
-			CreateRightChangingPoint();
-			MoveRight(m_topRightChangingPoints);
-			//std::cout << "going to right" << std::endl;
-		}
-		if (movement == MOVE_LEFT)
-		{
-			CreateLeftChangingPoint();
-			MoveLeft(m_topRightChangingPoints);
-			//std::cout << "going to left" << std::endl;
-		}
-		if (movement == MOVE_UP)
-		{
-			CreateRightChangingPoint();
-			MoveUp(m_topRightChangingPoints);
-			//std::cout << "going to up" << std::endl;
-		}
-		if (movement == MOVE_DOWN)
-		{
-			CreateRightChangingPoint();
-			MoveDown(m_topRightChangingPoints);
-			//	std::cout << "going to down" << std::endl;
-		}
-		// get collision vector
-
-		Shape::ShapeVertices* shapeVertsOfApple = apple->CubeObj()->ShapeVerts();
-		Shape::ShapeVertices* shapeVertsOfSnakeHead = Head()->ShapeVerts();
-
-		GetCompareVector(shapeVertsOfApple, shapeVertsOfSnakeHead);
+			MoveRight();
+		else if (movement == MOVE_LEFT)
+			MoveLeft();
+		else if (movement == MOVE_UP)
+			MoveUp();
+		else if (movement == MOVE_DOWN)
+			MoveDown();
+		GetCompareVector(apple);
 	}
 private:
+	void MoveTheCubes(void)
+	{
+		for (auto& cubeIter : m_cubes)
+			cubeIter->Move();
+	}
+	void DrawTheCubes(glm::mat4 viewProjectionMatrix, unsigned int location)
+	{
+		for (auto& cubeIter : m_cubes)
+			cubeIter->Draw(viewProjectionMatrix, location);
+	}
+	const bool IsSnakeDead(void)
+	{
+		for (unsigned int cubeIter = 1; cubeIter < m_cubes.size(); ++cubeIter)
+			if (m_cubes[0]->DetectCollision(m_cubes[cubeIter]))
+				return true;
+		return false;
+	}
 	void AddCube(void)
 	{
-		Color color(GREEN);
-		color.m_colorFB -= m_colorDelta;
-		color.m_colorPs -= m_colorDelta;
-		color.m_colorSs -= m_colorDelta;
+		if (IsAtLimitOfCurrentBaseColor())
+			ChangeBaseColor();
+		Color color(static_cast<color_t>(m_currentBaseColor));
+	
+		color.m_colorFB -= m_colorDelta;	//front back
+		color.m_colorPs -= m_colorDelta;	//poles
+		color.m_colorSs -= m_colorDelta;	//sides
 
+		//copy the current last cube's data
 		std::vector<Cube::Movement> pendingMovementsOfPreviousCube = m_cubes[m_cubes.size() - 1]->PendingMovements();
 		m_cubes.push_back(new Cube(color, 0.5f, m_cubes[m_cubes.size() - 1]->Direction(), 
 			*m_cubes[m_cubes.size() - 1]->TranslateVector() - m_cubes[m_cubes.size() - 1]->Direction(), m_speed, pendingMovementsOfPreviousCube));
-		m_colorDelta += 0.05f;
-		Log(m_cubes.size());
+		m_colorDelta += 0.1f;
 	}
-	void MoveRight(glm::vec3 topRightChangingPoints[])
+	void ChangeBaseColor(void)
 	{
-		m_xzDirectionOfSnake = m_turningRightVectors[m_indexRightVectors];
-		m_xyzDirectionOfSnake = m_xzDirectionOfSnake;
-		
-		for (auto& iterator : m_cubes)
-			iterator->ToggleChangingDirection(m_xyzDirectionOfSnake, topRightChangingPoints[m_indexRightVectors]);
-		++m_indexRightVectors;
-		m_indexLeftVectors = 4 - m_indexRightVectors;
-		if (m_indexRightVectors == 4)
-			m_indexRightVectors = 0;
-		m_isMovingInAltitude = false;
+		// the m_currentBaseColor will cycle through colors
+		if (m_currentBaseColor == MAGENTA) m_currentBaseColor = GREEN;
+		else m_currentBaseColor++;
+		m_colorDelta = glm::vec3(0.0f);
 	}
-	void MoveLeft(glm::vec3 topRightChangingPoints[])
+	const bool IsAtLimitOfCurrentBaseColor(void)
 	{
-		m_xzDirectionOfSnake = m_turningLeftVectors[m_indexLeftVectors];
+		return glm::all(glm::greaterThan(m_colorDelta, glm::vec3(0.7f)));
+	}
+	//left and right
+	void ChangeToNewDirectionLR(unsigned short& newDirectionIndex, unsigned short& otherDirectionIndex, glm::vec3 turningVectors[4])
+	{
+		m_xzDirectionOfSnake = turningVectors[newDirectionIndex];
 		m_xyzDirectionOfSnake = m_xzDirectionOfSnake;
 
 		for (auto& iterator : m_cubes)
-			iterator->ToggleChangingDirection(m_xyzDirectionOfSnake, topRightChangingPoints[m_indexLeftVectors]);
-		++m_indexLeftVectors;
-		m_indexRightVectors = 4 - m_indexLeftVectors;
-		if (m_indexLeftVectors == 4)
-			m_indexLeftVectors = 0;
+			iterator->ToggleChangingDirection(m_xyzDirectionOfSnake, m_topRightChangingPoints[newDirectionIndex]);
+		++newDirectionIndex;
+		otherDirectionIndex = 4 - newDirectionIndex;
+		if (newDirectionIndex == 4)
+			newDirectionIndex = 0;
 		m_isMovingInAltitude = false;
 	}
-	void MoveUp(glm::vec3 topRightChangingPoints[])
+	void ChangeToNewDirectionDU(float yDirection)
 	{
-		m_xyzDirectionOfSnake = glm::vec3(0.0f, 1.0f, 0.0f);
+		m_xyzDirectionOfSnake = glm::vec3(0.0f, yDirection, 0.0f);
 
 		for (auto& iterator : m_cubes)
-			iterator->ToggleChangingDirection(m_xyzDirectionOfSnake, topRightChangingPoints[m_indexRightVectors]);
+			iterator->ToggleChangingDirection(m_xyzDirectionOfSnake, m_topRightChangingPoints[m_indexRightVectors]);
 
 		m_isMovingInAltitude = true;
 	}
-	void MoveDown(glm::vec3 topRightChangingPoints[])
+	void MoveRight(void)
 	{
-		m_xyzDirectionOfSnake = glm::vec3(0.0f, -1.0f, 0.0f);
-
-		for (auto& iterator : m_cubes)
-			iterator->ToggleChangingDirection(m_xyzDirectionOfSnake, topRightChangingPoints[m_indexRightVectors]);
-		m_isMovingInAltitude = true;
+		CreateRightChangingPoint();
+		ChangeToNewDirectionLR(m_indexRightVectors, m_indexLeftVectors, m_turningRightVectors);
+	}
+	void MoveLeft(void)
+	{
+		CreateLeftChangingPoint();
+		ChangeToNewDirectionLR(m_indexLeftVectors, m_indexRightVectors, m_turningLeftVectors);
+	}
+	void MoveUp(void)
+	{
+		CreateRightChangingPoint();
+		ChangeToNewDirectionDU(1.0f);
+	}
+	void MoveDown(void)
+	{
+		CreateRightChangingPoint();
+		ChangeToNewDirectionDU(-1.0f);
 	}
 	const bool Vect3HasNegativeNumber(glm::vec3 vec, unsigned int* index)
 	{
@@ -166,8 +173,16 @@ private:
 		{
 			for (unsigned short iter = 0; iter < 4; ++iter)
 			{
-				float yVal = ceil(fabs(m_cubes[0]->ShapeVerts()->m_top)) *
-					m_topRightChangingPoints[iter].y / fabs(m_topRightChangingPoints[iter].y);
+				float yVal;
+				if (m_xyzDirectionOfSnake.y > 0.1f)
+				{
+					yVal = ceil(Head()->ShapeVerts()->m_top);
+				}
+				else
+				{
+					yVal = floor(Head()->ShapeVerts()->m_top);
+				}
+
 				m_topRightChangingPoints[iter].y = yVal;
 			}
 		}
@@ -191,13 +206,24 @@ private:
 		{
 			for (unsigned short iter = 0; iter < 4; ++iter)
 			{
-				m_topRightChangingPoints[iter].y = ceil(fabs(m_cubes[0]->ShapeVerts()->m_top)) *
-					m_topRightChangingPoints[iter].y / fabs(m_topRightChangingPoints[iter].y);
+				float yVal;
+				if (m_xyzDirectionOfSnake.y > 0.1f)
+				{
+					yVal = ceil(Head()->ShapeVerts()->m_top);
+				}
+				else
+				{
+					yVal = floor(Head()->ShapeVerts()->m_top);
+				}
+
+				m_topRightChangingPoints[iter].y = yVal;
 			}
 		}
 	}
-	void GetCompareVector(Shape::ShapeVertices* shapeVertsOfApple, Shape::ShapeVertices* shapeVertsOfSnakeHead)
+	void GetCompareVector(Apple* apple)
 	{
+		Shape::ShapeVertices* shapeVertsOfApple = apple->CubeObj()->ShapeVerts();
+		Shape::ShapeVertices* shapeVertsOfSnakeHead = Head()->ShapeVerts();
 		if (fabs(m_xyzDirectionOfSnake.x) > 0.1f)
 		{
 			// collision vector with .left or .right of shape vertices
@@ -269,8 +295,7 @@ private:
 	{
 		// the head of the snake
 		m_cubes.push_back(new Cube(GREEN, 0.5f, m_xzDirectionOfSnake, glm::vec3(0.0f, 0.0f, -10.0f), m_speed, std::vector<Shape::Movement>()));
-		for (unsigned int i = 0; i < 8; i++)
-			AddCube();
+		AddCube();
 
 		m_turningRightVectors[0] = glm::vec3(0.0f, 0.0f, 1.0f);
 		m_turningRightVectors[1] = glm::vec3(-1.0f, 0.0f, 0.0f);
@@ -304,11 +329,9 @@ private:
 		{
 			apple->GenerateNewApple();
 			AddCube();
-			Shape::ShapeVertices* shapeVertsOfApple = apple->CubeObj()->ShapeVerts();
-			Shape::ShapeVertices* shapeVertsOfSnakeHead = Head()->ShapeVerts();
 
 			apple->CubeObj()->UpdateShapeVertices();
-			GetCompareVector(shapeVertsOfApple, shapeVertsOfSnakeHead);
+			GetCompareVector(apple);
 		}
 	}
 	const bool Vec3HasAllPos(glm::vec3 vec)
@@ -357,6 +380,7 @@ private:
 
 	glm::vec3 m_appleCollisionVector;
 	Snake::LiveVector m_snakeCollisionVector;
+	unsigned int m_currentBaseColor;
 };
 
 #endif
