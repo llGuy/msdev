@@ -51,6 +51,9 @@ public:
 	{
 		return glm::vec3();
 	}
+	virtual void UpdateShapeVertices(void)
+	{
+	}
 
 	virtual void Move(void)
 	{

@@ -72,6 +72,18 @@ public:
 			}
 		}
 	}
+	void UpdateShapeVertices(void) override
+	{
+		glm::vec4 vertsTop = glm::vec4(m_originalShapeVertices.m_right, m_originalShapeVertices.m_top, m_originalShapeVertices.m_front, 1.0f);
+		glm::vec4 vertsBottom = glm::vec4(m_originalShapeVertices.m_left, m_originalShapeVertices.m_bottom, m_originalShapeVertices.m_back, 1.0f);
+
+		glm::vec4 translatedTop = glm::translate(m_translateVector) * vertsTop;
+		glm::vec4 translatedBottom = glm::translate(m_translateVector) * vertsBottom;
+
+		m_currentShapeVertices = { translatedTop.y, translatedBottom.y,
+			translatedTop.x, translatedBottom.x,
+			translatedTop.z, translatedBottom.z };
+	}
 	void ChangeDirection(void) override
 	{
 		m_cubeDirection = m_pendingMovements[m_movementIndex].m_nextDirection;
@@ -175,18 +187,7 @@ private:
 		unsigned int currentIndexBufferSize = IndexBufferSize();
 		memcpy(m_indices, indices, currentIndexBufferSize);
 	}
-	void UpdateShapeVertices(void)
-	{
-		glm::vec4 vertsTop = glm::vec4(m_originalShapeVertices.m_right, m_originalShapeVertices.m_top, m_originalShapeVertices.m_front, 1.0f);
-		glm::vec4 vertsBottom = glm::vec4(m_originalShapeVertices.m_left, m_originalShapeVertices.m_bottom, m_originalShapeVertices.m_back, 1.0f);
-
-		glm::vec4 translatedTop = glm::translate(m_translateVector) * vertsTop;
-		glm::vec4 translatedBottom = glm::translate(m_translateVector) * vertsBottom;
-
-		m_currentShapeVertices = { translatedTop.y, translatedBottom.y,
-			translatedTop.x, translatedBottom.x,
-			translatedTop.z, translatedBottom.z };
-	}
+	
 	void Move(void) override
 	{
 		m_translateVector += m_cubeDirection * m_cubeSpeed;

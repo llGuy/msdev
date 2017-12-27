@@ -18,6 +18,7 @@ public:
 	{
 		GenerateTranslateVector();
 		*m_cube->TranslateVector() = m_translateVector;
+		
 	}
 	Shape* CubeObj(void)
 	{

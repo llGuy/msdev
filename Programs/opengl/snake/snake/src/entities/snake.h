@@ -304,6 +304,7 @@ private:
 			Shape::ShapeVertices* shapeVertsOfApple = apple->CubeObj()->ShapeVerts();
 			Shape::ShapeVertices* shapeVertsOfSnakeHead = Head()->ShapeVerts();
 
+			apple->CubeObj()->UpdateShapeVertices();
 			GetCompareVector(shapeVertsOfApple, shapeVertsOfSnakeHead);
 		}
 	}
