@@ -28,7 +28,7 @@ public:
 		m_grid = new Grid(10.0f, -10.0f);
 		CreateApple();
 		m_snake = new Snake(0.005f, 10.0f, m_apple);
-		m_reference = new Cube(RED, 0.5f, glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, -10.0f), 0.002f);
+		m_reference = new Cube(RED, 0.5f, glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, -10.0f), 0.002f, std::vector<Shape::Movement>());
 	}
 public:
 	void Draw(Camera* camera)

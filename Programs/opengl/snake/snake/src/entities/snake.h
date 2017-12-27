@@ -43,8 +43,6 @@ public:
 			cubeIter->Draw(viewProjectionMatrix, location);
 
 		SnakeAteApple(apple);
-		if (SurpassedLimit())
-			Log("game is finished");
 	}
 	Shape* Head(void)
 	{
@@ -81,71 +79,7 @@ public:
 		Shape::ShapeVertices* shapeVertsOfApple = apple->CubeObj()->ShapeVerts();
 		Shape::ShapeVertices* shapeVertsOfSnakeHead = Head()->ShapeVerts();
 
-		if (fabs(m_xyzDirectionOfSnake.x) > 0.1f)
-		{
-			// collision vector with .left or .right of shape vertices
-
-			if (m_xyzDirectionOfSnake.x < -0.1f)
-			{
-				// direction of snake.x is negative
-				// compare with snake.left 
-				// and apple.right
-
-				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
-					shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
-				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_left,
-					&shapeVertsOfSnakeHead->m_top, &shapeVertsOfSnakeHead->m_front };
-			}
-			else if (m_xyzDirectionOfSnake.x > 0.1f)
-			{
-				// direction of snake.x is positive
-				// compare with snake.right
-				// and apple.left
-
-				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
-					shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
-				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
-					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_back };
-			}
-		}
-		if (fabs(m_xyzDirectionOfSnake.y) > 0.1f)
-		{
-			// collision vector with .bottom or .top of shape vertices
-
-			if(m_xyzDirectionOfSnake.y < -0.1f)
-			{ 
-				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
-					shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
-				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
-					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_front};
-			}
-			else if (m_xyzDirectionOfSnake.y > 0.1f)
-			{
-				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
-					shapeVertsOfApple->m_top, shapeVertsOfApple->m_back);
-				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_left,
-					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_back};
-			}
-		}
-		if (fabs(m_xyzDirectionOfSnake.z) > 0.1f)
-		{
-			// collision vector with .back or .fron of shaoe vertices
-
-			if (m_xyzDirectionOfSnake.z < -0.1f)
-			{
-				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
-					shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
-				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
-					&shapeVertsOfSnakeHead->m_top, &shapeVertsOfSnakeHead->m_back };
-			}
-			else if (m_xyzDirectionOfSnake.z > 0.1f)
-			{
-				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
-					shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
-				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_left,
-					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_front};
-			}
-		}
+		GetCompareVector(shapeVertsOfApple, shapeVertsOfSnakeHead);
 	}
 private:
 	void AddCube(void)
@@ -155,9 +89,11 @@ private:
 		color.m_colorPs -= m_colorDelta;
 		color.m_colorSs -= m_colorDelta;
 
-		m_cubes.push_back(new Cube(color, 0.5f, m_xyzDirectionOfSnake, 
-			*m_cubes[m_cubes.size() - 1]->TranslateVector() - m_xyzDirectionOfSnake, m_speed));
+		std::vector<Cube::Movement> pendingMovementsOfPreviousCube = m_cubes[m_cubes.size() - 1]->PendingMovements();
+		m_cubes.push_back(new Cube(color, 0.5f, m_cubes[m_cubes.size() - 1]->Direction(), 
+			*m_cubes[m_cubes.size() - 1]->TranslateVector() - m_cubes[m_cubes.size() - 1]->Direction(), m_speed, pendingMovementsOfPreviousCube));
 		m_colorDelta += 0.05f;
+		Log(m_cubes.size());
 	}
 	void MoveRight(glm::vec3 topRightChangingPoints[])
 	{
@@ -257,13 +193,81 @@ private:
 			}
 		}
 	}
+	void GetCompareVector(Shape::ShapeVertices* shapeVertsOfApple, Shape::ShapeVertices* shapeVertsOfSnakeHead)
+	{
+		if (fabs(m_xyzDirectionOfSnake.x) > 0.1f)
+		{
+			// collision vector with .left or .right of shape vertices
+
+			if (m_xyzDirectionOfSnake.x < -0.1f)
+			{
+				// direction of snake.x is negative
+				// compare with snake.left 
+				// and apple.right
+
+				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
+					shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
+				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_left,
+					&shapeVertsOfSnakeHead->m_top, &shapeVertsOfSnakeHead->m_front };
+			}
+			else if (m_xyzDirectionOfSnake.x > 0.1f)
+			{
+				// direction of snake.x is positive
+				// compare with snake.right
+				// and apple.left
+
+				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
+					shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
+				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
+					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_back };
+			}
+		}
+		if (fabs(m_xyzDirectionOfSnake.y) > 0.1f)
+		{
+			// collision vector with .bottom or .top of shape vertices
+
+			if (m_xyzDirectionOfSnake.y < -0.1f)
+			{
+				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
+					shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
+				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
+					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_front };
+			}
+			else if (m_xyzDirectionOfSnake.y > 0.1f)
+			{
+				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
+					shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
+				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_left,
+					&shapeVertsOfSnakeHead->m_top, &shapeVertsOfSnakeHead->m_back };
+			}
+		}
+		if (fabs(m_xyzDirectionOfSnake.z) > 0.1f)
+		{
+			// collision vector with .back or .fron of shape vertices
+
+			if (m_xyzDirectionOfSnake.z < -0.1f)
+			{
+				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_right,
+					shapeVertsOfApple->m_top, shapeVertsOfApple->m_front);
+				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_right,
+					&shapeVertsOfSnakeHead->m_top, &shapeVertsOfSnakeHead->m_back };
+			}
+			else if (m_xyzDirectionOfSnake.z > 0.1f)
+			{
+				m_appleCollisionVector = glm::vec3(shapeVertsOfApple->m_left,
+					shapeVertsOfApple->m_bottom, shapeVertsOfApple->m_back);
+				m_snakeCollisionVector = { &shapeVertsOfSnakeHead->m_left,
+					&shapeVertsOfSnakeHead->m_bottom, &shapeVertsOfSnakeHead->m_front };
+			}
+		}
+	}
 private:
 	void Init(Apple* apple)
 	{
-		m_cubes.push_back(new Cube(GREEN, 0.5f, m_xzDirectionOfSnake, glm::vec3(0.0f, 0.0f, -10.0f), m_speed));
-		AddCube();
-		AddCube();
-		AddCube();
+		// the head of the snake
+		m_cubes.push_back(new Cube(GREEN, 0.5f, m_xzDirectionOfSnake, glm::vec3(0.0f, 0.0f, -10.0f), m_speed, std::vector<Shape::Movement>()));
+		for (unsigned int i = 0; i < 3; i++)
+			AddCube();
 
 		m_turningRightVectors[0] = glm::vec3(0.0f, 0.0f, 1.0f);
 		m_turningRightVectors[1] = glm::vec3(-1.0f, 0.0f, 0.0f);
@@ -293,9 +297,14 @@ private:
 			*m_snakeCollisionVector.m_z
 		);
 		if (glm::all(glm::lessThan(glm::abs(currentCompareVecPositionOfSnakeHead - m_appleCollisionVector), 
-			glm::vec3(0.2f))))
+			glm::vec3(0.1f))))
 		{
 			apple->GenerateNewApple();
+			AddCube();
+			Shape::ShapeVertices* shapeVertsOfApple = apple->CubeObj()->ShapeVerts();
+			Shape::ShapeVertices* shapeVertsOfSnakeHead = Head()->ShapeVerts();
+
+			GetCompareVector(shapeVertsOfApple, shapeVertsOfSnakeHead);
 		}
 	}
 	const bool Vec3HasAllPos(glm::vec3 vec)

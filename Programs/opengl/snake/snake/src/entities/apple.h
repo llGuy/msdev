@@ -37,7 +37,7 @@ private:
 	void Init(void)
 	{
 		GenerateTranslateVector();
-		m_cube = new Cube(RED, 0.5f, glm::vec3(0.0f, 0.0f, 0.0f), m_translateVector, 0.0f, false);
+		m_cube = new Cube(RED, 0.5f, glm::vec3(0.0f, 0.0f, 0.0f), m_translateVector, 0.0f, std::vector<Shape::Movement>(), false);
 	}
 private:
 	Shape* m_cube;

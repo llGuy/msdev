@@ -10,15 +10,10 @@ class Cube
 	: public Shape
 {
 public:
-	struct Movement
-	{
-		glm::vec3 m_nextDirection;
-		glm::vec3 m_directitonChangingPoint;
-		unsigned int m_index;
-	};
-	explicit Cube(Color color, float radius, glm::vec3 direction, glm::vec3 translateVector, float speed, bool mobile = true)
+	explicit Cube(Color color, float radius, glm::vec3 direction, glm::vec3 translateVector, float speed, 
+		std::vector<Movement> pendingMovement, bool mobile = true)
 		: m_translateVector(translateVector), m_radius(radius), m_cubeSpeed(speed), m_cubeDirection(direction),
-		m_isChangingDirection(false), m_mobile(mobile)
+		m_isChangingDirection(false), m_pendingMovements(pendingMovement), m_mobile(mobile)
 	{	
 		CreateVertices(color);
 		CreateIndices();
@@ -48,6 +43,10 @@ public:
 	{
 		return &m_currentShapeVertices;
 	}
+	std::vector<Shape::Movement> PendingMovements(void)
+	{
+		return m_pendingMovements;
+	}
 public:
 	//movements
 	void ToggleChangingDirection(glm::vec3 newDirection, glm::vec3 topRightChangingPoint) override
@@ -67,7 +66,6 @@ public:
 					if (fabs(currentTopRightPoint.z - m_pendingMovements[m_movementIndex].m_directitonChangingPoint.z) < 0.02f)
 					{
 						ChangeDirection();
-						std::cout << m_pendingMovements[0].m_index << std::endl;;
 						m_pendingMovements.erase(m_pendingMovements.begin() + m_movementIndex);
 					}
 				}
@@ -81,6 +79,10 @@ public:
 	glm::vec3* TranslateVector(void) override
 	{
 		return &m_translateVector;
+	}
+	glm::vec3 Direction(void) override
+	{
+		return m_cubeDirection;
 	}
 private:
 	unsigned int VertexBufferSize(void) override

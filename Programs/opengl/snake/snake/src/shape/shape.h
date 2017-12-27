@@ -3,10 +3,17 @@
 
 #include <glm\glm.hpp>
 #include <GL\glew.h>
+#include <vector>
 
 class Shape
 {
 public:
+	struct Movement
+	{
+		glm::vec3 m_nextDirection;
+		glm::vec3 m_directitonChangingPoint;
+		unsigned int m_index;
+	};
 	struct ShapeVertices
 	{
 		float m_top;
@@ -35,6 +42,14 @@ public:
 	virtual glm::vec3* TranslateVector(void)
 	{
 		return nullptr;
+	}
+	virtual std::vector<Shape::Movement> PendingMovements(void)
+	{
+		return std::vector<Shape::Movement>();
+	}
+	virtual glm::vec3 Direction(void)
+	{
+		return glm::vec3();
 	}
 
 	virtual void Move(void)
