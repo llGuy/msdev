@@ -22,6 +22,10 @@ public:
 
 		glDrawElements(GL_TRIANGLES, 0, GL_UNSIGNED_SHORT, 0);
 	}
+	glm::vec3 Center(void)
+	{
+		return glm::vec3(0.0f, 0.0f, m_center);
+	}
 private:
 	void Init(void)
 	{

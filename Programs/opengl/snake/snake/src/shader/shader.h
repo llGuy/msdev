@@ -21,6 +21,7 @@ public:
 public:
 	void Init(void)
 	{
+		Log("intitializing shader");
 		m_shaderID = glCreateShader(m_shaderType);
 		const char* srcs[1] = { m_src.c_str() };
 		glShaderSource(m_shaderID, 1, srcs, 0);

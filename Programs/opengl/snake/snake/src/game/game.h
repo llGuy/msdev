@@ -16,7 +16,7 @@ public:
 	explicit Game(unsigned int width, unsigned int height)
 		: m_shprogram("res\\vsh.shader",
 			"res\\fsh.shader"), m_windowWidth(width),
-		  m_windowHeight(height), m_centerOfGrid(-10.0f)
+		  m_windowHeight(height), m_centerOfGrid(-10.0f), m_lost(false)
 	{
 	}
 public:
@@ -26,8 +26,8 @@ public:
 		m_shprogram.Link();
 
 		m_grid = new Grid(10.0f, -10.0f);
-		CreateApple();
-		m_snake = new Snake(0.008f, 10.0f, m_apple);
+		m_apple = new Apple();
+		m_snake = new Snake(0.01f, 10.0f, m_apple);
 		m_reference = new Cube(RED, 0.5f, glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, -10.0f), 0.002f, std::vector<Shape::Movement>());
 	}
 public:
@@ -37,12 +37,17 @@ public:
 
 		m_viewProjectionMatrix = glm::perspective(
 			glm::radians(60.0f), (float)m_windowWidth / m_windowHeight, 0.1f, 40.0f) *
-			camera->GetWorldToViewMatrix(m_snake);
+			camera->GetWorldToViewMatrix(m_snake, m_grid);
 
-		m_snake->Draw(m_viewProjectionMatrix, location, m_apple);
+		m_snake->Draw(m_viewProjectionMatrix, location, m_apple, &m_lost);
 		m_reference->Draw(m_viewProjectionMatrix, location);
 		m_grid->Draw(m_viewProjectionMatrix, location);
 		m_apple->Draw(m_viewProjectionMatrix, location);
+
+		if (m_lost)
+		{
+			std::cout << "GAME OVER\n";
+		}
 	}
 	void MoveSnake(Snake::movement_t movement)
 	{
@@ -52,16 +57,9 @@ public:
 	{
 		return m_snake;
 	}
-private:
-	void CreateApple(void)
+	bool GameOver(void)
 	{
-		srand(time(NULL));
-
-		int m_x = rand() % 20 - 10;
-		int m_y = rand() % 20 - 10;
-		int m_z = rand() % 20 - 20;
-
-		m_apple = new Apple(glm::vec3((float)m_x - 0.5f, (float)m_y - 0.5f, (float)m_z - 0.5f));
+		return m_lost;
 	}
 private:
 	SHProgram m_shprogram;
@@ -78,6 +76,7 @@ private:
 
 	glm::mat4 m_viewProjectionMatrix;
 	float m_gridRadius;
+	bool m_lost;
 };
 
 #endif

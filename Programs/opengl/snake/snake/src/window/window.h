@@ -36,6 +36,8 @@ private:
 	GLFWwindow* m_glfwWindow;
 	Game* m_game;
 	Camera* m_camera;
+
+	bool m_windowIsOpen;
 };
 
 #endif

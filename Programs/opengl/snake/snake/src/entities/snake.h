@@ -36,11 +36,20 @@ public:
 		Init(apple);
 	}
 public:
-	void Draw(glm::mat4 viewProjectionMatrix, unsigned int location, Apple* apple)
+	void Draw(glm::mat4 viewProjectionMatrix, unsigned int location, Apple* apple, bool* lost)
 	{
 		MoveTheCubes();
 		DrawTheCubes(viewProjectionMatrix, location);
-		if (IsSnakeDead()) exit(1); 
+		if (IsSnakeDead())
+		{
+			*lost = true;
+			std::cout << "\nsnake died!\n\n";
+		}
+		if (SurpassedLimit())
+		{
+			*lost = true;
+			std::cout << "\nsnake went out of bounds\n\n";
+		}
 
 		SnakeAteApple(apple);
 	}
@@ -300,7 +309,8 @@ private:
 	{
 		// the head of the snake
 		m_cubes.push_back(new Cube(GREEN, 0.5f, m_xzDirectionOfSnake, glm::vec3(0.0f, 0.0f, -10.0f), m_speed, std::vector<Shape::Movement>()));
-		AddCube();
+		for (unsigned int i = 0; i < 3; ++i)
+			AddCube();
 
 		InitializeRightTurningVectors();
 		InitializeLeftTurningVectors();

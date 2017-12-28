@@ -6,7 +6,7 @@
 class Apple
 {
 public:
-	explicit Apple(glm::vec3 translateVector)
+	explicit Apple()
 	{
 		Init();
 	}
@@ -28,9 +28,9 @@ private:
 	{
 		srand(time(NULL));
 
-		int m_x = rand() % 20 - 10;
-		int m_y = rand() % 20 - 10;
-		int m_z = rand() % 20 - 20;
+		int m_x = rand() % 18 - 9;
+		int m_y = rand() % 18 - 9;
+		int m_z = rand() % 18 - 20;
 
 		m_translateVector = (glm::vec3((float)m_x - 0.5f, (float)m_y - 0.5f, (float)m_z - 0.5f));
 	}

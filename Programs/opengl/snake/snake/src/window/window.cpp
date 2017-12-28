@@ -14,7 +14,6 @@ static void CursurPositionCallback(GLFWwindow* window, double x, double y)
 	glm::vec2 newPosition = glm::vec2(x, y);
 	//updates the view direction of the camera
 	p->UpdateMouse(newPosition);
-	p->CameraObj()->IsLookingAtCenterOfGrid() = false;
 }
 
 static void KeyCallback(GLFWwindow* window, int key, int, int action, int )
@@ -39,9 +38,9 @@ static void KeyCallback(GLFWwindow* window, int key, int, int action, int )
 		{
 			p->GameObj()->MoveSnake(Snake::MOVE_DOWN);
 		}
-		if (key == GLFW_KEY_C)
+		if (key == GLFW_KEY_SPACE)
 		{
-			p->CameraObj()->IsLookingAtCenterOfGrid() = true;
+			p->CameraObj()->ToggleLookingAtGridAndSnake();
 		}
 	}
 }
@@ -68,10 +67,20 @@ Window::~Window(void)
 
 void Window::Draw(void)
 {
+	m_windowIsOpen = !glfwWindowShouldClose(m_glfwWindow)
+		&& !(glfwGetKey(m_glfwWindow, GLFW_KEY_ESCAPE));
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	m_game->Draw(m_camera);
+	if (m_game->GameOver())
+	{
+		glfwDestroyWindow(m_glfwWindow);
+		glfwTerminate();
+		m_windowIsOpen = false;
+
+		std::cin.get();
+	}
 }
 
 void Window::Update(void)
@@ -83,8 +92,7 @@ void Window::Update(void)
 
 const bool Window::WindowIsOpen(void) const
 {
-	return !glfwWindowShouldClose(m_glfwWindow)
-		&& !(glfwGetKey(m_glfwWindow, GLFW_KEY_ESCAPE));
+	return m_windowIsOpen;
 }
 
 void Window::DestroyWindow(void)
@@ -109,29 +117,44 @@ Camera* Window::CameraObj(void)
 
 void Window::Init(void)
 {
+	Log("initializing window");
 	m_glfwWindow = glfwCreateWindow(m_width, m_height, m_title, NULL, NULL);
 	glfwMakeContextCurrent(m_glfwWindow);
+	if (!m_glfwWindow)
+	{
+		Log("failed to initialize window");
+		std::cin.get();
+		exit(1);
+	}
 	glfwSetCursorPosCallback(m_glfwWindow, CursurPositionCallback);
 	glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetWindowUserPointer(m_glfwWindow, this);
 	glfwSetKeyCallback(m_glfwWindow, KeyCallback);
+
+	m_windowIsOpen = true;
 }
 void Window::GLFWInit(void)
 {
+	Log("initializing GLFW");
 	if (!glfwInit())
 	{
 		glfwTerminate();
 		Log("failed to initialize GLFW");
+		std::cin.get();
+		exit(1);
 	}
 
 }
 void Window::GLEWInit(void)
 {
+	Log("initializing GLEW");
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
 	{
 		glfwTerminate();
 		Log("failed to initilize GLEW");
+		std::cin.get();
+		exit(1);
 	}
 }
 void Window::AfterGLEWInit(void)

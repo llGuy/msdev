@@ -1,24 +1,13 @@
 #include <iostream>
 
 #include "window\window.h"
-#include "log.h"
 
-struct Test
-{
-	float m_x;
-	float m_y;
-};
-
-struct LiveTest
-{
-	float* m_x;
-	float* m_y;
-};
+void Greeting(void);
 
 int main(int argc, char* argv[])
 {
-	Log("Welcome to Snake in 3D!!!");
-	
+	Greeting();
+
 	Window window(3100, 1900, "snake");
 	while (window.WindowIsOpen())
 	{

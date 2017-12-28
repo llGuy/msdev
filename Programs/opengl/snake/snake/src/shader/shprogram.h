@@ -18,11 +18,13 @@ public:
 public:
 	void Compile(void) 
 	{
+		Log("compiling shaders");
 		m_vsh.Init();
 		m_fsh.Init();
 	}
 	void Link(void)
 	{
+		Log("linking shaders");
 		if (CheckShaderStatus(m_vsh.ShaderID())
 			&& CheckShaderStatus(m_fsh.ShaderID()))
 		{
