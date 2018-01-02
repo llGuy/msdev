@@ -65,12 +65,12 @@ void Terrain::GenerateTerrainVerts(void)
 			y = 1.0f;
 			z = 0.0f;
 
-			vert.norm = glm::vec3(x, y, z);
+			//vert.norm = glm::vec3(x, y, z);
 			//color
 			//vert.color = glm::vec3(m_color.r, m_color.g, m_color.b);
 			
 			m_vertices[index].pos = vert.pos;
-			m_vertices[index].norm = vert.norm;
+			//m_vertices[index].norm = vert.norm;
 		}
 	}
 }
@@ -138,9 +138,9 @@ void Terrain::CreateVertexArray(void)
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), 0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	//glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
 }
 void Terrain::GetUniformLocations(void)
 {
@@ -157,7 +157,7 @@ void Terrain::ReadImage(void)
 
 	//load image
 	int width, height, nrChannels;
-	uint8* data = stbi_load("C:\\Users\\lucro\\Development\\msdev\\Terrain\\Debug\\terrain1.png", 
+	uint8* data = stbi_load("C:\\Users\\lucro\\Development\\msdev\\Terrain\\Debug\\terrain2.png", 
 		&width, &height, &nrChannels, 0);
 	uint32 sizeOfImage = width * height;
 	
@@ -182,6 +182,5 @@ void Terrain::ReadImage(void)
 			m_yVals[row + col * m_numVertsHeight] = height;
 			m_vertices[row + col * m_numVertsHeight].color = glm::vec3(height / MAX_HEIGHT);
 		}
-
 	}
 }
