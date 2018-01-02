@@ -6,9 +6,13 @@
 #include "../primitives/vertex.h"
 #include "terrain.h"
 
-Terrain::Terrain(float dimX, float dimY, glm::vec3 color)
-	: m_width(dimX), m_height(dimY), m_color(color), m_shprogram("res\\vsh.shader", "res\\fsh.shader")
+Terrain::Terrain(float dimX, float dimY, float maxHeight)
+	: m_width(dimX), m_height(dimY), m_shprogram("res\\vsh.shader", "res\\fsh.shader", "res\\gsh.shader"),
+	m_ambientColorGrass(0.1f, 0.3f, 0.1f), m_ambientColorDirt(0.25, 0.175, 0.025), m_ambientColorSnow(0.4f, 0.4f, 0.4f),
+	m_ambientColorRock(0.2f, 0.2f, 0.2f),
+	m_lightPosition(0.0f, 100.0f, 0.0f), m_maxHeight(maxHeight)
 {
+	ComputeTerrainType();
 	GenerateTerrainVerts();
 	GenerateTerrainIndices();
 
@@ -16,20 +20,23 @@ Terrain::Terrain(float dimX, float dimY, glm::vec3 color)
 	SendIndicesToGPU();
 	CreateVertexArray();
 	CompileShaders();
+	GetUniformLocations();
 }
 Terrain::~Terrain(void)
 {
 }
-void Terrain::Draw(glm::mat4& mvp)
+void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);
 	glBindVertexArray(m_vaoID);
 
-	m_uniformLocationMVP = glGetUniformLocation(m_shprogram.ProgramID(), "u_mvp");
-	glUniformMatrix4fv(m_uniformLocationMVP, 1, GL_FALSE, &mvp[0][0]);
+	glm::mat4 modelMat = glm::mat4(1.0f);
+
+	SendUniformData(projMat, viewMat, modelMat);
 
 	glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_SHORT, 0);
+	//m_lightPosition.y -= 1.0f;
 }
 void Terrain::InitializeHeights(void)
 {
@@ -67,9 +74,25 @@ void Terrain::GenerateTerrainVerts(void)
 
 			//vert.norm = glm::vec3(x, y, z);
 			//color
-			//vert.color = glm::vec3(m_color.r, m_color.g, m_color.b);
+			if (m_yVals[index] <= m_dirtLimit)
+			{
+				vert.color = m_ambientColorDirt;
+			}
+			else if (m_yVals[index] > m_dirtLimit && m_yVals[index] <= m_rockStart)
+			{
+				vert.color = m_ambientColorGrass;
+			}
+			else if (m_yVals[index] > m_rockStart && m_yVals[index] <= m_snowStart)
+			{
+				vert.color = m_ambientColorRock;
+			}
+			else if (m_yVals[index] > m_snowStart)
+			{
+				vert.color = m_ambientColorSnow;
+			}
 			
 			m_vertices[index].pos = vert.pos;
+			m_vertices[index].color = vert.color;
 			//m_vertices[index].norm = vert.norm;
 		}
 	}
@@ -142,10 +165,6 @@ void Terrain::CreateVertexArray(void)
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	//glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
 }
-void Terrain::GetUniformLocations(void)
-{
-	m_uniformLocationMVP = glGetUniformLocation(m_shprogram.ProgramID(), "mvp");
-}
 void Terrain::CompileShaders(void)
 {
 	m_shprogram.Compile();
@@ -153,11 +172,9 @@ void Terrain::CompileShaders(void)
 }
 void Terrain::ReadImage(void)
 {
-	float MAX_HEIGHT = 20;
-
 	//load image
 	int width, height, nrChannels;
-	uint8* data = stbi_load("C:\\Users\\lucro\\Development\\msdev\\Terrain\\Debug\\terrain2.png", 
+	uint8* data = stbi_load("C:\\Users\\lucro\\Development\\msdev\\Terrain\\Debug\\terrain1.png", 
 		&width, &height, &nrChannels, 0);
 	uint32 sizeOfImage = width * height;
 	
@@ -178,9 +195,29 @@ void Terrain::ReadImage(void)
 			imageIndex = imageIndexRow + imageIndexHeight;
 
 			unsigned char grayScale = data[imageIndex];
-			float height = (float)grayScale / 0b11111111 * MAX_HEIGHT;
+			float height = (float)grayScale / 0b11111111 * m_maxHeight;
 			m_yVals[row + col * m_numVertsHeight] = height;
-			m_vertices[row + col * m_numVertsHeight].color = glm::vec3(height / MAX_HEIGHT);
+			//m_vertices[row + col * m_numVertsHeight].color = glm::vec3(height / MAX_HEIGHT);
 		}
 	}
+}
+void Terrain::GetUniformLocations(void)
+{
+	m_uniformLocationProjection = glGetUniformLocation(m_shprogram.ProgramID(), "u_projectionMatrix");
+	m_uniformLocationView = glGetUniformLocation(m_shprogram.ProgramID(), "u_viewMatrix");
+	m_uniformLocationModel = glGetUniformLocation(m_shprogram.ProgramID(), "u_modelMatrix");
+	m_uniformLocationLightPosition = glGetUniformLocation(m_shprogram.ProgramID(), "u_lightPosition");
+}
+void Terrain::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model)
+{
+	glUniformMatrix4fv(m_uniformLocationProjection, 1, GL_FALSE, &proj[0][0]);
+	glUniformMatrix4fv(m_uniformLocationView, 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(m_uniformLocationModel, 1, GL_FALSE, &model[0][0]);
+	glUniformMatrix4fv(m_uniformLocationLightPosition, 1, GL_FALSE, &m_lightPosition[0]);
+}
+void Terrain::ComputeTerrainType(void) 
+{
+	m_dirtLimit = m_maxHeight / 3;
+	m_rockStart = m_maxHeight / 5 * 3;
+	m_snowStart = m_maxHeight - m_maxHeight / 5;
 }

@@ -1,6 +1,8 @@
 #ifndef WINDOW_HEADER
 #define WINDOW_HEADER
 
+#include <glm/glm.hpp>
+
 class Camera;
 class Terrain;
 class GLFWwindow;
@@ -30,6 +32,7 @@ private:
 	GLFWwindow* m_glfwWindow;
 	Terrain* m_terrain;
 	Camera* m_camera;
+	glm::mat4 m_projMat;
 };
 
 #endif

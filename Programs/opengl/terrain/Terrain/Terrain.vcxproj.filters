@@ -57,6 +57,7 @@
   <ItemGroup>
     <None Include="res\vsh.shader" />
     <None Include="res\fsh.shader" />
+    <None Include="res\gsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\terrain_bones.jpg">

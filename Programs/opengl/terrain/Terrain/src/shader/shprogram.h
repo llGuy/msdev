@@ -7,9 +7,10 @@ class SHProgram
 {
 public:
 	explicit SHProgram(const std::string& vshDir,
-		const std::string& fshDir)
+		const std::string& fshDir, const std::string& gshDir)
 		: m_vsh(GL_VERTEX_SHADER, vshDir),
-		  m_fsh(GL_FRAGMENT_SHADER, fshDir)
+		m_fsh(GL_FRAGMENT_SHADER, fshDir),
+		m_gsh(GL_GEOMETRY_SHADER, gshDir)
 	{
 	}
 	~SHProgram(void)
@@ -21,15 +22,15 @@ public:
 		Log("compiling shaders");
 		m_vsh.Init();
 		m_fsh.Init();
+		m_gsh.Init();
 	}
 	void Link(void)
 	{
 		Log("linking shaders");
 		if (CheckShaderStatus(m_vsh.ShaderID())
-			&& CheckShaderStatus(m_fsh.ShaderID()))
+			&& CheckShaderStatus(m_fsh.ShaderID()) && CheckShaderStatus(m_gsh.ShaderID()))
 		{
 			m_programID = glCreateProgram();
-			AttachShadersToProgram();
 			AttachShadersToProgram();
 			BindAttribLocations();
 			glLinkProgram(m_programID);
@@ -49,17 +50,18 @@ private:
 	{
 		glAttachShader(m_programID, m_vsh.ShaderID());
 		glAttachShader(m_programID, m_fsh.ShaderID());
+		glAttachShader(m_programID, m_gsh.ShaderID());
 	}
 	void BindAttribLocations(void)
 	{
 		glBindAttribLocation(m_programID, 0, "aM_vertexPosition");
 		glBindAttribLocation(m_programID, 1, "aM_vertexColor");
-		//glBindAttribLocation(m_programID, 2, "aM_vertexNormal");
 	}
 	void DeleteShaders(void)
 	{
 		glDeleteShader(m_vsh.ShaderID());
 		glDeleteShader(m_fsh.ShaderID());
+		glDeleteShader(m_gsh.ShaderID());
 	}
 	bool CheckShaderStatus(GLuint shaderID)
 	{
@@ -91,6 +93,7 @@ private:
 
 			GLsizei bufferSize;
 			glGetProgramInfoLog(programID, infoLogLength * sizeof(GLchar), &bufferSize, buffer);
+			std::cout << "hi" << std::endl;
 			Log(buffer);
 
 			return false;
@@ -102,6 +105,7 @@ private:
 
 	Shader m_vsh;
 	Shader m_fsh;
+	Shader m_gsh;
 };
 
 #endif
