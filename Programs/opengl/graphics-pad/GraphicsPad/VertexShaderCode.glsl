@@ -1,21 +1,20 @@
 #version 430
 
-in layout(location = 0) vec3 position;
-in layout(location = 1) vec3 vertexColor;
-in layout(location = 2) mat4 fullTransformMatrix;
+in layout(location=0) vec4 vertexPositionModel;
+in layout(location=1) vec3 vertexColorModel;
+in layout(location = 2) vec3 normalModel;
 
-//uniform mat4 modelTransformMatrix;
-//uniform mat4 projectionMatrix;
+uniform vec3 lightPos;
+uniform mat4 mvp;			// model view projection
+uniform mat4 modelToWorldTransformMatrix;
 
-//uniform mat4 fullTransformMatrix;
-
-out vec3 theColor;
+out vec3 normalWorld;
+out vec3 vertexPositionWorld;
 
 void main()
 {
-	vec4 v = vec4(position, 1.0); 
-
-	gl_Position = fullTransformMatrix * v;
-
-	theColor = vertexColor;
+	gl_Position = mvp * vertexPositionModel;
+	//normalWorld = vec3(modelToWorldTransformMatrix * normalize(vertexPositionModel));
+	normalWorld = vec3(modelToWorldTransformMatrix * vec4(normalModel, 0));
+	vertexPositionWorld = vec3(modelToWorldTransformMatrix * vertexPositionModel);
 }

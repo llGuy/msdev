@@ -11,172 +11,204 @@
 #include "ShapeGenerator.h"
 #include <glm/gtc/constants.hpp>
 #include <glm/gtx/transform.hpp>
+#include <fstream>
 
-extern std::string ReadShaderCode(const char*);
+using namespace std;
+using glm::vec3;
+using glm::mat4;
 
-constexpr float	X_DELTA =							0.1f;
-constexpr unsigned int MAX_TRIS =					20;
-constexpr unsigned int NUM_VERTICES_PER_TRI =		3;
-constexpr unsigned int NUM_FLOATS_PER_VERTICE =		6;
-constexpr unsigned int TRI_SIZE =					NUM_VERTICES_PER_TRI * NUM_FLOATS_PER_VERTICE * sizeof(float);
-
-unsigned int numTriangles =							0;
-
-unsigned int numIndices = 0;
-
+const uint NUM_VERTICES_PER_TRI = 3;
+const uint NUM_FLOATS_PER_VERTICE = 9;
+const uint VERTEX_BYTE_SIZE = NUM_FLOATS_PER_VERTICE * sizeof(float);
+GLuint programID;
+GLuint teapotNumIndices;
+GLuint teapotNormalsNumIndices;
+GLuint arrowNumIndices;
+GLuint arrowNormalsNumIndices;
+GLuint planeNumIndices;
+GLuint planeNormalsNumIndices;
 Camera camera;
+GLuint fullTransformationUniformLocation;
 
-static GLuint programID;
+GLuint theBufferID;
 
-inline void SendNewTriangle(void)
-{
-	if(numTriangles == MAX_TRIS) return;
-	const GLfloat THIS_TRI_X = -1.0f + numTriangles * X_DELTA;
-	GLfloat thisTri[] 
-	{
-		THIS_TRI_X, +1.0f, +0.0f,
-		+1.0f, +0.0f, +0.0f,
+GLuint teapotVertexArrayObjectID;
+GLuint arrowVertexArrayObjectID;
+GLuint planeVertexArrayObjectID;
+GLuint teapotIndexByteOffset;
+GLuint arrowIndexByteOffset;
+GLuint planeIndexByteOffset;
 
-		THIS_TRI_X + X_DELTA, +1.0f, +0.0f,
-		+1.0f, +0.0f, +0.0f,
+GLuint teapotNormalsVertexArrayObjectID;
+GLuint arrowNormalsVertexArrayObjectID;
+GLuint planeNormalsVertexArrayObjectID;
+GLuint teapotNormalsIndexDataByteOffset;
+GLuint arrowNormalsIndexDataByteOffset;
+GLuint planeNormalsIndexDataByteOffset;
 
-		THIS_TRI_X, +0.0f, +0.0f,
-		+1.0f, +0.0f, +0.0f,
-	};
-	glBufferSubData(GL_ARRAY_BUFFER, numTriangles * TRI_SIZE, TRI_SIZE, thisTri);
-	numTriangles++;
-}
+GLuint vertexArrayID;
 
-inline bool CheckStatus(GLuint objectID, 
-	PFNGLGETSHADERIVPROC objectPropertyGetter,
+bool checkStatus(
+	GLuint objectID,
+	PFNGLGETSHADERIVPROC objectPropertyGetterFunc,
 	PFNGLGETSHADERINFOLOGPROC getInfoLogFunc,
 	GLenum statusType)
 {
 	GLint status;
-	objectPropertyGetter(objectID,statusType,&status);
-	if(status != GL_TRUE)
+	objectPropertyGetterFunc(objectID, statusType, &status);
+	if (status != GL_TRUE)
 	{
 		GLint infoLogLength;
-		glGetShaderiv(objectID,GL_INFO_LOG_LENGTH,&infoLogLength);
-		GLchar* buffer = (GLchar*)alloca(infoLogLength * sizeof(GLchar));
+		objectPropertyGetterFunc(objectID, GL_INFO_LOG_LENGTH, &infoLogLength);
+		GLchar* buffer = new GLchar[infoLogLength];
 
 		GLsizei bufferSize;
-		getInfoLogFunc(objectID,infoLogLength * sizeof(GLchar),&bufferSize,buffer);
-		std::cout << buffer << std::endl;
-
+		getInfoLogFunc(objectID, infoLogLength, &bufferSize, buffer);
+		cout << buffer << endl;
+		delete[] buffer;
 		return false;
 	}
 	return true;
 }
 
-inline bool CheckShaderStatus(GLuint shaderID)
+bool checkShaderStatus(GLuint shaderID)
 {
-	return CheckStatus(shaderID, glGetShaderiv, glGetShaderInfoLog, GL_COMPILE_STATUS);
-}
-inline bool CheckProgramStatus(GLuint programID)
-{
-	return CheckStatus(programID,glGetProgramiv,glGetProgramInfoLog,GL_LINK_STATUS);
+	return checkStatus(shaderID, glGetShaderiv, glGetShaderInfoLog, GL_COMPILE_STATUS);
 }
 
-inline void InstallShader(void)
+bool checkProgramStatus(GLuint programID)
+{
+	return checkStatus(programID, glGetProgramiv, glGetProgramInfoLog, GL_LINK_STATUS);
+}
+
+string readShaderCode(const char* fileName)
+{
+	ifstream meInput(fileName);
+	if (!meInput.good())
+	{
+		cout << "File failed to load..." << fileName;
+		exit(1);
+	}
+	return std::string(
+		std::istreambuf_iterator<char>(meInput),
+		std::istreambuf_iterator<char>());
+}
+
+void installShaders()
 {
 	GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-	const char* adapter[1];
-	std::string temp = ReadShaderCode("VertexShaderCode.glsl");
+	const GLchar* adapter[1];
+	string temp = readShaderCode("VertexShaderCode.glsl");
 	adapter[0] = temp.c_str();
 	glShaderSource(vertexShaderID, 1, adapter, 0);
-
-	temp = ReadShaderCode("FragmentShaderCode.glsl");
+	temp = readShaderCode("FragmentShaderCode.glsl");
 	adapter[0] = temp.c_str();
 	glShaderSource(fragmentShaderID, 1, adapter, 0);
 
 	glCompileShader(vertexShaderID);
 	glCompileShader(fragmentShaderID);
 
-	if(!CheckShaderStatus(vertexShaderID) || !CheckShaderStatus(fragmentShaderID))
+	if (!checkShaderStatus(vertexShaderID) || !checkShaderStatus(fragmentShaderID))
 		return;
 
 	programID = glCreateProgram();
 	glAttachShader(programID, vertexShaderID);
 	glAttachShader(programID, fragmentShaderID);
 
-	glBindAttribLocation(programID, 0, "position");
-	glBindAttribLocation(programID, 1, "vertexColor");
+	//glBindAttribLocation(m_program, 0, "");
 
 	glLinkProgram(programID);
+
+	if (!checkProgramStatus(programID))
+		return;
 
 	glDeleteShader(vertexShaderID);
 	glDeleteShader(fragmentShaderID);
 
-	if(!CheckProgramStatus(programID))
-		return;
-
 	glUseProgram(programID);
 }
 
-void Window::SendDataToOpenGL(void)
+GLuint cubeNumIndices;
+void* offset;
+
+void Window::sendDataToOpenGL()
 {
-	//get shape data of a cube e.g. vertices, colors etc
-	ShapeData shape = ShapeGenerator::MakeCube();
+	ShapeData teapot = ShapeGenerator::makeTeapot();
+	ShapeData arrow = ShapeGenerator::makeArrow();
+	ShapeData plane = ShapeGenerator::makePlane(20);
 
-	//id of the vertex buffer containing the vertices
-	GLuint vertexBufferID;
-	//genrating the buffers
-	glGenBuffers(1,&vertexBufferID);
-	//binding the buffer to the GL_ARRAY_BUFFER binding point
-	glBindBuffer(GL_ARRAY_BUFFER,vertexBufferID);
-	//filling the buffer with the vertices of the cube
-	glBufferData(GL_ARRAY_BUFFER,shape.vertexBufferSize(),shape.vertices,GL_STATIC_DRAW);
-	//enable the vertex attribute array 0 - idk why yet
-	glEnableVertexAttribArray(0);
-	//setting up the vertex attribute pointer saying that 
-	//attribute 0 will contain the vertices with a stride of 6 floats
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(float) * 6,0);
-	//enable the vertex attribute array 1
-
-	glEnableVertexAttribArray(1);
-	//glVertexAttrib3f(1,0,1,1);
-
-	//setting up the vertex attribute pointer saying that
-	//attribute 1 will containt the contents of what's 3 floats in
-	//in the buffer and will have a stride of 6 floats (it starts 3 floats in - last arg)
-	glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(float) * 6,(char*)(sizeof(float) * 3));
-
-	//index array buffer ID
-	GLuint indexArrayBufferID;
-	//genrate the buffer for the index array buffer
-	glGenBuffers(1,&indexArrayBufferID);
-	//bind the buffer to the GL_ELEMENT_ARRAY_BUFFER
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,indexArrayBufferID);
-	//fill the buffer with the indices data
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,shape.indexBufferSize(),shape.indices,GL_STATIC_DRAW);
-	numIndices = shape.numIndices;
-
-	//buffer ID of the transformation matrices
-	GLuint transformationMatrixBufferID;
-	//generate the buffer
-	glGenBuffers(1, &transformationMatrixBufferID);
-	//bind the buffer to the GL_ARRAY_BUFFER binding point
-	glBindBuffer(GL_ARRAY_BUFFER, transformationMatrixBufferID);
-
-	//fill the buffer data size of 2 mat4s with fullTransforms array
-	glBufferData(GL_ARRAY_BUFFER, 5 * sizeof(glm::mat4), 0, GL_DYNAMIC_DRAW);
 	
-	//largest number of attributes per attribute pointer has to be <= 4 
-	//that is why we need to create 4 pointers
+	glGenBuffers(1, &theBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, theBufferID);
+	glBufferData(GL_ARRAY_BUFFER,
+		teapot.vertexBufferSize() + teapot.indexBufferSize() +
+		arrow.vertexBufferSize() + arrow.indexBufferSize() +
+		plane.vertexBufferSize() + plane.indexBufferSize(), 0, GL_STATIC_DRAW);
+	GLsizeiptr currentOffset = 0;
+	glBufferSubData(GL_ARRAY_BUFFER, currentOffset, teapot.vertexBufferSize(), teapot.vertices);
+	currentOffset += teapot.vertexBufferSize();
+	teapotIndexByteOffset = currentOffset;
+	glBufferSubData(GL_ARRAY_BUFFER, currentOffset, teapot.indexBufferSize(), teapot.indices);
+	currentOffset += teapot.indexBufferSize();
+	glBufferSubData(GL_ARRAY_BUFFER, currentOffset, arrow.vertexBufferSize(), arrow.vertices);
+	currentOffset += arrow.vertexBufferSize();
+	arrowIndexByteOffset = currentOffset;
+	glBufferSubData(GL_ARRAY_BUFFER, currentOffset, arrow.indexBufferSize(), arrow.indices);
+	currentOffset += arrow.indexBufferSize();
+	glBufferSubData(GL_ARRAY_BUFFER, currentOffset, plane.vertexBufferSize(), plane.vertices);
+	currentOffset += plane.vertexBufferSize();
+	planeIndexByteOffset = currentOffset;
+	glBufferSubData(GL_ARRAY_BUFFER, currentOffset, plane.indexBufferSize(), plane.indices);
+	currentOffset += plane.indexBufferSize();
 
-	for(unsigned int attribPtr = 2; attribPtr < 12; ++attribPtr)
-		glVertexAttribPointer(attribPtr,4,GL_FLOAT,GL_FALSE,
-			sizeof(glm::mat4),(void*)(sizeof(float) * ((attribPtr -2) * 4)));
+	teapotNumIndices = teapot.numIndices;
+	arrowNumIndices = arrow.numIndices;
+	planeNumIndices = plane.numIndices;
 
-	for(unsigned int i = 2; i < 12; ++i)
-		glEnableVertexAttribArray(i);
+	glGenVertexArrays(1, &teapotVertexArrayObjectID);
+	glGenVertexArrays(1, &arrowVertexArrayObjectID);
+	glGenVertexArrays(1, &planeVertexArrayObjectID);
 
-	for(unsigned int i = 2; i < 12; ++i)
-		glVertexAttribDivisor(i, 1);
+	glBindVertexArray(teapotVertexArrayObjectID);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, theBufferID);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, 0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)(sizeof(float) * 3));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)(sizeof(float) * 6));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, theBufferID);
+
+	glBindVertexArray(arrowVertexArrayObjectID);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, theBufferID);
+	GLuint arrowByteOffset = teapot.vertexBufferSize() + teapot.indexBufferSize();
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)arrowByteOffset);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)(arrowByteOffset + sizeof(float) * 3));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)(arrowByteOffset + sizeof(float) * 6));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, theBufferID);
+
+	glBindVertexArray(planeVertexArrayObjectID);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, theBufferID);
+	GLuint planeByteOffset = arrowByteOffset + arrow.vertexBufferSize() + arrow.indexBufferSize();
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)planeByteOffset);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)(planeByteOffset + sizeof(float) * 3));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)(planeByteOffset + sizeof(float) * 6));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, theBufferID);
+
+	
+	teapot.DeleteAll();
+	arrow.DeleteAll();
+	plane.DeleteAll();
 }
+
 
 Window::Window(unsigned int width, unsigned int height, const char* name)
 	: m_width(width), m_height(height), m_name(name)
@@ -229,44 +261,77 @@ const bool Window::Initialize(void)
 
 	glEnable(GL_DEPTH_TEST);
 
-	SendDataToOpenGL();
-	InstallShader();
+	sendDataToOpenGL();
+	installShaders();
 
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	return true;
 }
 
-/*
-float FOV = 50.0f;
-float delta = 0.01f;
 
-float angle = 40.0f;
-float deltaA = 0.05f;
-*/
+
 void Window::Draw(void)
 {
-	//glViewport(0, 0, m_width, m_height);
-	glClearColor(0.0f,0.0f,0.2f,1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	glViewport(0, 0, m_width, m_height);
+	glm::vec3 lightPositionWorld(0.0f, 1.0f, 0.0f);
+	mat4 mvp;
+	mat4 viewToProjectionMatrix = glm::perspective(glm::radians(60.0f), ((float)m_width) / m_height, 0.1f, 20.0f);
+	mat4 worldToViewMatrix = camera.GetWorldToViewMatrix();
+	mat4 worldToProjectionMatrix = viewToProjectionMatrix * worldToViewMatrix;
 
-	//projection matrix
-	glm::mat4 projectionMatrix = glm::perspective(glm::radians(60.0f), ((float)m_width) / m_height, 0.1f, 10.0f);
+	GLint ambientLightUniformLocation = glGetUniformLocation(programID, "ambientLight");
+	glm::vec4 ambientLight(0.1f, 0.1f, 0.1f, 1.0f);
+	glUniform4fv(ambientLightUniformLocation, 1, &ambientLight[0]);
 
-	//the full transforms of each cube (2 cubes)
-	glm::mat4 fullTransforms[]
-	{
-		projectionMatrix * camera.GetWorldToViewMatrix() * glm::translate(glm::vec3(-1.0f,0.0f,-4.0f)) * glm::rotate(glm::radians(30.0f),glm::vec3(1.0f,0.0f,0.0f)),
-		projectionMatrix * camera.GetWorldToViewMatrix() * glm::translate(glm::vec3(1.0f,0.0f,-4.75f)) * glm::rotate(glm::radians(30.0f),glm::vec3(0.0f,1.0f,0.0f)),
-		projectionMatrix * camera.GetWorldToViewMatrix() * glm::translate(glm::vec3(4.0f,1.0f,-5.0f)) * glm::rotate(glm::radians(30.0f),glm::vec3(0.0f,0.0f,1.0f)),
-		projectionMatrix * camera.GetWorldToViewMatrix() * glm::translate(glm::vec3(-6.0f,1.0f,-8.0f)) * glm::rotate(glm::radians(30.0f),glm::vec3(0.0f,0.5f,1.0f)),
-		projectionMatrix * camera.GetWorldToViewMatrix() * glm::translate(glm::vec3(-7.0f,1.0f,-4.0f)) * glm::rotate(glm::radians(30.0f),glm::vec3(1.0f,1.0f,1.0f))
-	};
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(fullTransforms), fullTransforms, GL_DYNAMIC_DRAW);
-
-	glDrawElementsInstanced(GL_TRIANGLES,numIndices,GL_UNSIGNED_SHORT,0, 5);
-	//glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
+	GLint lightUniformLocation = glGetUniformLocation(programID, "lightPositionWorld");
+	vec3 light(0.3f, 0.3f, 0.3f);
+	glUniform3fv(lightUniformLocation, 1, &lightPositionWorld[0]);
+	GLint eyePosition = glGetUniformLocation(programID, "eyePositionWorld") ;
+	glm::vec3 eyePositionWorld = camera.GetEyePosition();
+	glUniform3fv(eyePosition, 1, &eyePositionWorld[0]);
+	GLint modelToWorldTransformMatrixLoc = glGetUniformLocation(programID, "modelToWorldTransformMatrix");
+	
+	
+	glBindVertexArray(teapotVertexArrayObjectID);
+	mat4 teapot1ModelToWorldMatrix =
+		glm::translate(vec3(-3.0f, 0.0f, -6.0f)) *
+		glm::rotate(-90.0f, vec3(1.0f, 0.0f, 0.0f));
+	mvp = worldToProjectionMatrix * teapot1ModelToWorldMatrix;
+	glUniformMatrix4fv(fullTransformationUniformLocation, 1, GL_FALSE, &mvp[0][0]);
+	glDrawElements(GL_TRIANGLES, teapotNumIndices, GL_UNSIGNED_SHORT, (void*)teapotIndexByteOffset);
+	/*
+	glBindVertexArray(teapotVertexArrayObjectID);
+	mat4 teapot2ModelToWorldMatrix =
+		glm::translate(vec3(3.0f, 0.0f, -6.75f)) *
+		glm::rotate(-90.0f, vec3(1.0f, 0.0f, 0.0f));
+	mvp = worldToProjectionMatrix * teapot2ModelToWorldMatrix;
+	glUniformMatrix4fv(fullTransformationUniformLocation, 1, GL_FALSE, &mvp[0][0]);
+	glDrawElements(GL_TRIANGLES, teapotNumIndices, GL_UNSIGNED_SHORT, (void*)teapotIndexByteOffset);
+	
+	// Arrow
+	glBindVertexArray(arrowVertexArrayObjectID);
+	mat4 arrowModelToWorldMatrix = glm::translate(glm::vec3( 0.0f, 0.0f, -3.0f));
+	mvp = worldToProjectionMatrix * arrowModelToWorldMatrix;
+	glUniformMatrix4fv(modelToWorldTransformMatrixLoc, 1, GL_FALSE, &arrowModelToWorldMatrix[0][0]);
+	glUniformMatrix4fv(fullTransformationUniformLocation, 1, GL_FALSE, &mvp[0][0]);
+	glDrawElements(GL_TRIANGLES, arrowNumIndices, GL_UNSIGNED_SHORT, (void*)arrowIndexByteOffset);
+	
+	glBindVertexArray(arrowVertexArrayObjectID);
+	arrowModelToWorldMatrix = glm::translate(glm::vec3(0.0f, 3.0f, +4.0)) *glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	mvp = worldToProjectionMatrix * arrowModelToWorldMatrix;
+	glUniformMatrix4fv(modelToWorldTransformMatrixLoc, 1, GL_FALSE, &arrowModelToWorldMatrix[0][0]);
+	glUniformMatrix4fv(fullTransformationUniformLocation, 1, GL_FALSE, &mvp[0][0]);
+	glDrawElements(GL_TRIANGLES, arrowNumIndices, GL_UNSIGNED_SHORT, (void*)arrowIndexByteOffset);
+	*/
+	// Plane
+	glBindVertexArray(planeVertexArrayObjectID);
+	mat4 planeModelToWorldMatrix = glm::mat4(1.0f);
+	mvp = worldToProjectionMatrix * planeModelToWorldMatrix;
+	glUniformMatrix4fv(modelToWorldTransformMatrixLoc, 1, GL_FALSE, &planeModelToWorldMatrix[0][0]);
+	glUniformMatrix4fv(fullTransformationUniformLocation, 1, GL_FALSE, &mvp[0][0]);
+	glDrawElements(GL_TRIANGLES, planeNumIndices, GL_UNSIGNED_SHORT, (void*)planeIndexByteOffset);
 }
 
 

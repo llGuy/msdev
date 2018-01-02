@@ -31,6 +31,7 @@ public:
 			m_programID = glCreateProgram();
 			AttachShadersToProgram();
 			AttachShadersToProgram();
+			BindAttribLocations();
 			glLinkProgram(m_programID);
 			DeleteShaders();
 		}

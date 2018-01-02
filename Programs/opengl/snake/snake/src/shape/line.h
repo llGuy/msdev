@@ -46,7 +46,7 @@ public:
 
 		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &m_transformMatrix[0][0]);
 
-		glDrawArrays(GL_LINE_STRIP, 0, 2);
+		glDrawArrays(GL_LINES, 0, 2);
 	}
 private:
 	unsigned int VertexBufferSize(void) override

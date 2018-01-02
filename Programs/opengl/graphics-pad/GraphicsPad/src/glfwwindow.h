@@ -14,7 +14,7 @@ public:
 	void Draw();
 	const bool IsWindowOpen(void);
 	void Update(void);
-	void SendDataToOpenGL(void);
+	void sendDataToOpenGL(void);
 private:
 	const bool Initialize(void);
 private:

@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 {
 	Greeting();
 
-	Window window(3100, 1900, "snake");
+	Window window(2560, 1440, "snake");
 	while (window.WindowIsOpen())
 	{
 		window.Draw();

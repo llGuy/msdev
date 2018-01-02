@@ -32,7 +32,7 @@ public:
 	}
 public:
 	void Draw(Camera* camera)
-	{
+	{ 
 		unsigned int location = glGetUniformLocation(m_shprogram.ProgramID(), "transformMatrix");
 
 		m_viewProjectionMatrix = glm::perspective(

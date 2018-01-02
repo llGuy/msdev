@@ -160,6 +160,7 @@
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\ShapeGenerator.h" />
     <ClInclude Include="src\ShapeData.h" />
+    <ClInclude Include="src\TeapotData.h" />
     <ClInclude Include="src\vertex.h" />
     <ClInclude Include="src\glfwwindow.h" />
   </ItemGroup>

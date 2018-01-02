@@ -14,6 +14,10 @@ public:
 	{
 	}
 public:
+	glm::vec3 GetEyePosition(void)
+	{
+		return m_cameraPosition;
+	}
 	glm::mat4 GetWorldToViewMatrix(void) const
 	{
 		return glm::lookAt(m_cameraPosition, m_cameraPosition + m_viewDirection, m_up);
