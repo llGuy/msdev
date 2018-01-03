@@ -13,7 +13,7 @@ public:
 	explicit Terrain(float dimRow, float dimCol, float);
 	~Terrain(void);
 
-	void Draw(glm::mat4& mvp, glm::mat4& viewMat);
+	void Draw(glm::mat4& mvp, glm::mat4& viewMat, glm::vec3& eyePos);
 private:
 	void GenerateTerrainVerts(void);
 	void GenerateTerrainIndices(void);
@@ -25,7 +25,7 @@ private:
 	void CompileShaders(void);
 	void ReadImage(void);
 	void GetUniformLocations(void);
-	void SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model);
+	void SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos);
 	void ComputeTerrainType();
 private:
 	typedef unsigned int uint32;
@@ -78,6 +78,7 @@ private:
 	signed int m_uniformLocationProjection;
 	signed int m_uniformLocationView;
 	signed int m_uniformLocationLightPosition;
+	signed int m_uniformLocationEyePosition;
 };
 
 #endif

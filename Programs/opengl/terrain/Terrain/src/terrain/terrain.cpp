@@ -10,7 +10,7 @@ Terrain::Terrain(float dimX, float dimY, float maxHeight)
 	: m_width(dimX), m_height(dimY), m_shprogram("res\\vsh.shader", "res\\fsh.shader", "res\\gsh.shader"),
 	m_ambientColorGrass(0.1f, 0.3f, 0.1f), m_ambientColorDirt(0.25, 0.175, 0.025), m_ambientColorSnow(0.4f, 0.4f, 0.4f),
 	m_ambientColorRock(0.2f, 0.2f, 0.2f),
-	m_lightPosition(0.0f, 100.0f, 0.0f), m_maxHeight(maxHeight)
+	m_lightPosition(0.0f, 10.0f, 0.0f), m_maxHeight(maxHeight)
 {
 	ComputeTerrainType();
 	GenerateTerrainVerts();
@@ -25,18 +25,19 @@ Terrain::Terrain(float dimX, float dimY, float maxHeight)
 Terrain::~Terrain(void)
 {
 }
-void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat)
+void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat, glm::vec3& eyePos)
 {
+	//m_lightPosition = eyePos;
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);
 	glBindVertexArray(m_vaoID);
 
 	glm::mat4 modelMat = glm::mat4(1.0f);
 
-	SendUniformData(projMat, viewMat, modelMat);
+	SendUniformData(projMat, viewMat, modelMat, eyePos);
 
 	glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_SHORT, 0);
-	//m_lightPosition.y -= 1.0f;
+	//m_lightPosition.y -= 0.001f;
 }
 void Terrain::InitializeHeights(void)
 {
@@ -207,13 +208,15 @@ void Terrain::GetUniformLocations(void)
 	m_uniformLocationView = glGetUniformLocation(m_shprogram.ProgramID(), "u_viewMatrix");
 	m_uniformLocationModel = glGetUniformLocation(m_shprogram.ProgramID(), "u_modelMatrix");
 	m_uniformLocationLightPosition = glGetUniformLocation(m_shprogram.ProgramID(), "u_lightPosition");
+	m_uniformLocationEyePosition = glGetUniformLocation(m_shprogram.ProgramID(), "u_eyePosition");
 }
-void Terrain::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model)
+void Terrain::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos)
 {
 	glUniformMatrix4fv(m_uniformLocationProjection, 1, GL_FALSE, &proj[0][0]);
 	glUniformMatrix4fv(m_uniformLocationView, 1, GL_FALSE, &view[0][0]);
 	glUniformMatrix4fv(m_uniformLocationModel, 1, GL_FALSE, &model[0][0]);
-	glUniformMatrix4fv(m_uniformLocationLightPosition, 1, GL_FALSE, &m_lightPosition[0]);
+	glUniform3fv(m_uniformLocationLightPosition, 1, &m_lightPosition[0]);
+	glUniform3fv(m_uniformLocationEyePosition, 1, &eyePos[0]);
 }
 void Terrain::ComputeTerrainType(void) 
 {

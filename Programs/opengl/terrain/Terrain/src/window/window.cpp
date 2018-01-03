@@ -24,7 +24,8 @@ void Window::Draw(void)
 	glClearColor(0.0f, 0.6f, 0.8f, 0.2f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glm::mat4 viewMat = m_camera->GetWorldToViewMatrix();
-	m_terrain->Draw(m_projMat, viewMat);
+	glm::vec3 eyePos = m_camera->GetEyePosition();
+	m_terrain->Draw(m_projMat, viewMat, eyePos);
 }
 void Window::Update(void)
 {
@@ -122,7 +123,7 @@ void Window::AfterGLEWInit(void)
 {
 	glEnable(GL_DEPTH_TEST);
 
-	m_terrain = new Terrain(100.0f, 100.0f, 50.0f);
+	m_terrain = new Terrain(100.0f, 100.0f, 20.0f);
 	m_camera = new Camera;
 	m_projMat = glm::perspective(glm::radians(60.0f), (float)m_width / m_height, 0.1f, 500.0f);
 }
