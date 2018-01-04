@@ -25,23 +25,29 @@ Terrain::Terrain(float dimX, float dimY, float maxHeight, Biome::biome_t biome)
 	: m_width(dimX), m_height(dimY), m_shprogram("res\\vsh.shader", "res\\fsh.shader", "res\\gsh.shader"),
 	m_lightPosition(0.0f, 10.0f, 0.0f), m_maxHeight(maxHeight)
 {
-	InitHeightmap();
-	ComputeTerrainType();
-	GenerateTerrainVerts();
-	GenerateTerrainIndices();
-	InitBiome(biome);
-	GenerateColors();
-	m_biome->VaryColors(m_vertices, m_yVals, m_numTilesWidth, m_numTilesHeight);
-
-	InitBuffer();
-	CompileShaders();
-	GetUniformLocations();
+	TerrainInit(biome);
+	BufferAndShaderInit();
 }
 Terrain::~Terrain(void)
 {
 	delete[] m_vertices;
 	delete[] m_indices;
 	delete[] m_yVals;
+}
+void Terrain::TerrainInit(Biome::biome_t biome)
+{
+	InitHeightmap();
+	GenerateTerrainVerts();
+	GenerateTerrainIndices();
+	InitBiome(biome);
+	GenerateColors();
+	m_biome->VaryColors(m_vertices, m_yVals, m_numTilesWidth, m_numTilesHeight);
+}
+void Terrain::BufferAndShaderInit(void)
+{
+	InitBuffer();
+	CompileShaders();
+	GetUniformLocations();
 }
 void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat, glm::vec3& eyePos)
 {
@@ -127,59 +133,28 @@ void Terrain::GenerateColors(void)
 }
 float Terrain::GetYPosOfPlayer(float x, float z, float debug)
 {
-	// create terrain coordinate system
-	float tx = abs(x - (m_widthHalf - m_width));
-	float tz = abs(z - (m_heightHalf - m_height));
-
-	// which tile in player 
-	float tileX = floor(tx);
-	float tileZ = floor(tz);
-
-	float posOfPlayerOnTileX = tx - tileX;
-	float posOfPlayerOnTileZ = tz - tileZ;
-
 	float height;
-	if (posOfPlayerOnTileZ <= 1 - posOfPlayerOnTileX)
+	glm::vec2 positionOfPlayerOnTile =	GetPositionOfPlayerOnTile(x, z);
+	glm::vec2 sizeOfTile =				GetSizeOfTile(x, z);
+	unsigned int ind1, ind2, ind3;
+
+	if (positionOfPlayerOnTile.x <= 1 + positionOfPlayerOnTile.y)
 	{
-		unsigned int ind1 = tileZ * m_numVertsHeight + tileX;
-		unsigned int ind2 = (tileZ + 1) * m_numVertsHeight + tileX;
-		unsigned int ind3 = (tileZ + 1) * m_numVertsHeight + tileX + 1;
+		ind1 = sizeOfTile.y * m_numVertsHeight + sizeOfTile.x;
+		ind2 = (sizeOfTile.y + 1) * m_numVertsHeight + sizeOfTile.x;
+		ind3 = (sizeOfTile.y + 1) * m_numVertsHeight + sizeOfTile.x + 1;
 
-		glm::vec2 positionOfPlayer = glm::vec2(posOfPlayerOnTileX, posOfPlayerOnTileZ - 1.0f);
-		float m_yVal1 = m_yVals[ind1];
-		float m_yVal2 = m_yVals[ind2];
-		float m_yVal3 = m_yVals[ind3];
-		height = BarryCentric(glm::vec3(0.0f, m_yVal1, 0.0f), glm::vec3(0.0f, m_yVal2, -1.0f),
-			glm::vec3(1.0f, m_yVal3, -1.0f), positionOfPlayer);
-
-		if (abs(height - (debug - 0.7f)) > 0.1f)
-		{
-			std::cout << "bug" << std::endl;
-		}
-
-		ind1 = tileZ * m_numVertsHeight + tileX;
-		ind2 = (tileZ + 1) * m_numVertsHeight + tileX;
-		ind3 = (tileZ + 1) * m_numVertsHeight + tileX + 1;
-
-		positionOfPlayer = glm::vec2(posOfPlayerOnTileX, posOfPlayerOnTileZ - 1.0f);
-		m_yVal1 = m_yVals[ind1];
-		m_yVal2 = m_yVals[ind2];
-		m_yVal3 = m_yVals[ind3];
-		height = BarryCentric(glm::vec3(0.0f, m_yVal1, 0.0f), glm::vec3(0.0f, m_yVal2, -1.0f),
-			glm::vec3(1.0f, m_yVal3, -1.0f), positionOfPlayer);
+		height = BarryCentric(glm::vec3(0.0f, m_yVals[ind1], -1.0f), glm::vec3(0.0f, m_yVals[ind2], 0.0f), 
+			glm::vec3(1.0f, m_yVals[ind3], 0.0f), glm::vec2(positionOfPlayerOnTile.x, positionOfPlayerOnTile.y));
 	}
 	else
 	{
-		unsigned int ind1 = tileZ * m_numVertsHeight + tileX;
-		unsigned int ind2 = (tileZ + 1) * m_numVertsHeight + tileX + 1;
-		unsigned int ind3 = tileZ * m_numVertsHeight + tileX + 1;
+		ind1 = sizeOfTile.y * m_numVertsHeight + sizeOfTile.x;
+		ind2 = (sizeOfTile.y + 1) * m_numVertsHeight + sizeOfTile.x + 1;
+		ind3 = sizeOfTile.y * m_numVertsHeight + sizeOfTile.x + 1;
 
-		glm::vec2 positionOfPlayer = glm::vec2(posOfPlayerOnTileX, posOfPlayerOnTileZ - 1.0f);
-		float m_yVal1 = m_yVals[ind1];
-		float m_yVal2 = m_yVals[ind2];
-		float m_yVal3 = m_yVals[ind3];
-		height = BarryCentric(glm::vec3(0.0f, m_yVals[ind1], 0.0f), glm::vec3(1.0f, m_yVals[ind2], -1.0f),
-			glm::vec3(1.0f, m_yVals[ind3], 0.0f), positionOfPlayer);
+		height = BarryCentric(glm::vec3(0.0f, m_yVals[ind1], -1.0f), glm::vec3(1.0f, m_yVals[ind2], 0.0f),
+			glm::vec3(1.0f, m_yVals[ind3], -1.0f), glm::vec2(positionOfPlayerOnTile.x, positionOfPlayerOnTile.y));
 	}
 
 	return height;
@@ -205,12 +180,6 @@ void Terrain::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model
 	glUniform3fv(m_uniformLocations.m_uniLocLightPosition, 1, &m_lightPosition[0]);
 	glUniform3fv(m_uniformLocations.m_uniLocEyePosition, 1, &eyePos[0]);
 }
-void Terrain::ComputeTerrainType(void) 
-{
-	m_dirtLimit = m_maxHeight / 3;
-	m_rockStart = m_maxHeight / 5 * 3;
-	m_snowStart = m_maxHeight - m_maxHeight / 5;
-}
 void Terrain::InitBuffer(void) 
 {
 	m_buffer = new Buffer(m_vertices, m_indices, m_numVertices, m_numIndices);
@@ -218,7 +187,7 @@ void Terrain::InitBuffer(void)
 }
 void Terrain::InitHeightmap(void)
 {
-	m_hm = new Heightmap("C:\\Users\\lucro\\Development\\msdev\\Terrain\\Debug\\terrain1.png");
+	m_hm = new Heightmap("C:\\Users\\lucro\\Development\\msdev\\Terrain\\Debug\\terrain6.png");
 }
 void Terrain::InitBiome(Biome::biome_t biome)
 {

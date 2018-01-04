@@ -79,7 +79,7 @@ protected:
 		m_snowColor = glm::vec3(0.6f, 0.6f, 0.6f);
 		m_rockColor = glm::vec3(0.2f, 0.2f, 0.2f);
 		m_iceColor = glm::vec3(0.560784f, 0.560784f, 0.737255f);
-		m_grassColor = glm::vec3(0.1f, 0.3f, 0.1f);
+		m_grassColor = glm::vec3(0.4f, 0.45f, 0.5f);
 	}
 private:
 	float m_rock;

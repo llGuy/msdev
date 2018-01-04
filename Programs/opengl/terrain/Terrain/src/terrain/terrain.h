@@ -21,6 +21,8 @@ public:
 	glm::vec3 Sky(void);
 	float GetYPosOfPlayer(float x, float z, float debug = 0.0f);
 private:
+	void TerrainInit(Biome::biome_t);
+	void BufferAndShaderInit(void);
 	void GenerateTerrainVerts(void);
 	void GenerateTerrainIndices(void);
 	void InitializeHeights(void);
@@ -30,9 +32,21 @@ private:
 	void InitHeightmap(void);
 	void GetUniformLocations(void);
 	void SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos);
-	void ComputeTerrainType(void);
 	void InitBuffer(void);
 	void InitBiome(Biome::biome_t);
+
+	__forceinline glm::vec2 GetPositionOfPlayerOnTile(float x, float z)
+	{
+		float tx = x - floor(x);
+		float tz = z - ceil(z);
+		return glm::vec2(tx, tz);
+	}
+	__forceinline glm::vec2 GetSizeOfTile(float x, float z)
+	{
+		float tileWidth = floor(abs(x - (m_widthHalf - m_width)));
+		float tileHeight = floor(abs(z - (m_heightHalf - m_height)));
+		return glm::vec2(tileWidth, tileHeight);
+	}
 private:
 	struct UniformLocations
 	{
