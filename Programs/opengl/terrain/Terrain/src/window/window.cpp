@@ -155,10 +155,11 @@ void Window::AfterGLEWInit(void)
 {
 	glEnable(GL_DEPTH_TEST);
 
-	m_terrain = new Terrain(100.0f, 100.0f, 20.0f, Biome::SNOW);
+	Terrain::TerrainDimensions dim = { 100.0f, 100.0f, 20.0f };
+	m_terrain = new Terrain(dim, Biome::VOLCANO);
 	m_camera = new Camera;
 	m_player = new Player(glm::vec3(0.0f, m_terrain->GetYPosOfPlayer(0.0f, 0.0f), 0.0f),
-		glm::vec3(0.0f, 0.0f, -1.0f), m_glfwWindow, 0.008f);
+		glm::vec3(0.0f, 0.0f, -1.0f), m_glfwWindow, 0.02f);
 
 	m_projMat = glm::perspective(glm::radians(60.0f), (float)m_width / m_height, 0.1f, 500.0f);
 

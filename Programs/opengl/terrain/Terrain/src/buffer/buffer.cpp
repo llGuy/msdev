@@ -3,9 +3,21 @@
 #include "buffer.h"
 #include "../primitives/vertex.h"
 
-Buffer::Buffer(void* vd, void* id, unsigned int numV, unsigned int numI)
-	: m_vertices(vd), m_indices(id), m_numV(numV), m_numI(numI)
+Buffer::Buffer(void)
 {
+}
+Buffer::Buffer(VertexData vData, IndexData iData)
+	: m_vData(vData), m_iData(iData)
+{
+}
+void Buffer::Init(VertexData vData, IndexData iData)
+{
+	m_vData = vData;
+	m_iData = iData;
+
+	SendVertexData();
+	SendIndexData();
+	CreateVertexArray();
 }
 void Buffer::Init(void)
 {
@@ -33,41 +45,42 @@ void Buffer::BindAll(void)
 }
 unsigned int Buffer::NumIndices(void) const
 {
-	return m_numI;
+	return m_iData.numIndices;
 }
 unsigned int Buffer::NumVertices(void) const
 {
-	return m_numV;
+	return m_vData.numVertices;
 }
 unsigned int Buffer::VertexDataSize(void) const
 {
-	return sizeof(Vertex) * m_numV;
+	return sizeof(Vertex) * m_vData.numVertices;
 }
 unsigned int Buffer::IndexDataSize(void) const
 {
-	return sizeof(unsigned short) * m_numI;
+	return sizeof(unsigned short) * m_iData.numIndices;
 }
 void Buffer::SendVertexData(void)
 {
 	glGenBuffers(1, &m_vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, VertexDataSize(), m_vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, VertexDataSize(), m_vData.vData, GL_STATIC_DRAW);
 }
 void Buffer::SendIndexData(void)
 {
 	glGenBuffers(1, &m_indexBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexDataSize(), m_indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndexDataSize(), m_iData.iData, GL_STATIC_DRAW);
 }
 void Buffer::CreateVertexArray(void)
 {
 	glGenVertexArrays(1, &m_vaoID);
 	glBindVertexArray(m_vaoID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
-	
+
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 }
+

@@ -1,10 +1,15 @@
 #ifndef BUFFER_HEADER
 #define BUFFER_HEADER
 
+#include "../data/vertex_data.h"
+#include "../data/index_data.h"
+
 class Buffer
 {
 public:
-	explicit Buffer(void* vd, void* id, unsigned int numV, unsigned int numI);
+	explicit Buffer(void);
+	explicit Buffer(VertexData vData, IndexData iData);
+	void Init(VertexData vData, IndexData iData);
 	void Init(void);
 	void BindElement(void);
 	void BindArray(void);
@@ -19,11 +24,8 @@ private:
 	void SendIndexData(void);
 	void CreateVertexArray(void);
 private:
-	void* m_vertices;			// vertex data
-	void* m_indices;		    // index data
-
-	unsigned int m_numV;	// number of vertices
-	unsigned int m_numI;	// number of indices
+	VertexData m_vData;
+	IndexData m_iData;
 
 	unsigned int m_vertexBufferID;
 	unsigned int m_indexBufferID;

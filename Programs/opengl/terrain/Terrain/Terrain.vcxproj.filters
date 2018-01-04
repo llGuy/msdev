@@ -77,6 +77,12 @@
     <ClInclude Include="src\player\player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\data\vertex_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\data\index_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\vsh.shader" />

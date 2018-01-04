@@ -135,6 +135,8 @@
     <ClInclude Include="src\biome\volcano.h" />
     <ClInclude Include="src\buffer\buffer.h" />
     <ClInclude Include="src\camera\camera.h" />
+    <ClInclude Include="src\data\index_data.h" />
+    <ClInclude Include="src\data\vertex_data.h" />
     <ClInclude Include="src\heightmap\heightmap.h" />
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\player\player.h" />

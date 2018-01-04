@@ -64,9 +64,9 @@ protected:
 	}
 	void GetColorOfElements(void) override
 	{
-		m_sandColor = glm::vec3(1.0f, 0.97, 0.86f) * 0.7f;
+		m_sandColor = glm::vec3(1.0f, 0.97, 0.86f) * 0.6f;
 		
-		m_varyingSandColor = glm::vec3(0.94, 0.87f, 0.7f) * 0.7f;
+		m_varyingSandColor = glm::vec3(0.94, 0.87f, 0.7f) * 0.6f;
 	}
 private:
 	glm::vec3 m_sandColor;
