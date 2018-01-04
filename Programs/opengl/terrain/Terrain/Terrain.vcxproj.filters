@@ -27,6 +27,9 @@
     <ClCompile Include="src\buffer\buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\heightmap\heighmap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\window.h">
@@ -51,6 +54,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\buffer\buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\heightmap\heightmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\biome\biome.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\biome\snow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\biome\volcano.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\biome\planes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\biome\desert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\player\player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

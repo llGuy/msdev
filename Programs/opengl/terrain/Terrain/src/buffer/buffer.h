@@ -9,12 +9,15 @@ public:
 	void BindElement(void);
 	void BindArray(void);
 	void BindVertexArray(void);
+	void BindAll(void);
+	unsigned int NumIndices(void) const;
+	unsigned int NumVertices(void) const;
 private:
 	unsigned int VertexDataSize(void) const;
 	unsigned int IndexDataSize(void) const;
-	void InitializeGLBuffer(void);
 	void SendVertexData(void);
 	void SendIndexData(void);
+	void CreateVertexArray(void);
 private:
 	void* m_vertices;			// vertex data
 	void* m_indices;		    // index data
@@ -22,7 +25,8 @@ private:
 	unsigned int m_numV;	// number of vertices
 	unsigned int m_numI;	// number of indices
 
-	unsigned int m_bufferID;
+	unsigned int m_vertexBufferID;
+	unsigned int m_indexBufferID;
 	unsigned int m_vaoID;
 };
 

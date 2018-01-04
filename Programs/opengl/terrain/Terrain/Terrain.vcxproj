@@ -122,14 +122,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\buffer\buffer.cpp" />
+    <ClCompile Include="src\heightmap\heighmap.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\terrain\terrain.cpp" />
     <ClCompile Include="src\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\biome\biome.h" />
+    <ClInclude Include="src\biome\desert.h" />
+    <ClInclude Include="src\biome\planes.h" />
+    <ClInclude Include="src\biome\snow.h" />
+    <ClInclude Include="src\biome\volcano.h" />
     <ClInclude Include="src\buffer\buffer.h" />
     <ClInclude Include="src\camera\camera.h" />
+    <ClInclude Include="src\heightmap\heightmap.h" />
     <ClInclude Include="src\log.h" />
+    <ClInclude Include="src\player\player.h" />
     <ClInclude Include="src\primitives\vertex.h" />
     <ClInclude Include="src\shader\shader.h" />
     <ClInclude Include="src\shader\shprogram.h" />

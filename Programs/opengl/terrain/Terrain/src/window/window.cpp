@@ -3,11 +3,27 @@
 #include <chrono>
 #include <thread>
 
+#include "../player/player.h"
+
 #include "window.h"
 #include "../log.h"
+#include "../biome/biome.h"
 #include "../camera/camera.h"
 #include "../terrain/terrain.h"
 
+static void KeyCallback(GLFWwindow* window, int key, int, int action, int)
+{
+	Window* p = (Window*)(glfwGetWindowUserPointer(window));
+	if (action == GLFW_PRESS)
+	{
+		if (key == GLFW_KEY_T)
+		{
+			if (p->CameraPlayerView())
+				p->CameraPlayerView() = false;
+			else p->CameraPlayerView() = true;
+		}
+	}
+}
 Window::Window(unsigned int width, unsigned int height, const char* title)
 	: m_width(width), m_height(height), m_title(title)
 {
@@ -21,10 +37,21 @@ Window::~Window(void)
 }
 void Window::Draw(void)
 {
-	glClearColor(0.0f, 0.6f, 0.8f, 0.2f);
+	glm::vec3 sky = m_terrain->Sky();
+	glClearColor(sky.r, sky.g, sky.b, 0.2f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glm::mat4 viewMat = m_camera->GetWorldToViewMatrix();
-	glm::vec3 eyePos = m_camera->GetEyePosition();
+	glm::mat4 viewMat;
+	glm::vec3 eyePos;
+	if (m_cameraPlayerView)
+	{
+		viewMat = m_camera->GetWorldToViewMatrix();
+		eyePos = m_camera->GetEyePosition();
+	}
+	else
+	{
+		viewMat = m_player->ViewMatrix();
+		eyePos = m_player->Position();
+	}
 	m_terrain->Draw(m_projMat, viewMat, eyePos);
 }
 void Window::Update(void)
@@ -46,44 +73,43 @@ void Window::PollKeys(void)
 }
 void Window::PollCameraMovement(void)
 {
-	if (!glfwGetKey(m_glfwWindow, GLFW_KEY_R))
+	if (m_cameraPlayerView)
 	{
-		m_camera->SetSpeedBackToDefault();
+		if (!glfwGetKey(m_glfwWindow, GLFW_KEY_R))
+			m_camera->SetSpeedBackToDefault();
+		else
+			m_camera->SpeedUp();
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_W))
+			m_camera->MoveForward();
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))
+			m_camera->MoveBackward();
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_A))
+			m_camera->MoveLeft();
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_D))
+			m_camera->MoveRight();
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_SPACE))
+			m_camera->MoveUp();
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_LEFT_SHIFT))
+			m_camera->MoveDown();
 	}
 	else
 	{
-		m_camera->SpeedUp();
-	}
-	if (glfwGetKey(m_glfwWindow, GLFW_KEY_W))
-	{
-		m_camera->MoveForward();
-	}
-	if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))
-	{
-		m_camera->MoveBackward();
-	}
-	if (glfwGetKey(m_glfwWindow, GLFW_KEY_A))
-	{
-		m_camera->MoveLeft();
-	}
-	if (glfwGetKey(m_glfwWindow, GLFW_KEY_D))
-	{
-		m_camera->MoveRight();
-	}
-	if (glfwGetKey(m_glfwWindow, GLFW_KEY_SPACE))
-	{
-		m_camera->MoveUp();
-	}
-	if (glfwGetKey(m_glfwWindow, GLFW_KEY_LEFT_SHIFT))
-	{
-		m_camera->MoveDown();
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_W))
+			m_player->Move(Player::FORWARD, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z, m_player->Position().y));
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))
+			m_player->Move(Player::BACKWARD, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z));
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_A))
+			m_player->Strafe(Player::LEFT, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z));
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_D))
+			m_player->Strafe(Player::RIGHT, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z));
 	}
 }
 void Window::PollMouseMovement(void)
 {
 	double x, y;
 	glfwGetCursorPos(m_glfwWindow, &x, &y);
-	m_camera->MouseUpdate(glm::vec2(x, y));
+	if(m_cameraPlayerView) m_camera->MouseUpdate(glm::vec2(x, y));
+	else m_player->Look(glm::vec2(x, y));
 }
 void Window::WindowInit(void)
 {
@@ -97,6 +123,8 @@ void Window::WindowInit(void)
 		exit(1);
 	}
 	glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetWindowUserPointer(m_glfwWindow, this);
+	glfwSetKeyCallback(m_glfwWindow, KeyCallback);
 }
 void Window::GLFWInit(void)
 {
@@ -119,11 +147,20 @@ void Window::GLEWInit(void)
 		exit(1);
 	}
 }
+bool& Window::CameraPlayerView(void)
+{
+	return m_cameraPlayerView;
+}
 void Window::AfterGLEWInit(void)
 {
 	glEnable(GL_DEPTH_TEST);
 
-	m_terrain = new Terrain(100.0f, 100.0f, 20.0f);
+	m_terrain = new Terrain(100.0f, 100.0f, 20.0f, Biome::VOLCANO);
 	m_camera = new Camera;
+	m_player = new Player(glm::vec3(-50.0f, m_terrain->GetYPosOfPlayer(-50.0f, -50.0f), -50.0f),
+		glm::vec3(0.0f, 0.0f, -1.0f), m_glfwWindow, 0.008f);
+
 	m_projMat = glm::perspective(glm::radians(60.0f), (float)m_width / m_height, 0.1f, 500.0f);
+
+	m_cameraPlayerView = true;
 }

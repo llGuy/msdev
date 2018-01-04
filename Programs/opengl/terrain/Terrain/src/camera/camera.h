@@ -8,9 +8,14 @@ class Camera
 {
 public:
 	explicit Camera(void)
-		: m_cameraPosition(0.0f, 0.0f, 0.0f),
-		m_viewDirection(0.0f, 0.0f, -1.0f),
+		: m_cameraPosition(-100.0f, 100.0f, -100.0f),
+		m_viewDirection(glm::normalize(glm::vec3(1.0f, -6.0f, 3.0f))),
 		m_up(0.0f, 1.0f, 0.0f), m_speed(0.02f)
+	{
+	}
+	explicit Camera(glm::vec3 position, float speed)
+		: m_cameraPosition(position), m_viewDirection(0.0f, -1.0f, 0.0f),
+		m_up(0.0f, 1.0f, 0.0f), m_speed(speed)
 	{
 	}
 public:
