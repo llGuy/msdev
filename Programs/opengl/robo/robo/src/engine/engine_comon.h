@@ -8,7 +8,7 @@
 
 #include "heightmap/heightmap.h"
 
-#include "entities/player/player.h"
+#include "entities/player/fpsplayer.h"
 
 #include "heightmap/heightmap.h"
 

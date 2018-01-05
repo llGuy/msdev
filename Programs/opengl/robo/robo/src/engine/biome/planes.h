@@ -89,11 +89,11 @@ protected:
 	}
 	void GetColorOfElements(void) override
 	{
-		m_darkGrassColor = glm::vec3(0.16, 0.47f, 0.13f) * 0.8f;
+		m_darkGrassColor = glm::vec3(0.16, 0.47f, 0.13f) * 0.6f;
 		m_rockColor = glm::vec3(0.2f, 0.2f, 0.2f);
 		m_grassColor = glm::vec3(0.19f, 0.8f, 0.19f) * 0.6f;
 
-		m_varyingGrassColor = glm::vec3(0.48f, 1.0f, 0.0f) * 0.7f;
+		m_varyingGrassColor = glm::vec3(0.48f, 1.0f, 0.0f) * 0.6f;
 		m_varyingDarkGrassColor = glm::vec3(0.35f, 0.16f, 0.14f);
 	}
 private:

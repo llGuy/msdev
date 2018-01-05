@@ -3,9 +3,7 @@
 
 #include <glm/glm.hpp>
 
-class Camera;
-class Player;
-class Terrain;
+class RoboEngine;
 class GLFWwindow;
 
 class Window
@@ -19,10 +17,6 @@ public:
 	const bool WindowOpen(void);
 	bool& CameraPlayerView(void);
 private:
-	void PollKeys(void);
-	void PollCameraMovement(void);
-	void PollMouseMovement(void);
-private:
 	void WindowInit(void);
 	void GLFWInit(void);
 	void GLEWInit(void);
@@ -32,10 +26,7 @@ private:
 	unsigned int m_height;
 	const char* m_title;
 	GLFWwindow* m_glfwWindow;
-	Terrain* m_terrain;
-	Camera* m_camera;
-	Player* m_player;
-	glm::mat4 m_projMat;
+	RoboEngine* m_engine;
 
 	bool m_cameraPlayerView;
 };

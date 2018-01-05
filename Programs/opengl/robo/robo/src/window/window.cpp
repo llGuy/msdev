@@ -3,12 +3,7 @@
 #include <chrono>
 #include <thread>
 
-
-#include "../engine/entities/player/player.h"
-
-#include "../engine/biome/biome.h"
-#include "../camera/camera.h"
-#include "../engine/terrain/terrain.h"
+#include "../engine/engine.h"
 #include "../log.h"
 #include "window.h"
 
@@ -38,79 +33,21 @@ Window::~Window(void)
 }
 void Window::Draw(void)
 {
-	/*glm::vec3 sky = m_terrain->Sky();
-	glClearColor(sky.r, sky.g, sky.b, 0.2f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glm::mat4 viewMat;
-	glm::vec3 eyePos;
-	if (m_cameraPlayerView)
-	{
-		viewMat = m_camera->GetWorldToViewMatrix();
-		eyePos = m_camera->GetEyePosition();
-	}
-	else
-	{
-		viewMat = m_player->ViewMatrix();
-		eyePos = m_player->Position();
-	}
-	m_terrain->Draw(m_projMat, viewMat, eyePos);*/
+//	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER);
+	m_engine->Draw();
 }
 void Window::Update(void)
 {
 	glfwSwapBuffers(m_glfwWindow);
 	glfwPollEvents();
-
-	PollKeys();
+	m_engine->KeyInput(m_glfwWindow);
+	m_engine->MouseInput(m_glfwWindow);
 }
 const bool Window::WindowOpen(void)
 {
 	return !glfwWindowShouldClose(m_glfwWindow)
 		&& !(glfwGetKey(m_glfwWindow, GLFW_KEY_ESCAPE));
-}
-void Window::PollKeys(void)
-{
-	PollMouseMovement();
-	PollCameraMovement();
-}
-void Window::PollCameraMovement(void)
-{
-	if (m_cameraPlayerView)
-	{
-		if (!glfwGetKey(m_glfwWindow, GLFW_KEY_R))
-			m_camera->SetSpeedBackToDefault();
-		else
-			m_camera->SpeedUp();
-		if (glfwGetKey(m_glfwWindow, GLFW_KEY_W))
-			m_camera->MoveForward();
-		if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))
-			m_camera->MoveBackward();
-		if (glfwGetKey(m_glfwWindow, GLFW_KEY_A))
-			m_camera->MoveLeft();
-		if (glfwGetKey(m_glfwWindow, GLFW_KEY_D))
-			m_camera->MoveRight();
-		if (glfwGetKey(m_glfwWindow, GLFW_KEY_SPACE))
-			m_camera->MoveUp();
-		if (glfwGetKey(m_glfwWindow, GLFW_KEY_LEFT_SHIFT))
-			m_camera->MoveDown();
-	}
-	else
-	{
-		if (glfwGetKey(m_glfwWindow, GLFW_KEY_W))
-			m_player->Move(Player::FORWARD, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z, m_player->Position().y));
-		if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))
-			m_player->Move(Player::BACKWARD, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z));
-		if (glfwGetKey(m_glfwWindow, GLFW_KEY_A))
-			m_player->Strafe(Player::LEFT, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z));
-		if (glfwGetKey(m_glfwWindow, GLFW_KEY_D))
-			m_player->Strafe(Player::RIGHT, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z));
-	}
-}
-void Window::PollMouseMovement(void)
-{
-	double x, y;
-	glfwGetCursorPos(m_glfwWindow, &x, &y);
-	if(m_cameraPlayerView) m_camera->MouseUpdate(glm::vec2(x, y));
-	else m_player->Look(glm::vec2(x, y));
 }
 void Window::WindowInit(void)
 {
@@ -156,12 +93,5 @@ void Window::AfterGLEWInit(void)
 {
 	glEnable(GL_DEPTH_TEST);
 
-	m_terrain = new Terrain(100.0f, 100.0f, 20.0f, Biome::SNOW);
-	m_camera = new Camera;
-	m_player = new Player(glm::vec3(0.0f, m_terrain->GetYPosOfPlayer(0.0f, 0.0f), 0.0f),
-		glm::vec3(0.0f, 0.0f, -1.0f), m_glfwWindow, 0.008f);
-
-	m_projMat = glm::perspective(glm::radians(60.0f), (float)m_width / m_height, 0.1f, 500.0f);
-
-	m_cameraPlayerView = true;
+	m_engine = new RoboEngine(m_width, m_height);
 }

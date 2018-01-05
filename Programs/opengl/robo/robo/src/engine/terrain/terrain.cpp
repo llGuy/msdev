@@ -13,6 +13,8 @@
 #include "../biome/planes.h"
 #include "../biome/desert.h"
 
+#include "../engine.h"
+
 static float BarryCentric(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec2 pos) {
 	float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
 	float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
@@ -22,11 +24,12 @@ static float BarryCentric(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec2 po
 }
 
 Terrain::Terrain(Terrain::TerrainDimensions dimensions, Biome::biome_t biome)
-	: m_dimensions(dimensions), m_hm("C:\\Users\\lucro\\Development\\msdev\\Terrain\\Debug\\terrain1.png"),
-	m_shprogram("res\\vsh.shader", "res\\fsh.shader", "res\\gsh.shader"), m_lightPosition(0.0f, 50.0f, 0.0f), m_buffer()
+	:	m_dimensions(dimensions), 
+		m_hm(HM),
+		m_buffer()
 {
 	TerrainInit(biome);
-	BufferAndShaderInit();
+	BufferInit();
 }
 Terrain::~Terrain(void)
 {
@@ -36,24 +39,21 @@ Terrain::~Terrain(void)
 }
 void Terrain::TerrainInit(Biome::biome_t biome)
 {
-	InitHeightmap();
 	GenerateTerrainVerts();
 	GenerateTerrainIndices();
 	InitBiome(biome);
 	GenerateColors();
 	m_biome->VaryColors(m_meshData.vertices.vData, m_meshData.y, m_meshData.xNumTiles, m_meshData.zNumTiles);
 }
-void Terrain::BufferAndShaderInit(void)
+void Terrain::BufferInit(void)
 {
 	InitBuffer();
-	CompileShaders();
-	GetUniformLocations();
 }
-void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat, glm::vec3& eyePos)
+void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations)
 {
 	m_buffer.BindAll();
 	glm::mat4 modelMat = glm::mat4(1.0f);
-	SendUniformData(projMat, viewMat, modelMat, eyePos);
+	SendUniformData(projMat, viewMat, modelMat, eyePos, lightPos, locations);
 	glDrawElements(GL_TRIANGLES, m_meshData.indices.numIndices, GL_UNSIGNED_SHORT, 0);
 }
 glm::vec3 Terrain::Sky(void)
@@ -159,33 +159,17 @@ float Terrain::GetYPosOfPlayer(float x, float z, float debug)
 
 	return height;
 }
-void Terrain::CompileShaders(void)
+void Terrain::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations)
 {
-	m_shprogram.Compile();
-	m_shprogram.Link();
-}
-void Terrain::GetUniformLocations(void)
-{
-	m_uniformLocations.m_uniLocProjection = glGetUniformLocation(m_shprogram.ProgramID(), "u_projectionMatrix");
-	m_uniformLocations.m_uniLocView = glGetUniformLocation(m_shprogram.ProgramID(), "u_viewMatrix");
-	m_uniformLocations.m_uniLocModel = glGetUniformLocation(m_shprogram.ProgramID(), "u_modelMatrix");
-	m_uniformLocations.m_uniLocLightPosition = glGetUniformLocation(m_shprogram.ProgramID(), "u_lightPosition");
-	m_uniformLocations.m_uniLocEyePosition = glGetUniformLocation(m_shprogram.ProgramID(), "u_eyePosition");
-}
-void Terrain::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos)
-{
-	glUniformMatrix4fv(m_uniformLocations.m_uniLocProjection, 1, GL_FALSE, &proj[0][0]);
-	glUniformMatrix4fv(m_uniformLocations.m_uniLocView, 1, GL_FALSE, &view[0][0]);
-	glUniformMatrix4fv(m_uniformLocations.m_uniLocModel, 1, GL_FALSE, &model[0][0]);
-	glUniform3fv(m_uniformLocations.m_uniLocLightPosition, 1, &m_lightPosition[0]);
-	glUniform3fv(m_uniformLocations.m_uniLocEyePosition, 1, &eyePos[0]);
+	glUniformMatrix4fv(locations->m_uniLocProjection, 1, GL_FALSE, &proj[0][0]);
+	glUniformMatrix4fv(locations->m_uniLocView, 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(locations->m_uniLocModel, 1, GL_FALSE, &model[0][0]);
+	glUniform3fv(locations->m_uniLocLightPosition, 1, &lightPos[0]);
+	glUniform3fv(locations->m_uniLocEyePosition, 1, &eyePos[0]);
 }
 void Terrain::InitBuffer(void)
 {
 	m_buffer.Init(m_meshData.vertices, m_meshData.indices);
-}
-void Terrain::InitHeightmap(void)
-{
 }
 void Terrain::InitBiome(Biome::biome_t biome)
 {

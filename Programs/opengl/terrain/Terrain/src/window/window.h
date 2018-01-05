@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 
 class Camera;
-class Player;
+class FPSPlayer;
 class Terrain;
 class GLFWwindow;
 
@@ -34,7 +34,7 @@ private:
 	GLFWwindow* m_glfwWindow;
 	Terrain* m_terrain;
 	Camera* m_camera;
-	Player* m_player;
+	FPSPlayer* m_player;
 	glm::mat4 m_projMat;
 
 	bool m_cameraPlayerView;

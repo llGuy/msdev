@@ -95,13 +95,13 @@ void Window::PollCameraMovement(void)
 	else
 	{
 		if (glfwGetKey(m_glfwWindow, GLFW_KEY_W))
-			m_player->Move(Player::FORWARD, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z, m_player->Position().y));
+			m_player->Move(FPSPlayer::FORWARD, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z, m_player->Position().y));
 		if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))
-			m_player->Move(Player::BACKWARD, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z));
+			m_player->Move(FPSPlayer::BACKWARD, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z));
 		if (glfwGetKey(m_glfwWindow, GLFW_KEY_A))
-			m_player->Strafe(Player::LEFT, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z));
+			m_player->Strafe(FPSPlayer::LEFT, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z));
 		if (glfwGetKey(m_glfwWindow, GLFW_KEY_D))
-			m_player->Strafe(Player::RIGHT, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z));
+			m_player->Strafe(FPSPlayer::RIGHT, m_terrain->GetYPosOfPlayer(m_player->Position().x, m_player->Position().z));
 	}
 }
 void Window::PollMouseMovement(void)
@@ -156,10 +156,10 @@ void Window::AfterGLEWInit(void)
 	glEnable(GL_DEPTH_TEST);
 
 	Terrain::TerrainDimensions dim = { 100.0f, 100.0f, 20.0f };
-	m_terrain = new Terrain(dim, Biome::VOLCANO);
+	m_terrain = new Terrain(dim, Biome::PLANES);
 	m_camera = new Camera;
-	m_player = new Player(glm::vec3(0.0f, m_terrain->GetYPosOfPlayer(0.0f, 0.0f), 0.0f),
-		glm::vec3(0.0f, 0.0f, -1.0f), m_glfwWindow, 0.02f);
+	FPSPlayer::FPSPlayerData pd = { glm::vec3(0.0f, m_terrain->GetYPosOfPlayer(0.0f, 0.0f), 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), 0.02f };
+	m_player = new FPSPlayer(pd, m_glfwWindow);
 
 	m_projMat = glm::perspective(glm::radians(60.0f), (float)m_width / m_height, 0.1f, 500.0f);
 
