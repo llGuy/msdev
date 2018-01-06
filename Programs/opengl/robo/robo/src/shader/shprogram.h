@@ -1,6 +1,8 @@
 #ifndef SHPROGRAM_HEADER
 #define SHPROGRAM_HEADER
 
+#include <vector>
+
 #include "shader.h"
 
 class SHProgram
@@ -24,7 +26,7 @@ public:
 		m_fsh.Init();
 		m_gsh.Init();
 	}
-	void Link(void)
+	void Link(const std::vector<std::string>& vec)
 	{
 		Log("linking shaders");
 		if (CheckShaderStatus(m_vsh.ShaderID())
@@ -32,18 +34,22 @@ public:
 		{
 			m_programID = glCreateProgram();
 			AttachShadersToProgram();
-			BindAttribLocations();
+			BindAttribLocations(vec);
 			glLinkProgram(m_programID);
 			DeleteShaders();
 		}
 		if (CheckProgramStatus(m_programID))
 		{
-			glUseProgram(m_programID);
+			//glUseProgram(m_programID);
 		}
 	}
 	unsigned int ProgramID(void)
 	{
 		return m_programID;
+	}
+	void UseProgram(void)
+	{
+		glUseProgram(m_programID);
 	}
 private:
 	void AttachShadersToProgram(void)
@@ -52,10 +58,10 @@ private:
 		glAttachShader(m_programID, m_fsh.ShaderID());
 		glAttachShader(m_programID, m_gsh.ShaderID());
 	}
-	void BindAttribLocations(void)
+	void BindAttribLocations(const std::vector<std::string>& vec)
 	{
-		glBindAttribLocation(m_programID, 0, "aM_vertexPosition");
-		glBindAttribLocation(m_programID, 1, "aM_vertexColor");
+		for (unsigned int i = 0; i < vec.size(); ++i)
+			glBindAttribLocation(m_programID, i, vec[i].c_str());
 	}
 	void DeleteShaders(void)
 	{

@@ -11,7 +11,6 @@ uniform mat4 u_projectionMatrix;
 uniform mat4 u_viewMatrix;
 uniform mat4 u_modelMatrix;
 
-
 out vec3 pass_colour;
 out vec3 pass_worldPosition;
 

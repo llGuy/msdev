@@ -55,6 +55,7 @@ void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat, glm::vec3& eyePos, gl
 	glm::mat4 modelMat = glm::mat4(1.0f);
 	SendUniformData(projMat, viewMat, modelMat, eyePos, lightPos, locations);
 	glDrawElements(GL_TRIANGLES, m_meshData.indices.numIndices, GL_UNSIGNED_SHORT, 0);
+	m_biome->RenderBiomeElements(projMat, viewMat, eyePos, lightPos);
 }
 glm::vec3 Terrain::Sky(void)
 {
@@ -178,7 +179,7 @@ void Terrain::InitBiome(Biome::biome_t biome)
 	else if (biome == Biome::VOLCANO)
 		m_biome = new VolcanoBiome(m_dimensions.yMax);
 	else if (biome == Biome::PLANES)
-		m_biome = new PlanesBiome(m_dimensions.yMax);
+		m_biome = new PlanesBiome(m_dimensions.yMax, m_meshData.vertices, m_meshData.indices);
 	else if (biome == Biome::DESERT)
 		m_biome = new DesertBiome(m_dimensions.yMax);
 }

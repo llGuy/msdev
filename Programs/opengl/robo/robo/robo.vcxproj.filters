@@ -92,10 +92,33 @@
     <ClInclude Include="src\engine\entities\player\fpsplayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\mesh\mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\fsh.shader" />
     <None Include="res\gsh.shader" />
     <None Include="res\vsh.shader" />
+    <None Include="res\waterFsh.shader" />
+    <None Include="res\waterVsh.shader" />
+    <None Include="res\waterGsh.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\terrain1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\terrain2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\terrain3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\terrain4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\terrain5.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

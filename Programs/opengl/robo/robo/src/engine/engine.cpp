@@ -4,7 +4,7 @@
 
 RoboEngine::RoboEngine(float windowWidth, float windowHeight)
 	: m_shaders(VSH, FSH, GSH),
-	m_lighting({ glm::vec3(0.0f, 50.0f, 0.0f) })
+	m_lighting({ glm::vec3(0.0f, 100.0f, 0.0f) })
 { 
 	m_terrain = new Terrain({ TERRAIN_X, TERRAIN_Z, TERRAIN_MAX_HEIGHT }, Biome::PLANES);
 	m_fps = new FPSPlayer({ glm::vec3(ORIGINAL_FPSPLAYER_POSITION.x,
@@ -23,6 +23,7 @@ void RoboEngine::Draw(void)
 	glClearColor(m_skyColor.r, m_skyColor.g, m_skyColor.b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+	m_shaders.UseProgram();
 	UpdateMatrices();
 	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations);
 }
@@ -50,8 +51,9 @@ void RoboEngine::MatricesInit(float windowWidth, float windowHeight)
 }
 void RoboEngine::CompileShaders(void)
 {
+	std::vector<std::string> locations = {"aM_vertexPosition", "aM_vertexColor"};
 	m_shaders.Compile();
-	m_shaders.Link();
+	m_shaders.Link(locations);
 }
 void RoboEngine::GetUniformLocations(void) 
 {

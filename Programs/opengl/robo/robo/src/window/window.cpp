@@ -41,6 +41,7 @@ void Window::Update(void)
 {
 	glfwSwapBuffers(m_glfwWindow);
 	glfwPollEvents();
+	glViewport(0, 0, m_width, m_height);
 	m_engine->KeyInput(m_glfwWindow);
 	m_engine->MouseInput(m_glfwWindow);
 }
