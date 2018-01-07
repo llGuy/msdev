@@ -31,9 +31,6 @@ public:
 		m_vertexData.numVertices = vData.numVertices;
 		memcpy(m_vertexData.vData, vData.vData, vData.numVertices * sizeof(Vertex));
 
-		m_beginningOfGame = std::chrono::high_resolution_clock::now();
-		m_now = std::chrono::high_resolution_clock::now();
-
 		SetWaterPostion();
 		CalculateElementPosition();
 		GetColorOfElements();
@@ -109,13 +106,12 @@ public:
 	{
 		return glm::vec3(0.0f, 0.5f, 0.9f);
 	}
-	void RenderBiomeElements(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos, glm::vec3& lightPos) override
+	void RenderBiomeElements(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos, glm::vec3& lightPos, Time* time) override
 	{
-		m_now = std::chrono::high_resolution_clock::now();
 		m_buffer.BindAll();
 		m_waterShprogram.UseProgram();
 		glm::mat4 model = glm::mat4(1.0f);
-		SendUniformData(proj, view, model, eyePos, lightPos, (float)(m_now - m_beginningOfGame).count() / 1000000000);
+		SendUniformData(proj, view, model, eyePos, lightPos, (float)(time->currentTime - time->beginning).count() / 1000000000);
 		glDrawElements(GL_TRIANGLES, m_indexData.numIndices, GL_UNSIGNED_SHORT, 0);
 	}
 protected:
@@ -183,9 +179,6 @@ private:
 	SHProgram m_waterShprogram;
 	Buffer m_buffer;
 	UniformLocations m_locations;
-
-	std::chrono::time_point<std::chrono::high_resolution_clock> m_beginningOfGame;
-	std::chrono::time_point<std::chrono::high_resolution_clock> m_now;
 };
 
 #endif

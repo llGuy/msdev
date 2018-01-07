@@ -13,6 +13,7 @@ RoboEngine::RoboEngine(float windowWidth, float windowHeight)
 	MatricesInit(windowWidth, windowHeight);
 	CompileShaders();
 	GetUniformLocations();
+	InitializeTime();
 }
 RoboEngine::~RoboEngine(void)
 {
@@ -25,7 +26,8 @@ void RoboEngine::Draw(void)
 	
 	m_shaders.UseProgram();
 	UpdateMatrices();
-	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations);
+	UpdateTimeData();
+	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
 }
 void RoboEngine::KeyInput(GLFWwindow* window)
 {
@@ -60,6 +62,10 @@ void RoboEngine::KeyInput(GLFWwindow* window)
 		m_fps->Strafe(FPSPlayer::RIGHT, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
 		movement = true;
 	}
+	if (glfwGetKey(window, GLFW_KEY_SPACE))
+	{
+		m_fps->InitializeJump(m_timeData.deltaT);
+	}
 	if (movement)
 	{
 		m_fps->ViewBobbing();
@@ -74,7 +80,7 @@ void RoboEngine::MouseInput(GLFWwindow* window)
 void RoboEngine::MatricesInit(float windowWidth, float windowHeight)
 {
 	m_transformMatrices.projection = glm::perspective(FOV, (float)windowWidth / windowHeight, 0.1f, RENDER_DISTANCE);
-	m_transformMatrices.view = m_fps->ViewMatrix();
+	m_transformMatrices.view = m_fps->ViewMatrix(m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z), &m_timeData);
 }
 void RoboEngine::CompileShaders(void)
 {
@@ -92,5 +98,15 @@ void RoboEngine::GetUniformLocations(void)
 }
 void RoboEngine::UpdateMatrices(void)
 {
-	m_transformMatrices.view = m_fps->ViewMatrix();
+	m_transformMatrices.view = m_fps->ViewMatrix(m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z), &m_timeData);
+}
+void RoboEngine::InitializeTime(void)
+{
+	m_timeData.currentTime = std::chrono::high_resolution_clock::now();
+	m_timeData.beginning = std::chrono::high_resolution_clock::now();
+}
+void RoboEngine::UpdateTimeData(void)
+{
+	m_timeData.deltaT = (double)((std::chrono::high_resolution_clock::now() - m_timeData.currentTime).count()) / 1000000000;
+	m_timeData.currentTime = std::chrono::high_resolution_clock::now();
 }

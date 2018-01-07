@@ -16,4 +16,6 @@
 
 #include "terrain/terrain.h"
 
+#include "data/time.h"
+
 #endif

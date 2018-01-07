@@ -56,7 +56,7 @@ public:
 	{
 		return glm::vec3(0.2f, 0.2f, 0.2f);
 	}
-	void RenderBiomeElements(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos, glm::vec3& lightPos) override
+	void RenderBiomeElements(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos, glm::vec3& lightPos, Time* time) override
 	{
 
 	}

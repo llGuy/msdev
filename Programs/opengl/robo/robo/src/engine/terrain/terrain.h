@@ -11,6 +11,7 @@
 
 #include "../data/vertex_data.h"
 #include "../data/index_data.h"
+#include "../data/time.h"
 
 struct UniformLocations;
 class Terrain
@@ -37,7 +38,7 @@ public:
 	explicit Terrain(Terrain::TerrainDimensions, Biome::biome_t);
 	~Terrain(void);
 
-	void Draw(glm::mat4& proj, glm::mat4& viewMat, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations*);
+	void Draw(glm::mat4& proj, glm::mat4& viewMat, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations*, Time*);
 	glm::vec3 Sky(void);
 	float GetYPosOfPlayer(float x, float z, float debug = 0.0f);
 private:

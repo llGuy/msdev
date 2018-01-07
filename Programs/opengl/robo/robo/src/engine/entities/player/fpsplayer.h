@@ -17,6 +17,12 @@ public:
 		float speed;
 		float height;
 	};
+	struct JumpData
+	{
+		glm::vec3 velocity;
+		glm::vec3 gravity;
+		bool jumping;
+	};
 	enum move_t
 	{
 		FORWARD,
@@ -37,22 +43,35 @@ public:
 		m_pData.position.y += m_pData.height;
 		m_viewBobbing = +0.002f;
 		m_viewBobbingDelta = m_viewBobbing;
-		m_jumpingSpeed = 0.5f;
-		m_jumpingSpeedDelta = 2.0f;
+		m_jd.jumping = false;
 	}
 	glm::vec3& Position(void)
 	{
 		return m_pData.position;
 	}
-	glm::mat4 ViewMatrix(void)
+	glm::mat4 ViewMatrix(float terrainHeight, Time* time)
 	{
-		if (m_jumping)
+		if (m_jd.jumping)
 		{
-
+			std::cout << time->deltaT << std::endl;
+			Jump(time->deltaT);
+			CheckLanding(terrainHeight);
 		}
 		return glm::lookAt(m_pData.position, m_pData.position + m_pData.viewDirection, m_up);
 	}
+	void ViewBobbing(void)
+	{
+		if (!m_jd.jumping)
+		{
+			if (m_running) m_viewBobbing += m_viewBobbingDelta * 1.5f;
+			else m_viewBobbing += m_viewBobbingDelta;
+			if (m_pData.position.y + m_viewBobbing > m_pData.position.y + 0.1f ||
+				m_pData.position.y + m_viewBobbing < m_pData.position.y)
+				m_viewBobbingDelta *= -1.0f;
 
+			m_pData.position.y += m_viewBobbing;
+		}
+	}
 	void Move(move_t move, float y)
 	{
 		if (move == FORWARD)
@@ -65,17 +84,8 @@ public:
 			glm::vec3 toMoveVector = glm::vec3(m_pData.viewDirection.x, 0.0f, m_pData.viewDirection.z);
 			m_pData.position -= toMoveVector * m_pData.speed;
 		}
-		m_pData.position.y = y + 0.7f;
-	}
-	void ViewBobbing(void)
-	{
-		if (m_running) m_viewBobbing += m_viewBobbingDelta * 1.5f;
-		else m_viewBobbing += m_viewBobbingDelta;
-		if (m_pData.position.y + m_viewBobbing > m_pData.position.y + 0.1f || 
-			m_pData.position.y + m_viewBobbing < m_pData.position.y)
-			m_viewBobbingDelta *= -1.0f;
-
-		m_pData.position.y += m_viewBobbing;
+		if(!m_jd.jumping)
+			m_pData.position.y = y + 0.7f;
 	}
 	void Strafe(strafe_t strafe, float y)
 	{
@@ -89,26 +99,8 @@ public:
 			glm::vec3 strafeDirection = glm::cross(m_pData.viewDirection, m_up);
 			m_pData.position -= strafeDirection * m_pData.speed;
 		}
-		m_pData.position.y = y + 0.7f;
-	}
-	void InitializeJumping(void)
-	{
-		m_jumpingHeightStart = m_pData.position.y;
-		m_jumpingHeightMax = m_pData.position.y + 1.0f;
-		m_jumpingSpeedDelta = 2.0f;
-		m_isJumpingUp = true;
-	}
-	void Jump(void)
-	{
-		if (m_pData.position.y > m_jumpingHeightMax)
-		{
-			m_jumpingSpeedDelta = 1 / m_jumpingSpeedDelta;
-			m_isJumpingUp = false;
-		}
-		if (m_isJumpingUp) m_pData.position.y += m_jumpingSpeed;
-		else m_pData.position.y -= m_jumpingSpeed;
-		
-		m_jumpingSpeed /= m_jumpingSpeedDelta;
+		if(!m_jd.jumping)
+			m_pData.position.y = y + 0.7f;
 	}
 	void Look(glm::vec2 newMousePosition)
 	{
@@ -118,13 +110,31 @@ public:
 		m_pData.viewDirection = glm::mat3(glm::rotate(glm::radians(-mouseDelta.y) * 0.02f, toRotateAround)) * m_pData.viewDirection;
 		m_oldMousePosition = newMousePosition;
 	}
+	void InitializeJump(double deltaT)
+	{
+		if (!m_jd.jumping)
+		{
+			m_jd.jumping = true;
+			m_jd.gravity = glm::vec3(0.0f, -9.8f, 0.0f);
+			m_jd.velocity = glm::vec3(0.0f, 3.5f, 0.0f);
+		}
+	}
+	void Jump(float deltaT)
+	{
+		m_pData.position = m_pData.position + m_jd.velocity * deltaT;
+		m_jd.velocity = m_jd.velocity + m_jd.gravity * deltaT;
+	}
+	void CheckLanding(float terrainHeight)
+	{
+		if (m_pData.position.y - m_pData.height < terrainHeight)
+		{
+			m_jd.jumping = false;
+			m_pData.position.y = terrainHeight + m_pData.height;
+		}
+	}
 	bool& Running(void)
 	{
 		return m_running;
-	}
-	bool& Jumping(void)
-	{
-		return m_jumping;
 	}
 	void SpeedUp(void)
 	{
@@ -141,12 +151,8 @@ private:
 	float m_viewBobbing;
 	float m_viewBobbingDelta;
 	bool m_running;
-	bool m_jumping;
-	float m_jumpingSpeed;
-	float m_jumpingSpeedDelta;
-	float m_jumpingHeightMax;
-	float m_jumpingHeightStart;
-	bool m_isJumpingUp;
+
+	JumpData m_jd;
 };
 
 #endif

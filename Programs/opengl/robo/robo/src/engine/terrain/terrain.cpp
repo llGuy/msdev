@@ -49,13 +49,13 @@ void Terrain::BufferInit(void)
 {
 	InitBuffer();
 }
-void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations)
+void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time)
 {
 	m_buffer.BindAll();
 	glm::mat4 modelMat = glm::mat4(1.0f);
 	SendUniformData(projMat, viewMat, modelMat, eyePos, lightPos, locations);
 	glDrawElements(GL_TRIANGLES, m_meshData.indices.numIndices, GL_UNSIGNED_SHORT, 0);
-	m_biome->RenderBiomeElements(projMat, viewMat, eyePos, lightPos);
+	m_biome->RenderBiomeElements(projMat, viewMat, eyePos, lightPos, time);
 }
 glm::vec3 Terrain::Sky(void)
 {

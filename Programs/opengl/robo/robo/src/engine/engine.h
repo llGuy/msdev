@@ -3,6 +3,8 @@
 
 #include "engine_comon.h"
 
+#include <chrono>
+
 struct UniformLocations
 {
 	signed int m_uniLocModel;
@@ -12,6 +14,7 @@ struct UniformLocations
 	signed int m_uniLocEyePosition;
 };
 
+
 class RoboEngine
 {
 public:
@@ -20,6 +23,7 @@ public:
 		glm::mat4 projection;
 		glm::mat4 view;
 	};
+	
 	struct Lighting
 	{
 		glm::vec3 lightPosition;
@@ -36,6 +40,8 @@ private:
 	void CompileShaders(void);
 	void GetUniformLocations(void);
 	void UpdateMatrices(void);
+	void InitializeTime(void);
+	void UpdateTimeData(void);
 private:
 	const glm::vec3 ORIGINAL_FPSPLAYER_POSITION = glm::vec3(0.0f);
 	const glm::vec3 ORIGINAL_FPSPLAYER_VIEW_DIRECTION = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -50,7 +56,8 @@ private:
 
 	mutable float m_playerSpeed = 0.01f;
 	mutable float m_playerHeight = 0.7f;
-
+	
+	Time m_timeData;
 	FPSPlayer* m_fps;
 	Terrain* m_terrain;
 	SHProgram m_shaders;
