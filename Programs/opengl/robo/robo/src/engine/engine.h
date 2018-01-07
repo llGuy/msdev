@@ -39,16 +39,16 @@ private:
 private:
 	const glm::vec3 ORIGINAL_FPSPLAYER_POSITION = glm::vec3(0.0f);
 	const glm::vec3 ORIGINAL_FPSPLAYER_VIEW_DIRECTION = glm::vec3(0.0f, 0.0f, -1.0f);
-	const float TERRAIN_X = 200.0f;
-	const float TERRAIN_Z = 200.0f;
-	const float TERRAIN_MAX_HEIGHT = 80.0f;
+	const float TERRAIN_X = 250.0f;
+	const float TERRAIN_Z = 250.0f;
+	const float TERRAIN_MAX_HEIGHT = 100.0f;
 	const float RENDER_DISTANCE = 200.0f;
 	const float FOV = glm::radians(60.0f);
 	const char const* VSH = "res\\vsh.shader";
 	const char const* FSH = "res\\fsh.shader";
 	const char const* GSH = "res\\gsh.shader";
 
-	mutable float m_playerSpeed = 0.02f;
+	mutable float m_playerSpeed = 0.01f;
 	mutable float m_playerHeight = 0.7f;
 
 	FPSPlayer* m_fps;

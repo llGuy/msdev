@@ -35,6 +35,10 @@ public:
 			m_up(0.0f, 1.0f, 0.0f)
 	{
 		m_pData.position.y += m_pData.height;
+		m_viewBobbing = +0.002f;
+		m_viewBobbingDelta = m_viewBobbing;
+		m_jumpingSpeed = 0.5f;
+		m_jumpingSpeedDelta = 2.0f;
 	}
 	glm::vec3& Position(void)
 	{
@@ -42,6 +46,10 @@ public:
 	}
 	glm::mat4 ViewMatrix(void)
 	{
+		if (m_jumping)
+		{
+
+		}
 		return glm::lookAt(m_pData.position, m_pData.position + m_pData.viewDirection, m_up);
 	}
 
@@ -59,6 +67,16 @@ public:
 		}
 		m_pData.position.y = y + 0.7f;
 	}
+	void ViewBobbing(void)
+	{
+		if (m_running) m_viewBobbing += m_viewBobbingDelta * 1.5f;
+		else m_viewBobbing += m_viewBobbingDelta;
+		if (m_pData.position.y + m_viewBobbing > m_pData.position.y + 0.1f || 
+			m_pData.position.y + m_viewBobbing < m_pData.position.y)
+			m_viewBobbingDelta *= -1.0f;
+
+		m_pData.position.y += m_viewBobbing;
+	}
 	void Strafe(strafe_t strafe, float y)
 	{
 		if (strafe == RIGHT)
@@ -73,6 +91,25 @@ public:
 		}
 		m_pData.position.y = y + 0.7f;
 	}
+	void InitializeJumping(void)
+	{
+		m_jumpingHeightStart = m_pData.position.y;
+		m_jumpingHeightMax = m_pData.position.y + 1.0f;
+		m_jumpingSpeedDelta = 2.0f;
+		m_isJumpingUp = true;
+	}
+	void Jump(void)
+	{
+		if (m_pData.position.y > m_jumpingHeightMax)
+		{
+			m_jumpingSpeedDelta = 1 / m_jumpingSpeedDelta;
+			m_isJumpingUp = false;
+		}
+		if (m_isJumpingUp) m_pData.position.y += m_jumpingSpeed;
+		else m_pData.position.y -= m_jumpingSpeed;
+		
+		m_jumpingSpeed /= m_jumpingSpeedDelta;
+	}
 	void Look(glm::vec2 newMousePosition)
 	{
 		glm::vec2 mouseDelta = newMousePosition - m_oldMousePosition;
@@ -81,10 +118,35 @@ public:
 		m_pData.viewDirection = glm::mat3(glm::rotate(glm::radians(-mouseDelta.y) * 0.02f, toRotateAround)) * m_pData.viewDirection;
 		m_oldMousePosition = newMousePosition;
 	}
+	bool& Running(void)
+	{
+		return m_running;
+	}
+	bool& Jumping(void)
+	{
+		return m_jumping;
+	}
+	void SpeedUp(void)
+	{
+		m_pData.speed *= 2;
+	}
+	void NormalSpeed(float speed)
+	{
+		m_pData.speed = speed;
+	}
 private:
 	FPSPlayerData m_pData;
 	glm::vec3 m_up;
 	glm::vec2 m_oldMousePosition;
+	float m_viewBobbing;
+	float m_viewBobbingDelta;
+	bool m_running;
+	bool m_jumping;
+	float m_jumpingSpeed;
+	float m_jumpingSpeedDelta;
+	float m_jumpingHeightMax;
+	float m_jumpingHeightStart;
+	bool m_isJumpingUp;
 };
 
 #endif

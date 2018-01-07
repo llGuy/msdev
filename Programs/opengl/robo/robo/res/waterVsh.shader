@@ -10,19 +10,19 @@ uniform mat4 u_mvp;						//model view projection matrix
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_viewMatrix;
 uniform mat4 u_modelMatrix;
+uniform vec3 u_eyePosition;
 uniform float u_time;
 
 out vec3 pass_colour;
 out vec3 pass_worldPosition;
 
 float PI = 3.141592635897;
-float amplitude = 0.05f;
+float amplitude = 0.1f;
 
 float CalculateWaveHeight(void)
 {
-	
-	float component1 = sin(2.0 * PI * u_time + (aM_vertexPosition.x * 16.0f)) * amplitude;
-	float component2 = sin(2.0 * PI * u_time + (aM_vertexPosition.z * aM_vertexPosition.x * 8.0f)) * amplitude;
+	float component1 = sin(2.0 * PI * u_time / 2 + (aM_vertexPosition.x * 16.0f)) * amplitude;
+	float component2 = sin(2.0 * PI * u_time / 2 + (aM_vertexPosition.z * aM_vertexPosition.x * 8.0f)) * amplitude;
 	return component1 + component2 + aM_vertexPosition.y;
 }
 

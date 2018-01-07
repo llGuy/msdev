@@ -6,7 +6,7 @@
 int main(int argc, char* argv[])
 {
 	
-	Window window(3800, 2500, "terrain");
+	Window window(1920, 1080, "terrain");
 	while (window.WindowOpen())
 	{
 		window.Draw();

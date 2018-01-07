@@ -29,14 +29,41 @@ void RoboEngine::Draw(void)
 }
 void RoboEngine::KeyInput(GLFWwindow* window)
 {
+	bool movement = false;
+	if (m_fps->Running())
+	{
+		m_fps->NormalSpeed(m_playerSpeed);
+		m_fps->Running() = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_R))
+	{
+		m_fps->Running() = true;
+		m_fps->SpeedUp();
+	}
 	if (glfwGetKey(window, GLFW_KEY_W))
+	{
 		m_fps->Move(FPSPlayer::FORWARD, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
+		movement = true;
+	}
 	if (glfwGetKey(window, GLFW_KEY_S))
+	{
 		m_fps->Move(FPSPlayer::BACKWARD, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
+		movement = true;
+	}
 	if (glfwGetKey(window, GLFW_KEY_A))
+	{
 		m_fps->Strafe(FPSPlayer::LEFT, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
+		movement = true;
+	}
 	if (glfwGetKey(window, GLFW_KEY_D))
+	{
 		m_fps->Strafe(FPSPlayer::RIGHT, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
+		movement = true;
+	}
+	if (movement)
+	{
+		m_fps->ViewBobbing();
+	}
 }
 void RoboEngine::MouseInput(GLFWwindow* window)
 {
