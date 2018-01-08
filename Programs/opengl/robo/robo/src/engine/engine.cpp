@@ -6,7 +6,7 @@ RoboEngine::RoboEngine(float windowWidth, float windowHeight)
 	: m_shaders(VSH, FSH, GSH),
 	m_lighting({ glm::vec3(0.0f, 100.0f, 0.0f) })
 { 
-	m_terrain = new Terrain({ TERRAIN_X, TERRAIN_Z, TERRAIN_MAX_HEIGHT }, Biome::PLANES);
+	m_terrain = new Terrain({ TERRAIN_X, TERRAIN_Z, TERRAIN_MAX_HEIGHT }, Biome::VOLCANO);
 	m_fps = new FPSPlayer({ glm::vec3(ORIGINAL_FPSPLAYER_POSITION.x,
 		m_terrain->GetYPosOfPlayer(ORIGINAL_FPSPLAYER_POSITION.x, ORIGINAL_FPSPLAYER_POSITION.z), ORIGINAL_FPSPLAYER_POSITION.z),
 		ORIGINAL_FPSPLAYER_VIEW_DIRECTION, m_playerSpeed, m_playerHeight });

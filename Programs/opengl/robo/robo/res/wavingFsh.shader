@@ -1,10 +1,5 @@
 #version 430
 
-/*
-in vec3 vertexPosition;
-in vec3 color;
-in vec3 normal;*/
-
 in vec3 color;
 in vec4 diffuseLight;
 in vec4 specularLight;

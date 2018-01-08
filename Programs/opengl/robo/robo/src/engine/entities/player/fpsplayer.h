@@ -44,6 +44,7 @@ public:
 		m_viewBobbing = +0.002f;
 		m_viewBobbingDelta = m_viewBobbing;
 		m_jd.jumping = false;
+		m_runningDelta = 3.0f;
 	}
 	glm::vec3& Position(void)
 	{
@@ -138,7 +139,7 @@ public:
 	}
 	void SpeedUp(void)
 	{
-		m_pData.speed *= 2;
+		m_pData.speed *= m_runningDelta;
 	}
 	void NormalSpeed(float speed)
 	{
@@ -150,6 +151,7 @@ private:
 	glm::vec2 m_oldMousePosition;
 	float m_viewBobbing;
 	float m_viewBobbingDelta;
+	float m_runningDelta;
 	bool m_running;
 
 	JumpData m_jd;

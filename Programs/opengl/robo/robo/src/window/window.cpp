@@ -33,8 +33,6 @@ Window::~Window(void)
 }
 void Window::Draw(void)
 {
-//	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER);
 	m_engine->Draw();
 }
 void Window::Update(void)

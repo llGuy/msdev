@@ -25,7 +25,7 @@ public:
 	};
 	explicit PlanesBiome(float maxHeight, VertexData vData, IndexData iData)
 		: m_maxHeight(maxHeight), m_indexData(iData),
-		m_waterShprogram("res\\waterVsh.shader", "res\\waterFsh.shader", "res\\waterGsh.shader")
+		m_waterShprogram("res\\wavingVsh.shader", "res\\wavingFsh.shader", "res\\wavingGsh.shader")
 	{
 		m_vertexData.vData = new Vertex[vData.numVertices];
 		m_vertexData.numVertices = vData.numVertices;

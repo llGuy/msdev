@@ -136,6 +136,7 @@
     <ClInclude Include="src\engine\biome\planes.h" />
     <ClInclude Include="src\engine\biome\snow.h" />
     <ClInclude Include="src\engine\biome\volcano.h" />
+    <ClInclude Include="src\engine\configs\configs.h" />
     <ClInclude Include="src\engine\data\index_data.h" />
     <ClInclude Include="src\engine\data\time.h" />
     <ClInclude Include="src\engine\data\vertex_data.h" />
@@ -155,9 +156,9 @@
     <None Include="res\fsh.shader" />
     <None Include="res\gsh.shader" />
     <None Include="res\vsh.shader" />
-    <None Include="res\waterFsh.shader" />
-    <None Include="res\waterGsh.shader" />
-    <None Include="res\waterVsh.shader" />
+    <None Include="res\wavingFsh.shader" />
+    <None Include="res\wavingGsh.shader" />
+    <None Include="res\wavingVsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\terrain1.png" />

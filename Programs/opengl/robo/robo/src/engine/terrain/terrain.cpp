@@ -177,7 +177,7 @@ void Terrain::InitBiome(Biome::biome_t biome)
 	if (biome == Biome::SNOW)
 		m_biome = new SnowBiome(m_dimensions.yMax);
 	else if (biome == Biome::VOLCANO)
-		m_biome = new VolcanoBiome(m_dimensions.yMax);
+		m_biome = new VolcanoBiome(m_dimensions.yMax, m_meshData.vertices, m_meshData.indices);
 	else if (biome == Biome::PLANES)
 		m_biome = new PlanesBiome(m_dimensions.yMax, m_meshData.vertices, m_meshData.indices);
 	else if (biome == Biome::DESERT)
