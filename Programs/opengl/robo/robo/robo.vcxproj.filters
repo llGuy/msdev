@@ -101,6 +101,9 @@
     <ClInclude Include="src\engine\configs\configs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="res\lavaGsh.shader">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\fsh.shader" />
@@ -109,6 +112,8 @@
     <None Include="res\wavingVsh.shader" />
     <None Include="res\wavingFsh.shader" />
     <None Include="res\wavingGsh.shader" />
+    <None Include="res\lavaVsh.shader" />
+    <None Include="res\lavaFsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\terrain1.png">

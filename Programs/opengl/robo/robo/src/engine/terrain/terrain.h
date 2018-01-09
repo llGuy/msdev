@@ -41,6 +41,10 @@ public:
 	void Draw(glm::mat4& proj, glm::mat4& viewMat, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations*, Time*);
 	glm::vec3 Sky(void);
 	float GetYPosOfPlayer(float x, float z, float debug = 0.0f);
+	Biome::biome_t BiomeType(void)
+	{
+		return m_biome->BiomeType();
+	}
 private:
 	void TerrainInit(Biome::biome_t);
 	void BufferInit(void);
@@ -49,7 +53,7 @@ private:
 	void InitializeHeights(void);
 	void GenerateColors(void);
 private:
-	void SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations);
+	void SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time*);
 	void InitBuffer(void);
 	void InitBiome(Biome::biome_t);
 	__forceinline glm::vec2 GetPositionOfPlayerOnTile(float x, float z)

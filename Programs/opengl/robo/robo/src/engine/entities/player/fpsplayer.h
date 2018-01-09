@@ -1,5 +1,5 @@
 #ifndef PLAYER_HEADER
-#define PLAYER_HEAEDER
+#define PLAYER_HEADER
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
@@ -16,6 +16,8 @@ public:
 		glm::vec3 viewDirection;
 		float speed;
 		float height;
+		float viewBobbingValue;
+		float runningDelta;
 	};
 	struct JumpData
 	{
@@ -41,10 +43,10 @@ public:
 			m_up(0.0f, 1.0f, 0.0f)
 	{
 		m_pData.position.y += m_pData.height;
-		m_viewBobbing = +0.002f;
+		m_viewBobbing = pData.viewBobbingValue;
 		m_viewBobbingDelta = m_viewBobbing;
+		m_runningDelta = pData.runningDelta;
 		m_jd.jumping = false;
-		m_runningDelta = 3.0f;
 	}
 	glm::vec3& Position(void)
 	{
@@ -54,7 +56,6 @@ public:
 	{
 		if (m_jd.jumping)
 		{
-			std::cout << time->deltaT << std::endl;
 			Jump(time->deltaT);
 			CheckLanding(terrainHeight);
 		}
@@ -86,7 +87,7 @@ public:
 			m_pData.position -= toMoveVector * m_pData.speed;
 		}
 		if(!m_jd.jumping)
-			m_pData.position.y = y + 0.7f;
+			m_pData.position.y = y + m_pData.height;
 	}
 	void Strafe(strafe_t strafe, float y)
 	{
@@ -101,7 +102,7 @@ public:
 			m_pData.position -= strafeDirection * m_pData.speed;
 		}
 		if(!m_jd.jumping)
-			m_pData.position.y = y + 0.7f;
+			m_pData.position.y = y + m_pData.height;
 	}
 	void Look(glm::vec2 newMousePosition)
 	{

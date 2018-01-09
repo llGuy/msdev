@@ -16,6 +16,10 @@ public:
 		GetColorOfElements();
 	}
 public:
+	biome_t BiomeType(void) override
+	{
+		return Biome::DESERT;
+	}
 	glm::vec3 Color(float y) override
 	{
 		return m_sandColor;

@@ -39,6 +39,10 @@ public:
 		m_buffer.Init(m_vertexData, m_indexData);
 	}
 public:
+	biome_t BiomeType(void) override
+	{
+		return Biome::PLANES;
+	}
 	glm::vec3 Color(float y) override
 	{
 		if (y < m_grass)											  

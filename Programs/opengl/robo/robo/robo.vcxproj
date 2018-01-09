@@ -129,6 +129,7 @@
     <ClCompile Include="src\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="res\lavaGsh.shader" />
     <ClInclude Include="src\buffer\buffer.h" />
     <ClInclude Include="src\camera\camera.h" />
     <ClInclude Include="src\engine\biome\biome.h" />
@@ -155,6 +156,8 @@
   <ItemGroup>
     <None Include="res\fsh.shader" />
     <None Include="res\gsh.shader" />
+    <None Include="res\lavaFsh.shader" />
+    <None Include="res\lavaVsh.shader" />
     <None Include="res\vsh.shader" />
     <None Include="res\wavingFsh.shader" />
     <None Include="res\wavingGsh.shader" />

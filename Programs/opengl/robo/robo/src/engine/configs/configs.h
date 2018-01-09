@@ -3,6 +3,10 @@
 
 struct Configs
 {
+	float playerSpeed = 0.02f;
+	float playerRunningSpeedDelta = 1.4f;
+	float playerViewBobbing = 0.002f;
+	float playerHeight = 1.0f;
 	glm::vec3 originalPlayerPosition = glm::vec3(0.0f);
 	glm::vec3 originalPlayerViewDirection = glm::vec3(0.0f, 0.0f, -1.0f);
 

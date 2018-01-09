@@ -15,6 +15,10 @@ public:
 		GetColorOfElements();
 	}
 public:
+	biome_t BiomeType(void) override
+	{
+		return Biome::SNOW;
+	}
 	glm::vec3 Color(float y) override
 	{
 		if (y <= m_rock)					return m_snowColor;

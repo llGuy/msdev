@@ -53,7 +53,7 @@ void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat, glm::vec3& eyePos, gl
 {
 	m_buffer.BindAll();
 	glm::mat4 modelMat = glm::mat4(1.0f);
-	SendUniformData(projMat, viewMat, modelMat, eyePos, lightPos, locations);
+	SendUniformData(projMat, viewMat, modelMat, eyePos, lightPos, locations, time);
 	glDrawElements(GL_TRIANGLES, m_meshData.indices.numIndices, GL_UNSIGNED_SHORT, 0);
 	m_biome->RenderBiomeElements(projMat, viewMat, eyePos, lightPos, time);
 }
@@ -160,13 +160,15 @@ float Terrain::GetYPosOfPlayer(float x, float z, float debug)
 
 	return height;
 }
-void Terrain::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations)
+void Terrain::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time)
 {
 	glUniformMatrix4fv(locations->m_uniLocProjection, 1, GL_FALSE, &proj[0][0]);
 	glUniformMatrix4fv(locations->m_uniLocView, 1, GL_FALSE, &view[0][0]);
 	glUniformMatrix4fv(locations->m_uniLocModel, 1, GL_FALSE, &model[0][0]);
 	glUniform3fv(locations->m_uniLocLightPosition, 1, &lightPos[0]);
 	glUniform3fv(locations->m_uniLocEyePosition, 1, &eyePos[0]);
+	glUniform1f(locations->m_uniLocTime, (float)(time->currentTime - time->beginning).count() / 1000000000);
+	m_biome->SendAdditionalUniformData(locations->m_uniLocLavaHeightTopPosition);
 }
 void Terrain::InitBuffer(void)
 {
@@ -177,7 +179,7 @@ void Terrain::InitBiome(Biome::biome_t biome)
 	if (biome == Biome::SNOW)
 		m_biome = new SnowBiome(m_dimensions.yMax);
 	else if (biome == Biome::VOLCANO)
-		m_biome = new VolcanoBiome(m_dimensions.yMax, m_meshData.vertices, m_meshData.indices);
+		m_biome = new VolcanoBiome(m_dimensions.yMax, m_meshData.vertices, m_meshData.indices, m_meshData.xNumTiles, m_meshData.zNumTiles);
 	else if (biome == Biome::PLANES)
 		m_biome = new PlanesBiome(m_dimensions.yMax, m_meshData.vertices, m_meshData.indices);
 	else if (biome == Biome::DESERT)

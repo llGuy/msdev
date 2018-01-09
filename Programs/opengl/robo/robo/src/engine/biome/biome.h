@@ -22,10 +22,14 @@ public:
 
 		VOLCANO
 	};
+	virtual biome_t BiomeType(void) = 0;
 	virtual glm::vec3 Color(float y) = 0;
 	virtual void VaryColors(Vertex* v, float* y, unsigned int wt, unsigned int ht) = 0;
 	virtual glm::vec3 Sky(void) = 0;
 	virtual void RenderBiomeElements(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos, glm::vec3& lightPos, Time* time) = 0;
+	virtual void SendAdditionalUniformData(signed int location)
+	{
+	}
 protected:
 	virtual void CalculateElementPosition(void) = 0;
 	virtual void GetColorOfElements(void) = 0;

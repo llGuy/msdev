@@ -2,6 +2,7 @@
 #define ENGINE_HEADER
 
 #include "engine_comon.h"
+#include "configs/configs.h"
 
 #include <chrono>
 
@@ -12,6 +13,8 @@ struct UniformLocations
 	signed int m_uniLocView;
 	signed int m_uniLocLightPosition;
 	signed int m_uniLocEyePosition;
+	signed int m_uniLocTime;
+	signed int m_uniLocLavaHeightTopPosition;
 };
 
 
@@ -43,24 +46,11 @@ private:
 	void InitializeTime(void);
 	void UpdateTimeData(void);
 private:
-	const glm::vec3 ORIGINAL_FPSPLAYER_POSITION = glm::vec3(0.0f);
-	const glm::vec3 ORIGINAL_FPSPLAYER_VIEW_DIRECTION = glm::vec3(0.0f, 0.0f, -1.0f);
-	const float TERRAIN_X = 250.0f;
-	const float TERRAIN_Z = 250.0f;
-	const float TERRAIN_MAX_HEIGHT = 100.0f;
-	const float RENDER_DISTANCE = 200.0f;
-	const float FOV = glm::radians(60.0f);
-	const char const* VSH = "res\\vsh.shader";
-	const char const* FSH = "res\\fsh.shader";
-	const char const* GSH = "res\\gsh.shader";
-
-	mutable float m_playerSpeed = 0.01f;
-	mutable float m_playerHeight = 0.7f;
-	
+	Configs m_configurations;
 	Time m_timeData;
 	FPSPlayer* m_fps;
 	Terrain* m_terrain;
-	SHProgram m_shaders;
+	SHProgram* m_shaders;
 	Lighting m_lighting;
 	UniformLocations m_uniformLocations;
 	TransformMatrices m_transformMatrices;
