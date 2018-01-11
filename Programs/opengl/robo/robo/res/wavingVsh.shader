@@ -28,7 +28,7 @@ float CalculateWaveHeight(void)
 
 void main()
 {
-	vec4 world_pos = vec4(aM_vertexPosition.x, CalculateWaveHeight(), aM_vertexPosition.z, 1.0);
+	vec4 world_pos = u_modelMatrix * vec4(aM_vertexPosition.x, CalculateWaveHeight(), aM_vertexPosition.z, 1.0);
 	pass_worldPosition = vec3(world_pos.x, world_pos.y, world_pos.z);
 	vec4 view_pos = u_viewMatrix * world_pos;
 	gl_Position = u_projectionMatrix * view_pos;

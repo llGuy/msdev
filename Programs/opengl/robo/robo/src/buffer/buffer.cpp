@@ -40,8 +40,8 @@ void Buffer::BindVertexArray(void)
 void Buffer::BindAll(void)
 {
 	BindArray();
-	BindElement();
 	BindVertexArray();
+	BindElement();
 }
 unsigned int Buffer::NumIndices(void) const
 {

@@ -5,11 +5,14 @@
 RoboEngine::RoboEngine(float windowWidth, float windowHeight)
 	: m_lighting({ glm::vec3(0.0f, 100.0f, 0.0f) })
 { 
-	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, m_configurations.terrainMaxHeight }, Biome::PLANES);
+	
+	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, m_configurations.terrainMaxHeight }, Biome::VOLCANO);
 	m_fps = new FPSPlayer({ glm::vec3(m_configurations.originalPlayerPosition.x,
 		m_terrain->GetYPosOfPlayer(m_configurations.originalPlayerPosition.x, m_configurations.originalPlayerPosition.z), m_configurations.originalPlayerPosition.z),
 		m_configurations.originalPlayerViewDirection, m_configurations.playerSpeed, m_configurations.playerHeight, m_configurations.playerViewBobbing,
 		m_configurations.playerRunningSpeedDelta});
+	
+	InitRobots();
 
 	if (m_terrain->BiomeType() == Biome::VOLCANO) m_shaders = new SHProgram("res\\lavaVsh.shader", "res\\lavaFsh.shader", "res\\lavaGsh.shader");
 	else m_shaders = new SHProgram("res\\vsh.shader", "res\\fsh.shader", "res\\gsh.shader");
@@ -28,10 +31,15 @@ void RoboEngine::Draw(void)
 	glClearColor(m_skyColor.r, m_skyColor.g, m_skyColor.b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	m_shaders->UseProgram();
 	UpdateMatrices();
 	UpdateTimeData();
+	MoveRobots();
+	m_shaders->UseProgram();
+	DrawRobots(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
 	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
+	
+	
+	
 }
 void RoboEngine::KeyInput(GLFWwindow* window)
 {
@@ -118,4 +126,26 @@ void RoboEngine::UpdateTimeData(void)
 {
 	m_timeData.deltaT = (double)((std::chrono::high_resolution_clock::now() - m_timeData.currentTime).count()) / 1000000000;
 	m_timeData.currentTime = std::chrono::high_resolution_clock::now();
+}
+void RoboEngine::MoveRobots(void)
+{
+	for (auto& iter : m_robots)
+	{
+		float heightOfRobot = m_terrain->GetYPosOfPlayer(iter.PlainPosition().x, iter.PlainPosition().y);
+		glm::vec2 playerPlainPositions = glm::vec2(m_fps->Position().x, m_fps->Position().z);
+		iter.MoveTowardsPlayer(playerPlainPositions);
+		iter.UpdateTranslateMatrix(heightOfRobot);
+	}
+}
+void RoboEngine::DrawRobots(glm::mat4& proj, glm::mat4& view,
+	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time)
+{
+	for (auto& iter : m_robots)
+	{
+		iter.Draw(proj, view, eyePos, lightPos, locations, time);
+	}
+}
+void RoboEngine::InitRobots(void)
+{
+	m_robots.push_back(Robot(1.0f));
 }

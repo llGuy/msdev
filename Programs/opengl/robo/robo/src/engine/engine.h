@@ -5,6 +5,7 @@
 #include "configs/configs.h"
 
 #include <chrono>
+#include <vector>
 
 struct UniformLocations
 {
@@ -45,6 +46,10 @@ private:
 	void UpdateMatrices(void);
 	void InitializeTime(void);
 	void UpdateTimeData(void);
+	void MoveRobots(void);
+	void DrawRobots(glm::mat4& proj, glm::mat4& view,
+		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time);
+	void InitRobots(void);
 private:
 	Configs m_configurations;
 	Time m_timeData;
@@ -54,6 +59,8 @@ private:
 	Lighting m_lighting;
 	UniformLocations m_uniformLocations;
 	TransformMatrices m_transformMatrices;
+
+	std::vector<Robot> m_robots;
 };
 
 #endif

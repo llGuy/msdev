@@ -40,7 +40,7 @@ public:
 		}
 		if (CheckProgramStatus(m_programID))
 		{
-			//glUseProgram(m_programID);
+			glUseProgram(m_programID);
 		}
 	}
 	unsigned int ProgramID(void)

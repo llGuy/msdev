@@ -156,7 +156,7 @@ protected:
 	{
 		for (unsigned int i = 0; i < m_vertexData.numVertices; ++i)
 		{
-			m_vertexData.vData[i].pos.y = m_maxHeight * 0.25f;
+			m_vertexData.vData[i].pos.y = m_maxHeight * 0.22f;
 			m_vertexData.vData[i].color = m_lavaColor * 0.8f;
 		}
 

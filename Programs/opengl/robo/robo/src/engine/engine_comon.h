@@ -1,6 +1,8 @@
 #ifndef ENGINE_COMMON_HEADER
 #define ENGINE_COMMON_HEADER
 
+//#include "../robot/robot.h"
+
 #include "biome/biome.h"
 #include "biome/desert.h"
 #include "biome/planes.h"
@@ -17,5 +19,7 @@
 #include "terrain/terrain.h"
 
 #include "data/time.h"
+
+#include "robot/robot.h"
 
 #endif
