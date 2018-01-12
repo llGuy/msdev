@@ -122,6 +122,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\buffer\buffer.cpp" />
+    <ClCompile Include="src\engine\bullet\bullet.cpp" />
     <ClCompile Include="src\engine\engine.cpp" />
     <ClCompile Include="src\engine\heightmap\heightmap.cpp" />
     <ClCompile Include="src\engine\robot\robot.cpp" />
@@ -138,6 +139,8 @@
     <ClInclude Include="src\engine\biome\planes.h" />
     <ClInclude Include="src\engine\biome\snow.h" />
     <ClInclude Include="src\engine\biome\volcano.h" />
+    <ClInclude Include="src\engine\bullet\bullet.h" />
+    <ClInclude Include="src\engine\bullet\gun.h" />
     <ClInclude Include="src\engine\configs\configs.h" />
     <ClInclude Include="src\engine\data\index_data.h" />
     <ClInclude Include="src\engine\data\time.h" />

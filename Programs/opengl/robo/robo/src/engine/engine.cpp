@@ -35,11 +35,11 @@ void RoboEngine::Draw(void)
 	UpdateTimeData();
 	MoveRobots();
 	m_shaders->UseProgram();
+	if (m_fps->BulletAiring())
+		m_fps->DrawBullets(m_transformMatrices.projection, m_transformMatrices.view, 
+			m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData, m_terrain);
 	DrawRobots(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
 	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
-	
-	
-	
 }
 void RoboEngine::KeyInput(GLFWwindow* window)
 {
@@ -88,6 +88,13 @@ void RoboEngine::MouseInput(GLFWwindow* window)
 	double x, y;
 	glfwGetCursorPos(window, &x, &y);
 	m_fps->Look(glm::vec2(x, y));
+}
+void RoboEngine::MouseButtonInput(int button)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT)
+	{
+		m_fps->Shoot();
+	}
 }
 void RoboEngine::MatricesInit(float windowWidth, float windowHeight)
 {

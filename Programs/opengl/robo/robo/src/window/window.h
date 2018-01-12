@@ -16,6 +16,7 @@ public:
 	void Update(void);
 	const bool WindowOpen(void);
 	bool& CameraPlayerView(void);
+	void MouseButtonInput(int button);
 private:
 	void WindowInit(void);
 	void GLFWInit(void);

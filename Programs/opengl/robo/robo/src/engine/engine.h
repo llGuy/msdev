@@ -39,6 +39,7 @@ public:
 	void Draw(void);
 	void KeyInput(GLFWwindow*);
 	void MouseInput(GLFWwindow*);
+	void MouseButtonInput(int button);
 private:
 	void MatricesInit(float windowWidth, float windowHeight);
 	void CompileShaders(void);

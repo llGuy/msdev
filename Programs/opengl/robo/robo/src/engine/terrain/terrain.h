@@ -41,6 +41,10 @@ public:
 	void Draw(glm::mat4& proj, glm::mat4& viewMat, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations*, Time*);
 	glm::vec3 Sky(void);
 	float GetYPosOfPlayer(float x, float z, float debug = 0.0f);
+	__forceinline glm::vec2 Dimensions(void)
+	{
+		return glm::vec2(m_dimensions.x, m_dimensions.z);
+	}
 	Biome::biome_t BiomeType(void)
 	{
 		return m_biome->BiomeType();

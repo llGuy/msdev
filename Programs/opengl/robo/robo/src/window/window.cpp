@@ -7,6 +7,15 @@
 #include "../log.h"
 #include "window.h"
 
+void CursorEnterCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	Window* p = (Window*)(glfwGetWindowUserPointer(window));
+	if (action == GLFW_PRESS)
+	{
+		p->MouseButtonInput(button);
+	}
+}
+
 static void KeyCallback(GLFWwindow* window, int key, int, int action, int)
 {
 	Window* p = (Window*)(glfwGetWindowUserPointer(window));
@@ -48,6 +57,10 @@ const bool Window::WindowOpen(void)
 	return !glfwWindowShouldClose(m_glfwWindow)
 		&& !(glfwGetKey(m_glfwWindow, GLFW_KEY_ESCAPE));
 }
+void Window::MouseButtonInput(int button)
+{
+	m_engine->MouseButtonInput(button);
+}
 void Window::WindowInit(void)
 {
 	m_glfwWindow = glfwCreateWindow(m_width, m_height, m_title, NULL, NULL);
@@ -62,6 +75,7 @@ void Window::WindowInit(void)
 	glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetWindowUserPointer(m_glfwWindow, this);
 	glfwSetKeyCallback(m_glfwWindow, KeyCallback);
+	glfwSetMouseButtonCallback(m_glfwWindow, CursorEnterCallback);
 }
 void Window::GLFWInit(void)
 {

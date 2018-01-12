@@ -15,6 +15,7 @@ public:
 	void BindArray(void);
 	void BindVertexArray(void);
 	void BindAll(void);
+	void DeleteBuffer(void);
 	unsigned int NumIndices(void) const;
 	unsigned int NumVertices(void) const;
 private:

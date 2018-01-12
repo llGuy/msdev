@@ -83,3 +83,8 @@ void Buffer::CreateVertexArray(void)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 }
+void Buffer::DeleteBuffer(void)
+{
+	glDeleteBuffers(1, &m_vertexBufferID);
+	glDeleteBuffers(1, &m_indexBufferID);
+}

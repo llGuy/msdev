@@ -1,11 +1,12 @@
 #ifndef PLAYER_HEADER
 #define PLAYER_HEADER
 
+#include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <GLFW/glfw3.h>
 #include <glm/gtx/transform.hpp>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "../../bullet/gun.h"
 
 class FPSPlayer
 {
@@ -40,7 +41,8 @@ public:
 
 	explicit FPSPlayer(FPSPlayerData pData)
 		:	m_pData(pData),
-			m_up(0.0f, 1.0f, 0.0f)
+			m_up(0.0f, 1.0f, 0.0f),
+			m_gun()
 	{
 		m_pData.position.y += m_pData.height;
 		m_viewBobbing = pData.viewBobbingValue;
@@ -134,6 +136,19 @@ public:
 			m_pData.position.y = terrainHeight + m_pData.height;
 		}
 	}
+	void DrawBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
+		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain)
+	{
+		m_gun.Draw(proj, view, eyePos, lightPos, locations, time, terrain);
+	}
+	const bool BulletAiring(void)
+	{
+		return m_gun.BulletAiring();
+	}
+	void Shoot(void)
+	{
+		m_gun.Shoot(m_pData.viewDirection, m_pData.position);
+	}
 	bool& Running(void)
 	{
 		return m_running;
@@ -156,6 +171,7 @@ private:
 	bool m_running;
 
 	JumpData m_jd;
+	Gun m_gun;
 };
 
 #endif
