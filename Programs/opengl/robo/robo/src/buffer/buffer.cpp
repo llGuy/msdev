@@ -26,21 +26,20 @@ void Buffer::Init(void)
 	SendIndexData();
 	CreateVertexArray();
 }
-void Buffer::BindElement(void)
+void Buffer::BindElement(void) const
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBufferID);
 }
-void Buffer::BindArray(void)
+void Buffer::BindArray(void) const
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferID);
 }
-void Buffer::BindVertexArray(void)
+void Buffer::BindVertexArray(void) const
 {
 	glBindVertexArray(m_vaoID);
 }
-void Buffer::BindAll(void)
+void Buffer::BindAll(void) const
 {
-	BindArray();
 	BindVertexArray();
 	BindElement();
 }

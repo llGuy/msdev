@@ -10,7 +10,7 @@
 #include "../../buffer/buffer.h"
 #include "../../shader/shprogram.h"
 
-class PlainsBiome
+class PlainsBiome final
 	: public Biome
 {
 public:
@@ -23,6 +23,7 @@ public:
 		signed int lightPosLoc;
 		signed int timeLoc;
 	};
+
 	explicit PlainsBiome(float maxHeight, VertexData vData, IndexData iData)
 		: m_maxHeight(maxHeight), m_indexData(iData),
 		m_waterShprogram("..\\robo\\res\\wavingVsh.shader", "..\\robo\\res\\wavingFsh.shader", "..\\robo\\res\\wavingGsh.shader")
@@ -45,17 +46,20 @@ public:
 	}
 	glm::vec3 Color(float y) override
 	{
-		if (y < m_grass)											  
-			return m_darkGrassColor;
-		else if (y > m_grass && y <= m_rock)  
-			return m_grassColor;
-		else								  
-			return m_rockColor;
+		if (y < m_grass) return m_darkGrassColor;
+		else if (y > m_grass && y <= m_rock) return m_grassColor;
+		else return m_rockColor;
 	}
 	void VaryColors(Vertex* v, float* y, unsigned int wt, unsigned int ht) override
 	{
+		auto isBelow = [&](float yValue, float* y, unsigned int indices[3])->const bool
+		{
+			return (y[indices[0]] <= yValue || y[indices[1]] <= yValue || y[indices[2]] <= yValue);
+		};
+
 		srand(static_cast<int>(time(NULL)));
 		unsigned int index = 0;
+		unsigned int indices[3];
 		for (unsigned int col = 0; col < ht; ++col)
 		{
 			for (unsigned int row = 0; row < wt; ++row)
@@ -63,45 +67,25 @@ public:
 				unsigned int grass = rand() % 10;
 				if (grass == 53)
 				{
-					unsigned int index1 = col * (ht + 1) + row;
-					unsigned int index2 = (col + 1) * (ht + 1) + row;
-					unsigned int index3 = (col + 1) * (ht + 1) + row + 1;
+					indices[0] = col * (ht + 1) + row;
+					indices[1] = (col + 1) * (ht + 1) + row;
+					indices[2] = (col + 1) * (ht + 1) + row + 1;
 
 					// checking heights
-					if (y[index1] <= m_grass || y[index2] <= m_grass || y[index3] <= m_grass)
-					{
-						v[index1].color = m_varyingDarkGrassColor;
-						v[index2].color = m_varyingDarkGrassColor;
-						v[index3].color = m_varyingDarkGrassColor;
-					}
-					if (y[index1] <= m_rock || y[index2] <= m_rock || y[index3] <= m_rock)
-					{
-						v[index1].color = m_varyingGrassColor;
-						v[index2].color = m_varyingGrassColor;
-						v[index3].color = m_varyingGrassColor;
-					}
+					if (isBelow(m_grass, y, indices)) VaryMeshTriangleColor(indices, v, m_varyingDarkGrassColor);
+					if (isBelow(m_rock, y, indices))  VaryMeshTriangleColor(indices, v, m_varyingGrassColor);
 				}
 
 				grass = rand() % 100;
 				if (grass == 53)
 				{
-					unsigned int index4 = col * (ht + 1) + row;
-					unsigned int index5 = (col + 1) * (ht + 1) + row + 1;
-					unsigned int index6 = col * (ht + 1) + row + 1;
+					indices[0] = col * (ht + 1) + row;
+					indices[1] = (col + 1) * (ht + 1) + row + 1;
+					indices[2] = col * (ht + 1) + row + 1;
 
 					// checking heights
-					if (y[index4] <= m_grass || y[index5] <= m_grass || y[index6] <= m_grass)
-					{
-						v[index4].color = m_varyingDarkGrassColor;
-						v[index5].color = m_varyingDarkGrassColor;
-						v[index6].color = m_varyingDarkGrassColor;
-					}
-					if (y[index4] <= m_rock || y[index5] <= m_rock || y[index6] <= m_rock)
-					{
-						v[index4].color = m_varyingGrassColor;
-						v[index5].color = m_varyingGrassColor;
-						v[index6].color = m_varyingGrassColor;
-					}
+					if (isBelow(m_grass, y, indices)) VaryMeshTriangleColor(indices, v, m_varyingDarkGrassColor);
+					if (isBelow(m_rock, y, indices))  VaryMeshTriangleColor(indices, v, m_varyingGrassColor);
 				}
 			}
 		}
@@ -164,6 +148,12 @@ protected:
 			m_vertexData.vData[i].pos.y = m_maxHeight * 0.28f;
 			m_vertexData.vData[i].color = glm::vec3(5.0f / 255.0f, 26.0f / 255.0f, 180.0f / 255.0f);
 		}
+	}
+	void VaryMeshTriangleColor(unsigned int ind[3], Vertex* v, glm::vec3 color)
+	{
+		v[ind[0]].color = color;
+		v[ind[1]].color = color;
+		v[ind[2]].color = color;
 	}
 private:
 	float m_grass;

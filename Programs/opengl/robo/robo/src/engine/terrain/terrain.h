@@ -74,7 +74,6 @@ private:
 	}
 private:
 	const char* HM = "..\\robo\\res\\terrain1.png";
-	//Terrain::UniformLocations m_uniformLocations;
 	Terrain::TerrainDimensions m_dimensions;
 	Terrain::MeshData m_meshData;
 	Buffer m_buffer;

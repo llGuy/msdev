@@ -4,7 +4,7 @@
 #include "biome.h"
 #include "../primitives/vertex.h"
 
-class SnowBiome
+class SnowBiome final
 	: public Biome
 {
 public:
@@ -28,8 +28,14 @@ public:
 	}
 	void VaryColors(Vertex* v, float* y, unsigned int wt, unsigned int ht) override
 	{
+		auto isBelow = [&](float yValue, float* y, unsigned int indices[3])->const bool
+		{
+			return (y[indices[0]] <= yValue || y[indices[1]] <= yValue || y[indices[2]] <= yValue);
+		};
+
 		srand(static_cast<int>(time(NULL)));
 		unsigned int index = 0;
+		unsigned int indices[3];
 		for (unsigned int col = 0; col < ht; ++col)
 		{
 			for (unsigned int row = 0; row < wt; ++row)
@@ -37,33 +43,21 @@ public:
 				unsigned int grass = rand() % 100;
 				if (grass == 53)
 				{
-					unsigned int index1 = col * (ht + 1) + row;
-					unsigned int index2 = (col + 1) * (ht + 1) + row;
-					unsigned int index3 = (col + 1) * (ht + 1) + row + 1;
+					indices[0] = col * (ht + 1) + row;
+					indices[1] = (col + 1) * (ht + 1) + row;
+					indices[2] = (col + 1) * (ht + 1) + row + 1;
 
-					// checking heights
-					if (y[index1] <= m_rock || y[index2] <= m_rock || y[index3] <= m_rock)
-					{
-						v[index1].color = m_grassColor;
-						v[index2].color = m_grassColor;
-						v[index3].color = m_grassColor;
-					}
+					if (isBelow(m_rock, y, indices)) VaryMeshTriangleColor(indices, v, m_grassColor);
 				}
 
 				grass = rand() % 100;
 				if (grass == 53)
 				{
-					unsigned int index4 = col * (ht + 1) + row;
-					unsigned int index5 = (col + 1) * (ht + 1) + row + 1;
-					unsigned int index6 = col * (ht + 1) + row + 1;
+					indices[0] = col * (ht + 1) + row;
+					indices[1] = (col + 1) * (ht + 1) + row + 1;
+					indices[2] = col * (ht + 1) + row + 1;
 
-					// checking heights
-					if (y[index4] <= m_rock || y[index5] <= m_rock || y[index6] <= m_rock)
-					{
-						v[index4].color = m_grassColor;
-						v[index5].color = m_grassColor;
-						v[index6].color = m_grassColor;
-					}
+					if (isBelow(m_rock, y, indices)) VaryMeshTriangleColor(indices, v, m_grassColor);
 				}
 			}
 		}
@@ -88,6 +82,12 @@ protected:
 		m_rockColor = glm::vec3(0.2f, 0.2f, 0.2f);
 		m_iceColor = glm::vec3(0.560784f, 0.560784f, 0.737255f);
 		m_grassColor = glm::vec3(0.4f, 0.45f, 0.5f);
+	}
+	void VaryMeshTriangleColor(unsigned int ind[3], Vertex* v, glm::vec3 color)
+	{
+		v[ind[0]].color = color;
+		v[ind[1]].color = color;
+		v[ind[2]].color = color;
 	}
 private:
 	float m_rock;

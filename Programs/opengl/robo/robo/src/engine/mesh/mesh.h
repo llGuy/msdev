@@ -4,7 +4,10 @@
 class Mesh
 {
 public:
+	explicit Mesh() // takes the dimensions
+	{
 
+	}
 };
 
 #endif

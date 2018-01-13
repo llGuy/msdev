@@ -47,7 +47,6 @@ const bool Bullet::CollisionCheck(float heightOfTerrain, std::vector<Robot>& vec
 		{
 			vec[i].RemoveLife();
 			if (!vec[i].Alive()) vec.erase(vec.begin() + i);
-			//std::cout << vec.size() << " robots remain!" << std::endl;
 			return true;
 		}
 	if (fabs(heightOfTerrain - m_worldCoordinates.y) < 0.01f || heightOfTerrain > m_worldCoordinates.y)
@@ -77,8 +76,8 @@ void Bullet::CreateVertices(void)
 {
 	glm::vec3 color = m_color;
 	Vertex stackVerts[] = {
-		{ glm::vec3(-m_cubeRadius, +m_cubeRadius, +m_cubeRadius), // 0
-		color }, // Color
+	{ glm::vec3(-m_cubeRadius, +m_cubeRadius, +m_cubeRadius), // 0
+	color }, // Color
 	{ glm::vec3(+m_cubeRadius, +m_cubeRadius, +m_cubeRadius), // 1
 	color }, // Color
 	{ glm::vec3(+m_cubeRadius, +m_cubeRadius, -m_cubeRadius), // 2

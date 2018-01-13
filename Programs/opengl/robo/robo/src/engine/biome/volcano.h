@@ -3,7 +3,7 @@
 
 #include "biome.h"
 
-class VolcanoBiome
+class VolcanoBiome final
 	: public Biome
 {
 private:
@@ -45,8 +45,14 @@ public:
 	}
 	void VaryColors(Vertex* v, float* y, unsigned int wt, unsigned int ht) override
 	{
+		auto isBelow = [&](float yValue, float* y, unsigned int indices[3])->const bool
+		{
+			return (y[indices[0]] <= yValue || y[indices[1]] <= yValue || y[indices[2]] <= yValue);
+		};
+
 		srand(static_cast<int>(time(NULL)));
 		unsigned int index = 0;
+		unsigned int indices[3];
 		for (unsigned int col = 0; col < ht; ++col)
 		{
 			for (unsigned int row = 0; row < wt; ++row)
@@ -55,45 +61,25 @@ public:
 				
 				if (varying == 0)
 				{
-					unsigned int index1 = col * (ht + 1) + row;
-					unsigned int index2 = (col + 1) * (ht + 1) + row;
-					unsigned int index3 = (col + 1) * (ht + 1) + row + 1;
+					indices[0] = col * (ht + 1) + row;
+					indices[1] = (col + 1) * (ht + 1) + row;
+					indices[2] = (col + 1) * (ht + 1) + row + 1;
 
 					m_vertexData.vData[index].color = m_varyingLavaColor;
 
-					if (v[index1].pos.y <= m_lava || v[index2].pos.y <= m_lava || v[index3].pos.y <= m_lava)
-					{
-						v[index1].color = m_varyingObsidianColor;
-						v[index2].color = m_varyingObsidianColor;
-						v[index3].color = m_varyingObsidianColor;
-					}
-					else
-					{
-						v[index1].color = m_varyingLavaColor;
-						v[index2].color = m_varyingLavaColor;
-						v[index3].color = m_varyingLavaColor;
-					}
+					if (isBelow(m_lava, y, indices)) VaryMeshTriangleColor(indices, v, m_varyingObsidianColor);
+					else VaryMeshTriangleColor(indices, v, m_varyingLavaColor);
 				}
 
 				varying = rand() % 10;
 				if (varying == 0)
 				{
-					unsigned int index4 = col * (ht + 1) + row;
-					unsigned int index5 = (col + 1) * (ht + 1) + row + 1;
-					unsigned int index6 = col * (ht + 1) + row + 1;
+					indices[0] = col * (ht + 1) + row;
+					indices[1] = (col + 1) * (ht + 1) + row + 1;
+					indices[2] = col * (ht + 1) + row + 1;
 
-					if (v[index4].pos.y <= m_lava || v[index5].pos.y <= m_lava || v[index6].pos.y <= m_lava)
-					{
-						v[index4].color = m_varyingObsidianColor;
-						v[index5].color = m_varyingObsidianColor;
-						v[index6].color = m_varyingObsidianColor;
-					}
-					else
-					{
-						v[index4].color = m_varyingLavaColor;
-						v[index5].color = m_varyingLavaColor;
-						v[index6].color = m_varyingLavaColor;
-					}
+					if (isBelow(m_lava, y, indices)) VaryMeshTriangleColor(indices, v, m_varyingObsidianColor);
+					else VaryMeshTriangleColor(indices, v, m_varyingLavaColor);
 				}
 			}
 		}
@@ -160,6 +146,7 @@ protected:
 			m_vertexData.vData[i].color = m_lavaColor * 0.8f;
 		}
 
+		unsigned int indices[3];
 		for (unsigned int col = 0; col < ht; ++col)
 		{
 			for (unsigned int row = 0; row < wt; ++row)
@@ -167,28 +154,28 @@ protected:
 				unsigned int varying = rand() % 10;
 				if (varying == 0)
 				{
-					unsigned int index1 = col * (ht + 1) + row;
-					unsigned int index2 = (col + 1) * (ht + 1) + row;
-					unsigned int index3 = (col + 1) * (ht + 1) + row + 1;
-
-					m_vertexData.vData[index1].color = m_varyingLavaColor;
-					m_vertexData.vData[index2].color = m_varyingLavaColor;
-					m_vertexData.vData[index3].color = m_varyingLavaColor;
+					indices[0] = col * (ht + 1) + row;
+					indices[1] = (col + 1) * (ht + 1) + row;
+					indices[2] = (col + 1) * (ht + 1) + row + 1;
+					VaryMeshTriangleColor(indices, m_vertexData.vData, m_varyingLavaColor);
 				}
 				
 				varying = rand() % 10;
 				if (varying == 0)
 				{
-					unsigned int index4 = col * (ht + 1) + row;
-					unsigned int index5 = (col + 1) * (ht + 1) + row + 1;
-					unsigned int index6 = col * (ht + 1) + row + 1;
-
-					m_vertexData.vData[index4].color = m_varyingLavaColor;
-					m_vertexData.vData[index5].color = m_varyingLavaColor;
-					m_vertexData.vData[index6].color = m_varyingLavaColor;
+					indices[0] = col * (ht + 1) + row;
+					indices[1] = (col + 1) * (ht + 1) + row + 1;
+					indices[2] = col * (ht + 1) + row + 1;
+					VaryMeshTriangleColor(indices, m_vertexData.vData, m_varyingLavaColor);
 				}
 			}
 		}
+	}
+	void VaryMeshTriangleColor(unsigned int ind[3], Vertex* v, glm::vec3 color)
+	{
+		v[ind[0]].color = color;
+		v[ind[1]].color = color;
+		v[ind[2]].color = color;
 	}
 private:
 	float m_lava;

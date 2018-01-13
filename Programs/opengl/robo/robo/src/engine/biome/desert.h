@@ -5,7 +5,7 @@
 
 #include "biome.h"
 
-class DesertBiome
+class DesertBiome final
 	: public Biome
 {
 public:
@@ -16,11 +16,11 @@ public:
 		GetColorOfElements();
 	}
 public:
-	biome_t BiomeType(void) override
+	__forceinline biome_t BiomeType(void) override
 	{
 		return Biome::DESERT;
 	}
-	glm::vec3 Color(float y) override
+	__forceinline glm::vec3 Color(float y) override
 	{
 		return m_sandColor;
 	}
@@ -28,32 +28,31 @@ public:
 	{
 		srand(static_cast<int>(time(NULL)));
 		unsigned int index = 0;
+		unsigned int indices[3];
 		for (unsigned int col = 0; col < ht; ++col)
 		{
 			for (unsigned int row = 0; row < wt; ++row)
 			{
+				// the second triangle of the grid square
 				unsigned int varying = rand() % 100;
 				if (varying == 53)
 				{
-					unsigned int index1 = col * (ht + 1) + row;
-					unsigned int index2 = (col + 1) * (ht + 1) + row;
-					unsigned int index3 = (col + 1) * (ht + 1) + row + 1;
+					// abstract this algorithm into the mesh class
 					
-					v[index1].color = m_varyingSandColor;
-					v[index2].color = m_varyingSandColor;
-					v[index3].color = m_varyingSandColor;
+					indices[0] = col * (ht + 1) + row;
+					indices[1] = (col + 1) * (ht + 1) + row;
+					indices[2] = (col + 1) * (ht + 1) + row + 1;
+					VaryMeshTriangleColor(indices, v, m_varyingSandColor);
 				}
 
+				// the first triangle of the mesh grid square
 				varying = rand() % 100;
 				if (varying == 53)
 				{
-					unsigned int index4 = col * (ht + 1) + row;
-					unsigned int index5 = (col + 1) * (ht + 1) + row + 1;
-					unsigned int index6 = col * (ht + 1) + row + 1;
-
-					v[index4].color = m_varyingSandColor;
-					v[index5].color = m_varyingSandColor;
-					v[index6].color = m_varyingSandColor;
+					indices[0] = col * (ht + 1) + row;
+					indices[1] = (col + 1) * (ht + 1) + row + 1;
+					indices[2] = col * (ht + 1) + row + 1;
+					VaryMeshTriangleColor(indices, v, m_varyingSandColor);
 				}
 			}
 		}
@@ -62,9 +61,10 @@ public:
 	{
 		return glm::vec3(0.0f, 0.5f, 0.9f);
 	}
-	void RenderBiomeElements(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos, glm::vec3& lightPos, Time* time) override
+	void RenderBiomeElements(glm::mat4& proj, glm::mat4& view, 
+		glm::vec3& eyePos, glm::vec3& lightPos, Time* time) override
 	{
-
+		// does nothing
 	}
 protected:
 	void CalculateElementPosition(void) override
@@ -73,8 +73,13 @@ protected:
 	void GetColorOfElements(void) override
 	{
 		m_sandColor = glm::vec3(1.0f, 0.97, 0.86f) * 0.7f;
-		
 		m_varyingSandColor = glm::vec3(0.94, 0.87f, 0.7f) * 0.7f;
+	}
+	void VaryMeshTriangleColor(unsigned int ind[3], Vertex* v, glm::vec3 color)
+	{
+		v[ind[0]].color = color;
+		v[ind[1]].color = color;
+		v[ind[2]].color = color;
 	}
 private:
 	glm::vec3 m_sandColor;

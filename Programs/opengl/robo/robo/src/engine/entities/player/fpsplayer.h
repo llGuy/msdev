@@ -61,6 +61,7 @@ public:
 		LEFT
 	};
 
+public:
 	explicit FPSPlayer(FPSPlayerData pData)
 		:	m_pData(pData),
 			m_up(0.0f, 1.0f, 0.0f),
@@ -73,6 +74,8 @@ public:
 		m_jd.jumping = false;
 		m_fd.flourishing = false;
 	}
+public:
+	// getter methods
 	glm::vec3& Position(void)
 	{
 		return m_pData.position;
@@ -91,6 +94,7 @@ public:
 		}
 		return glm::lookAt(m_pData.position, m_pData.position + m_pData.viewDirection, m_up);
 	}
+public:
 	void ViewBobbing(void)
 	{
 		if (!m_jd.jumping && !m_fd.flourishing)
@@ -142,6 +146,7 @@ public:
 		m_pData.viewDirection = glm::mat3(glm::rotate(glm::radians(-mouseDelta.y) * 0.02f, toRotateAround)) * m_pData.viewDirection;
 		m_oldMousePosition = newMousePosition;
 	}
+public:
 	void InitializeJump(double deltaT)
 	{
 		if (!m_jd.jumping)
@@ -200,6 +205,7 @@ public:
 			m_pData.position.y = terrainHeight + m_pData.height;
 		}
 	}
+public:
 	void DrawBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
 		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Robot>& vec)
 	{
@@ -213,6 +219,8 @@ public:
 	{
 		m_gun.Shoot(m_pData.viewDirection, m_pData.position);
 	}
+public:
+	// other getters
 	bool& Running(void)
 	{
 		return m_running;
@@ -225,12 +233,13 @@ public:
 	{
 		m_pData.speed = speed;
 	}
+public:
+	// what happens when the player dies
 	void Die(void)
 	{
 		std::cout << "dead" << std::endl;
 	}
 private:
-	FPSPlayerData m_pData;
 	glm::vec3 m_up;
 	glm::vec2 m_oldMousePosition;
 	float m_viewBobbing;
@@ -238,9 +247,10 @@ private:
 	float m_runningDelta;
 	bool m_running;
 
+	Gun m_gun;
 	JumpData m_jd;
 	FlourishData m_fd;
-	Gun m_gun;
+	FPSPlayerData m_pData;
 };
 
 #endif

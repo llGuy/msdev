@@ -104,7 +104,6 @@ void Robot::CreateVertices(void)
 	for (unsigned short i = 0; i < m_vertexData.numVertices; ++i)
 		m_vertexData.vData[i].pos.y += m_cubeRadius;
 	m_circleRadius = glm::distance(glm::vec3(0.0f), glm::vec3(+m_cubeRadius, +m_cubeRadius, +m_cubeRadius));
-	//std::cout << m_circleRadius << std::endl;
 }
 void Robot::CreateIndices(void)
 {

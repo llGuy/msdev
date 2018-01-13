@@ -5,15 +5,19 @@
 #include <cmath>
 
 RoboEngine::RoboEngine(float windowWidth, float windowHeight)
-	: m_lighting({ glm::vec3(0.0f, 100.0f, 0.0f) })
+	: m_lighting({ glm::vec3(0.0f, 100.0f, 0.0f) }), m_configurations()
 { 
 	srand(static_cast<int>(time(NULL)));
 
-	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, m_configurations.terrainMaxHeight }, Biome::VOLCANO);
-	m_fps = new FPSPlayer({ glm::vec3(m_configurations.originalPlayerPosition.x,
-		m_terrain->GetYPosOfPlayer(m_configurations.originalPlayerPosition.x, m_configurations.originalPlayerPosition.z), m_configurations.originalPlayerPosition.z),
-		m_configurations.originalPlayerViewDirection, m_configurations.playerSpeed, m_configurations.playerHeight, m_configurations.playerViewBobbing,
-		m_configurations.playerRunningSpeedDelta});
+	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, 
+		m_configurations.terrainMaxHeight }, Biome::VOLCANO);
+
+	Configs& c = m_configurations;
+	m_fps = new FPSPlayer({ glm::vec3(c.originalPlayerPosition.x,
+		m_terrain->GetYPosOfPlayer(c.originalPlayerPosition.x, 
+			c.originalPlayerPosition.z), c.originalPlayerPosition.z),
+		c.originalPlayerViewDirection, c.playerSpeed, c.playerHeight, c.playerViewBobbing,
+		c.playerRunningSpeedDelta});
 	
 	InitRobots();
 
@@ -29,6 +33,32 @@ RoboEngine::RoboEngine(float windowWidth, float windowHeight)
 RoboEngine::~RoboEngine(void)
 {
 }
+void RoboEngine::Configure(void)
+{
+	Configs& c = m_configurations;
+
+	c.numberOfRobots = 30;
+
+	c.playerSpeed = 0.02f;
+	c.playerRunningSpeedDelta = 1.4f;
+	c.playerViewBobbing = 0.002f;
+	c.playerHeight = 1.0f;
+	c.originalPlayerPosition = glm::vec3(0.0f);
+	c.originalPlayerViewDirection = glm::vec3(0.0f, 0.0f, -1.0f);
+
+	c.terrainWidth = 250.0f;
+	c.terrainDepth = 250.0f;
+	c.terrainMaxHeight = 100.0f;
+
+	//perspective matrices
+	c.renderDistance = 200.0f;
+	c.fov = glm::radians(60.0f);
+
+	//shader configs
+	c.vsh = "res\\vsh.shader";
+	c.fsh = "res\\fsh.shader";
+	c.gsh = "res\\gsh.shader";
+}
 void RoboEngine::Draw(void)
 {
 	glm::vec3 m_skyColor = m_terrain->Sky();
@@ -40,6 +70,10 @@ void RoboEngine::Draw(void)
 	UpdateTimeData();
 	MoveRobots();
 	m_shaders->UseProgram();
+	DrawAll();
+}
+void RoboEngine::DrawAll(void)
+{
 	if (m_fps->BulletAiring())
 	{
 		m_fps->DrawBullets(m_transformMatrices.projection, m_transformMatrices.view,

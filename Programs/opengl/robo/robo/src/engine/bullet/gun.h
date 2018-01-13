@@ -19,15 +19,21 @@ public:
 	{ 
 		m_bullets.push_back(Bullet(playerViewDirection, playerEyePos, m_bulletSpeed, color));
 	}
+	// draw function for the player
 	void Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
 		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Robot>& vec)
 	{
 		MoveBullets(proj, view, eyePos, lightPos, locations, time, terrain, vec);
+		for (auto& i : m_bullets)
+			i.Draw(proj, view, eyePos, lightPos, locations, time);
 	}
+	// draw function for the robots
 	void Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
 		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, FPSPlayer* player)
 	{
 		MoveBullets(proj, view, eyePos, lightPos, locations, time, terrain, player);
+		for (auto& i : m_bullets)
+			i.Draw(proj, view, eyePos, lightPos, locations, time);
 	}
 	const bool BulletAiring(void)
 	{
@@ -49,7 +55,6 @@ private:
 			{
 				m_bullets[i].Move();
 				m_bullets[i].UpdateTranslateMatrix();
-				m_bullets[i].Draw(proj, view, eyePos, lightPos, locations, time);
 			}
 		}
 	}
@@ -68,7 +73,6 @@ private:
 			{
 				m_bullets[i].Move();
 				m_bullets[i].UpdateTranslateMatrix();
-				m_bullets[i].Draw(proj, view, eyePos, lightPos, locations, time);
 			}
 		}
 	}

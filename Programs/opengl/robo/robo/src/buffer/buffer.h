@@ -11,10 +11,10 @@ public:
 	explicit Buffer(VertexData vData, IndexData iData);
 	void Init(VertexData vData, IndexData iData);
 	void Init(void);
-	void BindElement(void);
-	void BindArray(void);
-	void BindVertexArray(void);
-	void BindAll(void);
+	void BindElement(void) const;
+	void BindArray(void) const;
+	void BindVertexArray(void) const;
+	void BindAll(void) const;
 	void DeleteBuffer(void);
 	unsigned int NumIndices(void) const;
 	unsigned int NumVertices(void) const;

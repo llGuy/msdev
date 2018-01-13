@@ -41,6 +41,7 @@ public:
 	void MouseInput(GLFWwindow*);
 	void MouseButtonInput(int button);
 private:
+	void Configure(void);
 	void MatricesInit(float windowWidth, float windowHeight);
 	void CompileShaders(void);
 	void GetUniformLocations(void);
@@ -50,6 +51,7 @@ private:
 	void MoveRobots(void);
 	void DrawRobots(glm::mat4& proj, glm::mat4& view,
 		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time);
+	void DrawAll(void);
 	void InitRobots(void);
 	void SpawnRobot(void);
 	const bool AllRobotsDied(void);
