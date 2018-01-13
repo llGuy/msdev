@@ -10,7 +10,7 @@
 
 #include "../biome/snow.h"
 #include "../biome/volcano.h"
-#include "../biome/planes.h"
+#include "../biome/plains.h"
 #include "../biome/desert.h"
 
 #include "../engine.h"
@@ -72,8 +72,8 @@ void Terrain::GenerateTerrainVerts(void)
 	m_meshData.xHalf = m_dimensions.x / 2;			// make the terrain centered
 	m_meshData.zHalf = m_dimensions.z / 2;
 	//computing the number of vertices
-	m_meshData.xNumVerts = m_dimensions.x + 1;
-	m_meshData.zNumVerts = m_dimensions.z + 1;
+	m_meshData.xNumVerts = static_cast<unsigned int>(m_dimensions.x + 1);
+	m_meshData.zNumVerts = static_cast<unsigned int>(m_dimensions.z + 1);
 	//computing the number of squares / tiles
 	m_meshData.xNumTiles = m_meshData.xNumVerts - 1;
 	m_meshData.zNumTiles = m_meshData.zNumVerts - 1;
@@ -141,18 +141,18 @@ float Terrain::GetYPosOfPlayer(float x, float z, float debug)
 
 	if (positionOfPlayerOnTile.x <= 1 + positionOfPlayerOnTile.y)
 	{
-		ind1 = sizeOfTile.y * m_meshData.zNumVerts + sizeOfTile.x;
-		ind2 = (sizeOfTile.y + 1) * m_meshData.zNumVerts + sizeOfTile.x;
-		ind3 = (sizeOfTile.y + 1) * m_meshData.zNumVerts + sizeOfTile.x + 1;
+		ind1 = static_cast<unsigned int>(sizeOfTile.y * m_meshData.zNumVerts + sizeOfTile.x);
+		ind2 = static_cast<unsigned int>((sizeOfTile.y + 1) * m_meshData.zNumVerts + sizeOfTile.x);
+		ind3 = static_cast<unsigned int>((sizeOfTile.y + 1) * m_meshData.zNumVerts + sizeOfTile.x + 1);
 
 		height = BarryCentric(glm::vec3(0.0f, m_meshData.y[ind1], -1.0f), glm::vec3(0.0f, m_meshData.y[ind2], 0.0f),
 			glm::vec3(1.0f, m_meshData.y[ind3], 0.0f), glm::vec2(positionOfPlayerOnTile.x, positionOfPlayerOnTile.y));
 	}
 	else
 	{
-		ind1 = sizeOfTile.y * m_meshData.zNumVerts + sizeOfTile.x;
-		ind2 = (sizeOfTile.y + 1) * m_meshData.zNumVerts + sizeOfTile.x + 1;
-		ind3 = sizeOfTile.y * m_meshData.zNumVerts + sizeOfTile.x + 1;
+		ind1 = static_cast<unsigned int>(sizeOfTile.y * m_meshData.zNumVerts + sizeOfTile.x);
+		ind2 = static_cast<unsigned int>((sizeOfTile.y + 1) * m_meshData.zNumVerts + sizeOfTile.x + 1);
+		ind3 = static_cast<unsigned int>(sizeOfTile.y * m_meshData.zNumVerts + sizeOfTile.x + 1);
 
 		height = BarryCentric(glm::vec3(0.0f, m_meshData.y[ind1], -1.0f), glm::vec3(1.0f, m_meshData.y[ind2], 0.0f),
 			glm::vec3(1.0f, m_meshData.y[ind3], -1.0f), glm::vec2(positionOfPlayerOnTile.x, positionOfPlayerOnTile.y));
@@ -180,8 +180,8 @@ void Terrain::InitBiome(Biome::biome_t biome)
 		m_biome = new SnowBiome(m_dimensions.yMax);
 	else if (biome == Biome::VOLCANO)
 		m_biome = new VolcanoBiome(m_dimensions.yMax, m_meshData.vertices, m_meshData.indices, m_meshData.xNumTiles, m_meshData.zNumTiles);
-	else if (biome == Biome::PLANES)
-		m_biome = new PlanesBiome(m_dimensions.yMax, m_meshData.vertices, m_meshData.indices);
+	else if (biome == Biome::PLAINS)
+		m_biome = new PlainsBiome(m_dimensions.yMax, m_meshData.vertices, m_meshData.indices);
 	else if (biome == Biome::DESERT)
 		m_biome = new DesertBiome(m_dimensions.yMax);
 }

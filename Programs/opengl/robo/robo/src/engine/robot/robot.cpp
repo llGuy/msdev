@@ -38,8 +38,7 @@ void Robot::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model,
 }
 void Robot::CreateVertices(void)
 {
-	m_lives = m_cubeRadius * 4;
-	std::cout << m_lives << std::endl;
+	m_lives = static_cast<unsigned int>(m_cubeRadius * 4);
 	m_robotSpeed = 0.007f / m_cubeRadius;
 	glm::vec3 color = glm::vec3(0.0f / 255.0f, 191.0f / 255.0f, 255.0f / 255.0f);
 	Vertex stackVerts[] = {

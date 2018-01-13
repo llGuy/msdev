@@ -106,5 +106,5 @@ void Window::AfterGLEWInit(void)
 {
 	glEnable(GL_DEPTH_TEST);
 
-	m_engine = new RoboEngine(m_width, m_height);
+	m_engine = new RoboEngine(static_cast<float>(m_width), static_cast<float>(m_height));
 }

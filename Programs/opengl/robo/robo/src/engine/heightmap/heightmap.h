@@ -10,7 +10,7 @@ public:
 	void ComputeHeights(float* yVals, 
 		unsigned int numVertsWidth, 
 		unsigned int numVertsHeight,
-		unsigned int maxHeight);
+		float maxHeight);
 private:
 	void ImageData(void);
 	void ComputeStride(unsigned int numVertsWidth, unsigned int numVertsHeight);

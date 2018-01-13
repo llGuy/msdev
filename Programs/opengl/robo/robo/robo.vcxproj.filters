@@ -53,9 +53,6 @@
     <ClInclude Include="src\engine\biome\desert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\biome\planes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\engine\biome\snow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -117,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\bullet\gun.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\biome\plains.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

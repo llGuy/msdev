@@ -26,7 +26,7 @@ public:
 	}
 	void VaryColors(Vertex* v, float* y, unsigned int wt, unsigned int ht) override
 	{
-		srand(time(NULL));
+		srand(static_cast<int>(time(NULL)));
 		unsigned int index = 0;
 		for (unsigned int col = 0; col < ht; ++col)
 		{

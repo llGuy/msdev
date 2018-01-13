@@ -7,7 +7,7 @@
 RoboEngine::RoboEngine(float windowWidth, float windowHeight)
 	: m_lighting({ glm::vec3(0.0f, 100.0f, 0.0f) })
 { 
-	srand(time(NULL));
+	srand(static_cast<int>(time(NULL)));
 
 	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, m_configurations.terrainMaxHeight }, Biome::VOLCANO);
 	m_fps = new FPSPlayer({ glm::vec3(m_configurations.originalPlayerPosition.x,
@@ -17,8 +17,9 @@ RoboEngine::RoboEngine(float windowWidth, float windowHeight)
 	
 	InitRobots();
 
-	if (m_terrain->BiomeType() == Biome::VOLCANO) m_shaders = new SHProgram("res\\lavaVsh.shader", "res\\lavaFsh.shader", "res\\lavaGsh.shader");
-	else m_shaders = new SHProgram("res\\vsh.shader", "res\\fsh.shader", "res\\gsh.shader");
+	if (m_terrain->BiomeType() == Biome::VOLCANO) m_shaders = new SHProgram("..\\robo\\res\\lavaVsh.shader", 
+		"..\\robo\\res\\lavaFsh.shader", "..\\robo\\res\\lavaGsh.shader");
+	else m_shaders = new SHProgram("..\\robo\\res\\vsh.shader", "..\\robo\\res\\fsh.shader", "..\\robo\\res\\gsh.shader");
 
 	MatricesInit(windowWidth, windowHeight);
 	CompileShaders();
@@ -173,7 +174,7 @@ void RoboEngine::SpawnRobot(void)
 	float z = rand() % (signed int)m_configurations.terrainDepth / 2 - m_configurations.terrainDepth / 4;
 
 	//size of robot
-	float radius = rand() % 20 / 4;
+	float radius = static_cast<float>(rand() % 20 / 4);
 	radius /= 2;
 	if (radius < 0.25f) radius = 0.25f;
 

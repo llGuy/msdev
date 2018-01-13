@@ -1,5 +1,5 @@
-#ifndef PLANES_HEADER
-#define PLANES_HEADER
+#ifndef PLAINS_HEADER
+#define PLAINS_HEADER
 
 #include <chrono>
 
@@ -10,7 +10,7 @@
 #include "../../buffer/buffer.h"
 #include "../../shader/shprogram.h"
 
-class PlanesBiome
+class PlainsBiome
 	: public Biome
 {
 public:
@@ -23,9 +23,9 @@ public:
 		signed int lightPosLoc;
 		signed int timeLoc;
 	};
-	explicit PlanesBiome(float maxHeight, VertexData vData, IndexData iData)
+	explicit PlainsBiome(float maxHeight, VertexData vData, IndexData iData)
 		: m_maxHeight(maxHeight), m_indexData(iData),
-		m_waterShprogram("res\\wavingVsh.shader", "res\\wavingFsh.shader", "res\\wavingGsh.shader")
+		m_waterShprogram("..\\robo\\res\\wavingVsh.shader", "..\\robo\\res\\wavingFsh.shader", "..\\robo\\res\\wavingGsh.shader")
 	{
 		m_vertexData.vData = new Vertex[vData.numVertices];
 		m_vertexData.numVertices = vData.numVertices;
@@ -41,7 +41,7 @@ public:
 public:
 	biome_t BiomeType(void) override
 	{
-		return Biome::PLANES;
+		return Biome::PLAINS;
 	}
 	glm::vec3 Color(float y) override
 	{
@@ -54,7 +54,7 @@ public:
 	}
 	void VaryColors(Vertex* v, float* y, unsigned int wt, unsigned int ht) override
 	{
-		srand(time(NULL));
+		srand(static_cast<int>(time(NULL)));
 		unsigned int index = 0;
 		for (unsigned int col = 0; col < ht; ++col)
 		{

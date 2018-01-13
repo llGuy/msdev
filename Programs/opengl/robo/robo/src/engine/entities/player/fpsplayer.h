@@ -81,12 +81,12 @@ public:
 	{
 		if (m_fd.flourishing)
 		{
-			Flourish(time->deltaT);
+			Flourish(static_cast<float>(time->deltaT));
 			CheckFlourishLanding(terrainHeight);
 		}
 		if (m_jd.jumping)
 		{
-			Jump(time->deltaT);
+			Jump(static_cast<float>(time->deltaT));
 			CheckJumpLanding(terrainHeight);
 		}
 		return glm::lookAt(m_pData.position, m_pData.position + m_pData.viewDirection, m_up);
@@ -172,12 +172,12 @@ public:
 		m_pData.position = m_pData.position + m_fd.velocity * deltaT;
 		m_fd.velocity = m_fd.velocity + m_fd.gravity * deltaT;
 
-		m_fd.yInclination = -(rand() % 9);
+		m_fd.yInclination = static_cast<float>(-(rand() % 9));
 		glm::vec3 directionOfBullet = glm::vec3(sin(glm::radians(m_fd.angle)), m_fd.yInclination, cos(glm::radians(m_fd.angle)));
 		m_gun.Shoot(directionOfBullet, m_pData.position + glm::vec3(0.0f, 1.0f, 0.0f), m_fd.rainbowColors[m_fd.colorIndex % 7]);
 		++m_fd.colorIndex;
 
-		m_fd.yInclination = -(rand() % 9);
+		m_fd.yInclination = static_cast<float>(-(rand() % 9));
 		directionOfBullet = glm::vec3(sin(glm::radians(180 + m_fd.angle)), m_fd.yInclination, cos(glm::radians(180 + m_fd.angle)));
 		m_gun.Shoot(directionOfBullet, m_pData.position + glm::vec3(0.0f, 1.0f, 0.0f), m_fd.rainbowColors[m_fd.colorIndex % 7]);
 		++m_fd.colorIndex;

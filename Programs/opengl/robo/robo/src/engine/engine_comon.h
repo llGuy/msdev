@@ -5,7 +5,7 @@
 
 #include "biome/biome.h"
 #include "biome/desert.h"
-#include "biome/planes.h"
+#include "biome/plains.h"
 #include "biome/volcano.h"
 
 #include "heightmap/heightmap.h"

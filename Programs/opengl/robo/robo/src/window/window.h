@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 
 class RoboEngine;
-class GLFWwindow;
+struct GLFWwindow;
 
 class Window
 {

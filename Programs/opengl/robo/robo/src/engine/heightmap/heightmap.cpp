@@ -7,7 +7,7 @@ Heightmap::Heightmap(const char* hmDir)
 {
 	ImageData();
 }
-void Heightmap::ComputeHeights(float* yVals, unsigned int nvw, unsigned int nvh, unsigned int mh)
+void Heightmap::ComputeHeights(float* yVals, unsigned int nvw, unsigned int nvh, float mh)
 {
 	unsigned int imageWidthIndex;
 	unsigned int imageHeightIndex;

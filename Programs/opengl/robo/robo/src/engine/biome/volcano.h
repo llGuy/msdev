@@ -19,7 +19,7 @@ private:
 public:
 	explicit VolcanoBiome(float maxHeight, VertexData vData, IndexData iData, unsigned int wt, unsigned int ht)
 		: m_maxHeight(maxHeight),
-		m_lavaShprogram("res\\wavingVsh.shader", "res\\wavingFsh.shader", "res\\wavingGsh.shader"),
+		m_lavaShprogram("..\\robo\\res\\wavingVsh.shader", "..\\robo\\res\\wavingFsh.shader", "..\\robo\\res\\wavingGsh.shader"),
 		m_indexData(iData)
 	{
 		m_vertexData.vData = new Vertex[vData.numVertices];
@@ -45,7 +45,7 @@ public:
 	}
 	void VaryColors(Vertex* v, float* y, unsigned int wt, unsigned int ht) override
 	{
-		srand(time(NULL));
+		srand(static_cast<int>(time(NULL)));
 		unsigned int index = 0;
 		for (unsigned int col = 0; col < ht; ++col)
 		{

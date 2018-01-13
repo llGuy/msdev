@@ -21,9 +21,9 @@ struct Configs
 	float fov = glm::radians(60.0f);
 
 	//shader configs
-	const char const* vsh = "res\\vsh.shader";
-	const char const* fsh = "res\\fsh.shader";
-	const char const* gsh = "res\\gsh.shader";
+	const char* vsh = "res\\vsh.shader";
+	const char* fsh = "res\\fsh.shader";
+	const char* gsh = "res\\gsh.shader";
 };
 
 #endif

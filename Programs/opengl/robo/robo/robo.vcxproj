@@ -136,7 +136,7 @@
     <ClInclude Include="src\camera\camera.h" />
     <ClInclude Include="src\engine\biome\biome.h" />
     <ClInclude Include="src\engine\biome\desert.h" />
-    <ClInclude Include="src\engine\biome\planes.h" />
+    <ClInclude Include="src\engine\biome\plains.h" />
     <ClInclude Include="src\engine\biome\snow.h" />
     <ClInclude Include="src\engine\biome\volcano.h" />
     <ClInclude Include="src\engine\bullet\bullet.h" />

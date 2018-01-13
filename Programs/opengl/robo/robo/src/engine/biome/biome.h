@@ -8,7 +8,7 @@
 
 // element = material like rock, ice, snow, lava, obsidian
 
-class Vertex;
+struct Vertex;
 class Biome
 {
 public:
@@ -18,7 +18,7 @@ public:
 
 		DESERT,
 
-		PLANES,
+		PLAINS,
 
 		VOLCANO
 	};
