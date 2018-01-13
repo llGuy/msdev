@@ -19,7 +19,7 @@ class Bullet
 {
 public:
 	explicit Bullet(glm::vec3 playerViewDirection,
-		glm::vec3 playerEyePos, float bulletSpeed = 0.3f);
+		glm::vec3 playerEyePos, float bulletSpeed = 0.3f, glm::vec3 color = glm::vec3(0.7f, 0.7f, 0.7f));
 	~Bullet(void);
 
 	void Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
@@ -53,6 +53,8 @@ private:
 	glm::mat4 m_translateMatrix;
 	glm::vec3 m_direction;
 	float m_circleRadius;
+
+	glm::vec3 m_color;
 };
 
 #endif

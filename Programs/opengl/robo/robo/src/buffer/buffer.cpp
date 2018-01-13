@@ -1,4 +1,5 @@
 #include <GL/glew.h>
+#include <iostream>
 
 #include "buffer.h"
 #include "../engine/primitives/vertex.h"
@@ -87,4 +88,5 @@ void Buffer::DeleteBuffer(void)
 {
 	glDeleteBuffers(1, &m_vertexBufferID);
 	glDeleteBuffers(1, &m_indexBufferID);
+	glDeleteVertexArrays(1, &m_vaoID);
 }

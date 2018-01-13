@@ -5,8 +5,8 @@
 #include "../engine.h"
 
 Bullet::Bullet(glm::vec3 playerViewDirection,
-	glm::vec3 playerEyePos, float bulletSpeed)
-	: m_cubeRadius(0.1f), m_buffer(), m_bulletSpeed(bulletSpeed)
+	glm::vec3 playerEyePos, float bulletSpeed, glm::vec3 color)
+	: m_cubeRadius(0.1f), m_buffer(), m_bulletSpeed(bulletSpeed), m_color(color)
 {
 	Init(playerViewDirection, playerEyePos);
 	CreateVertices();
@@ -59,7 +59,6 @@ const bool Bullet::CollisionCheck(float heightOfTerrain, FPSPlayer* player)
 	if (glm::all(glm::lessThan(glm::abs(player->Position() - m_worldCoordinates), glm::vec3(0.5f))))
 	{
 		player->Die();
-		exit(1);
 		return true;
 	}
 	if (fabs(heightOfTerrain - m_worldCoordinates.y) < 0.01f || heightOfTerrain > m_worldCoordinates.y)
@@ -73,10 +72,10 @@ void Bullet::Init(glm::vec3& playerViewDirection,
 	m_worldCoordinates = playerEyePos;
 	m_translateVectorPlainPosition = glm::vec2(m_worldCoordinates.x,
 		m_worldCoordinates.z);
-}
+}  
 void Bullet::CreateVertices(void)
 {
-	glm::vec3 color = glm::vec3(0.7f, 0.7f, 0.7f);
+	glm::vec3 color = m_color;
 	Vertex stackVerts[] = {
 		{ glm::vec3(-m_cubeRadius, +m_cubeRadius, +m_cubeRadius), // 0
 		color }, // Color

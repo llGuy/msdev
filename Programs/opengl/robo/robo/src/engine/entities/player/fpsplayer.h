@@ -35,6 +35,18 @@ public:
 		bool flourishing;
 		float yInclination;
 		float angle;
+		unsigned int colorIndex;
+
+		glm::vec3 rainbowColors[7] = 
+		{
+			glm::vec3(148.0f / 255.0f, 0.0f, 211.0f / 255.0f) * 0.6f,
+			glm::vec3(75.0f / 255.0f, 0.0f, 130 / 255.0f) * 0.6f,
+			glm::vec3(0.0f, 0.0f, 1.0f) * 0.6f,
+			glm::vec3(0.0f, 1.0f, 0.0f) * 0.6f,
+			glm::vec3(1.0f, 1.0f, 0.0f) * 0.6f,
+			glm::vec3(1.0f, 0.5f, 0.0f) * 0.6f,
+			glm::vec3(1.0f, 0.0f, 0.0f) * 0.6f
+		};
 	};
 	enum move_t
 	{
@@ -145,8 +157,9 @@ public:
 		{
 			m_fd.flourishing = true;
 			m_fd.gravity = glm::vec3(0.0f, -9.8f, 0.0f);
-			m_fd.velocity = glm::vec3(0.0f, 3.5f * 10.0f, 0.0f);
+			m_fd.velocity = glm::vec3(0.0f, 3.5f * 15.0f, 0.0f);
 			m_fd.angle = 0.0f;
+			m_fd.colorIndex = 0;
 		}
 	}
 	void Jump(float deltaT)
@@ -161,11 +174,13 @@ public:
 
 		m_fd.yInclination = -(rand() % 9);
 		glm::vec3 directionOfBullet = glm::vec3(sin(glm::radians(m_fd.angle)), m_fd.yInclination, cos(glm::radians(m_fd.angle)));
-		m_gun.Shoot(directionOfBullet, m_pData.position + glm::vec3(0.0f, 1.0f, 0.0f));
+		m_gun.Shoot(directionOfBullet, m_pData.position + glm::vec3(0.0f, 1.0f, 0.0f), m_fd.rainbowColors[m_fd.colorIndex % 7]);
+		++m_fd.colorIndex;
 
 		m_fd.yInclination = -(rand() % 9);
 		directionOfBullet = glm::vec3(sin(glm::radians(180 + m_fd.angle)), m_fd.yInclination, cos(glm::radians(180 + m_fd.angle)));
-		m_gun.Shoot(directionOfBullet, m_pData.position + glm::vec3(0.0f, 1.0f, 0.0f));
+		m_gun.Shoot(directionOfBullet, m_pData.position + glm::vec3(0.0f, 1.0f, 0.0f), m_fd.rainbowColors[m_fd.colorIndex % 7]);
+		++m_fd.colorIndex;
 
 		m_fd.angle += 1.0f;
 	}

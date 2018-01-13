@@ -40,8 +40,10 @@ void RoboEngine::Draw(void)
 	MoveRobots();
 	m_shaders->UseProgram();
 	if (m_fps->BulletAiring())
+	{
 		m_fps->DrawBullets(m_transformMatrices.projection, m_transformMatrices.view,
 			m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData, m_terrain, m_robots);
+	}
 	DrawRobots(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
 	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
 }

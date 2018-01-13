@@ -153,11 +153,10 @@ const bool Robot::Alive(void)
 void Robot::RemoveLife(void)
 {
 	--m_lives;
-	std::cout << m_lives << std::endl;
 }
 const bool Robot::WantsToShoot(void)
 {
-	return rand() % 137 == 41;
+	return rand() % 511 == 3;
 }
 void Robot::Shoot(glm::vec3 playerPosition)
 {

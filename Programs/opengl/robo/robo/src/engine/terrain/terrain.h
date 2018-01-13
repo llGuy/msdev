@@ -73,7 +73,7 @@ private:
 		return glm::vec2(tileWidth, tileHeight);
 	}
 private:
-	const char const* HM = "C:\\Users\\lucro\\Development\\msdev\\Programs\\opengl\\robo\\robo\\res\\terrain1.png";
+	const char const* HM = "res\\terrain1.png";
 	//Terrain::UniformLocations m_uniformLocations;
 	Terrain::TerrainDimensions m_dimensions;
 	Terrain::MeshData m_meshData;

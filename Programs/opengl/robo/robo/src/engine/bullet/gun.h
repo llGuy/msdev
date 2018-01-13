@@ -15,9 +15,9 @@ public:
 	{
 	}
 
-	void Shoot(glm::vec3 playerViewDirection, glm::vec3 playerEyePos)
+	void Shoot(glm::vec3 playerViewDirection, glm::vec3 playerEyePos, glm::vec3 color = glm::vec3(0.7f))
 	{ 
-		m_bullets.push_back(Bullet(playerViewDirection, playerEyePos, m_bulletSpeed));
+		m_bullets.push_back(Bullet(playerViewDirection, playerEyePos, m_bulletSpeed, color));
 	}
 	void Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
 		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Robot>& vec)
