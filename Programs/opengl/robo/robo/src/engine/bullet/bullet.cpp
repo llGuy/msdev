@@ -42,8 +42,14 @@ void Bullet::UpdateTranslateMatrix(void)
 	//m_translateMatrix = glm::translate(glm::vec3(0.0f, 30.0f, 0.0f));
 	m_translateVectorPlainPosition = glm::vec2(m_worldCoordinates.x, m_worldCoordinates.z);
 }
-const bool Bullet::CollisionCheck(float heightOfTerrain)
+const bool Bullet::CollisionCheck(float heightOfTerrain, std::vector<Robot>& vec)
 {
+	for (unsigned short i = 0; i < vec.size(); ++i)
+		if (vec[i].DetectCollision(m_worldCoordinates, m_circleRadius))
+		{
+			vec.erase(vec.begin() + i);
+			return true;
+		}
 	if (fabs(heightOfTerrain - m_worldCoordinates.y) < 0.7f)
 		return true;
 	return false;
@@ -117,6 +123,7 @@ void Bullet::CreateVertices(void)
 	m_vertexData.numVertices = sizeof(stackVerts) / sizeof(Vertex);
 	m_vertexData.vData = new Vertex[m_vertexData.numVertices];
 	memcpy(m_vertexData.vData, stackVerts, sizeof(Vertex) * m_vertexData.numVertices);
+	m_circleRadius = glm::distance(glm::vec3(0.0f), glm::vec3(+m_cubeRadius, +m_cubeRadius, +m_cubeRadius));
 }
 void Bullet::CreateIndices(void)
 {
@@ -151,4 +158,12 @@ void Bullet::SendUnifromData(glm::mat4 proj, glm::mat4 view, glm::mat4 model,
 	glUniform3fv(locations->m_uniLocLightPosition, 1, &lightPos[0]);
 	glUniform3fv(locations->m_uniLocEyePosition, 1, &eyePos[0]);
 	glUniform1f(locations->m_uniLocTime, (float)(time->currentTime - time->beginning).count() / 1000000000);
+}
+const float& Bullet::CircleRadius(void)
+{
+	return m_circleRadius;
+}
+glm::vec3 Bullet::WorldCoords(void)
+{
+	return m_worldCoordinates;
 }

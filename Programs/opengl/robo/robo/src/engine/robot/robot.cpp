@@ -33,7 +33,7 @@ void Robot::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model,
 }
 void Robot::CreateVertices(void)
 {
-	glm::vec3 color = glm::vec3(0.2f, 0.2f, 0.2f);
+	glm::vec3 color = glm::vec3(0.1f, 0.1f, 0.1f);
 	Vertex stackVerts[] = {
 		{glm::vec3(-m_cubeRadius, +m_cubeRadius, +m_cubeRadius), // 0
 		color}, // Color
@@ -96,6 +96,8 @@ void Robot::CreateVertices(void)
 	memcpy(m_vertexData.vData, stackVerts, sizeof(Vertex) * m_vertexData.numVertices);
 	for (unsigned short i = 0; i < m_vertexData.numVertices; ++i)
 		m_vertexData.vData[i].pos.y += m_cubeRadius;
+	m_circleRadius = glm::distance(glm::vec3(0.0f), glm::vec3(+m_cubeRadius, +m_cubeRadius, +m_cubeRadius));
+	//std::cout << m_circleRadius << std::endl;
 }
 void Robot::CreateIndices(void)
 {
@@ -131,4 +133,8 @@ void Robot::MoveTowardsPlayer(glm::vec2 playerPosition)
 {
 	m_viewDirection = playerPosition - m_translateVectorPlainPosition;
 	m_translateVectorPlainPosition += m_viewDirection * m_robotSpeed;
+}
+const bool Robot::DetectCollision(glm::vec3 bullet, float bulletRadius)
+{
+	return glm::distance(m_worldCoordinates, bullet) < bulletRadius + m_circleRadius;
 }

@@ -7,6 +7,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include "../../bullet/gun.h"
+#include "../../robot/robot.h"
 
 class FPSPlayer
 {
@@ -137,9 +138,9 @@ public:
 		}
 	}
 	void DrawBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain)
+		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Robot>& vec)
 	{
-		m_gun.Draw(proj, view, eyePos, lightPos, locations, time, terrain);
+		m_gun.Draw(proj, view, eyePos, lightPos, locations, time, terrain, vec);
 	}
 	const bool BulletAiring(void)
 	{

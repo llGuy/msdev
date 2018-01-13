@@ -21,9 +21,9 @@ public:
 		m_tests.push_back(Robot(3.0f));
 	}
 	void Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain)
+		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Robot>& vec)
 	{
-		MoveBullets(proj, view, eyePos, lightPos, locations, time, terrain);
+		MoveBullets(proj, view, eyePos, lightPos, locations, time, terrain, vec);
 	}
 	const bool BulletAiring(void)
 	{
@@ -31,11 +31,11 @@ public:
 	}
 private:
 	void MoveBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain)
+		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Robot>& vec)
 	{
 		for (unsigned short i = 0; i < m_bullets.size(); ++i)
 		{
-			if (m_bullets[i].CollisionCheck(terrain->GetYPosOfPlayer(m_bullets[i].PlainPosition().x, m_bullets[i].PlainPosition().x)) ||
+			if (m_bullets[i].CollisionCheck(terrain->GetYPosOfPlayer(m_bullets[i].PlainPosition().x, m_bullets[i].PlainPosition().x), vec) ||
 				m_bullets[i].EscapedTerrainLimits(terrain->Dimensions().x, terrain->Dimensions().y))
 			{
 				m_bullets[i].DeleteBuffer();

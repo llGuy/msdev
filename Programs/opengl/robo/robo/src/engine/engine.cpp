@@ -37,7 +37,7 @@ void RoboEngine::Draw(void)
 	m_shaders->UseProgram();
 	if (m_fps->BulletAiring())
 		m_fps->DrawBullets(m_transformMatrices.projection, m_transformMatrices.view, 
-			m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData, m_terrain);
+			m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData, m_terrain, m_robots);
 	DrawRobots(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
 	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
 }
@@ -154,5 +154,5 @@ void RoboEngine::DrawRobots(glm::mat4& proj, glm::mat4& view,
 }
 void RoboEngine::InitRobots(void)
 {
-	m_robots.push_back(Robot(1.0f));
+	m_robots.push_back(Robot(0.5f));
 }

@@ -20,6 +20,7 @@ public:
 	glm::vec2 PlainPosition(void);
 	void MoveTowardsPlayer(glm::vec2 playerPosition);
 	void UpdateTranslateMatrix(float height);
+	const bool DetectCollision(glm::vec3 bullet, float bulletRadius);
 private:
 	void SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, 
 		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time);
@@ -34,6 +35,7 @@ private:
 	glm::vec3 m_worldCoordinates;
 	glm::mat4 m_translateMatrix;
 	float m_cubeRadius;
+	float m_circleRadius;
 	float m_robotSpeed;
 	glm::vec2 m_viewDirection;
 };
