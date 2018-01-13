@@ -3,6 +3,8 @@
 
 struct Configs
 {
+	unsigned int numberOfRobots = 2;
+
 	float playerSpeed = 0.02f;
 	float playerRunningSpeedDelta = 1.4f;
 	float playerViewBobbing = 0.002f;

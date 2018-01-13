@@ -1,11 +1,14 @@
 #include "engine.h"
 
 #include <GL/glew.h>
+#include <ctime>
+#include <cmath>
 
 RoboEngine::RoboEngine(float windowWidth, float windowHeight)
 	: m_lighting({ glm::vec3(0.0f, 100.0f, 0.0f) })
 { 
-	
+	srand(time(NULL));
+
 	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, m_configurations.terrainMaxHeight }, Biome::VOLCANO);
 	m_fps = new FPSPlayer({ glm::vec3(m_configurations.originalPlayerPosition.x,
 		m_terrain->GetYPosOfPlayer(m_configurations.originalPlayerPosition.x, m_configurations.originalPlayerPosition.z), m_configurations.originalPlayerPosition.z),
@@ -30,13 +33,14 @@ void RoboEngine::Draw(void)
 	glm::vec3 m_skyColor = m_terrain->Sky();
 	glClearColor(m_skyColor.r, m_skyColor.g, m_skyColor.b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
+	if (AllRobotsDied()) ResurectRobots();
 	UpdateMatrices();
 	UpdateTimeData();
 	MoveRobots();
 	m_shaders->UseProgram();
 	if (m_fps->BulletAiring())
-		m_fps->DrawBullets(m_transformMatrices.projection, m_transformMatrices.view, 
+		m_fps->DrawBullets(m_transformMatrices.projection, m_transformMatrices.view,
 			m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData, m_terrain, m_robots);
 	DrawRobots(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
 	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
@@ -154,5 +158,29 @@ void RoboEngine::DrawRobots(glm::mat4& proj, glm::mat4& view,
 }
 void RoboEngine::InitRobots(void)
 {
-	m_robots.push_back(Robot(0.5f));
+	for(unsigned int i = 0; i < m_configurations.numberOfRobots; ++i)
+		SpawnRobot();
+}
+void RoboEngine::SpawnRobot(void)
+{
+	float x = rand() % (signed int)m_configurations.terrainWidth / 2 - m_configurations.terrainWidth / 4;
+	float z = rand() % (signed int)m_configurations.terrainDepth / 2 - m_configurations.terrainDepth / 4;
+
+	//size of robot
+	float radius = rand() % 20 / 4;
+	radius /= 2;
+	if (radius < 0.25f) radius = 0.25f;
+
+	m_robots.push_back(Robot(radius, glm::vec2(x, z)));
+}
+const bool RoboEngine::AllRobotsDied(void)
+{
+	return m_robots.size() == 0;
+}
+void RoboEngine::ResurectRobots(void)
+{
+	m_configurations.numberOfRobots += 2;
+	std::cout << "RESURRECTED THE ROBOTS!!!" << std::endl;
+	for (unsigned int i = 0; i < m_configurations.numberOfRobots; ++i)
+		SpawnRobot();
 }

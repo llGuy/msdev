@@ -7,9 +7,12 @@
 
 #include "../data/time.h"
 
-Robot::Robot(float radius)
-	: m_cubeRadius(radius), m_robotSpeed(0.001f), m_buffer()
+Robot::Robot(float radius, glm::vec2 plainPosition)
+	: m_cubeRadius(radius), m_buffer()
 {
+	m_translateVectorPlainPosition = plainPosition;
+	if (isnan(m_translateVectorPlainPosition.x))
+		std::cout << "error" << std::endl;
 	CreateVertices();
 	CreateIndices();
 	InitBuffer();
@@ -33,6 +36,9 @@ void Robot::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model,
 }
 void Robot::CreateVertices(void)
 {
+	m_lives = m_cubeRadius * 3;
+	std::cout << m_lives << std::endl;
+	m_robotSpeed = 0.007f / m_cubeRadius;
 	glm::vec3 color = glm::vec3(0.1f, 0.1f, 0.1f);
 	Vertex stackVerts[] = {
 		{glm::vec3(-m_cubeRadius, +m_cubeRadius, +m_cubeRadius), // 0
@@ -89,7 +95,7 @@ void Robot::CreateVertices(void)
 		{glm::vec3(+m_cubeRadius, -m_cubeRadius, +m_cubeRadius), // 23
 		color}, // Color
 	};
-	m_translateVectorPlainPosition = glm::vec2(0.0f, 0.0f);
+	//m_translateVectorPlainPosition = glm::vec2(0.0f, 0.0f);
 	m_viewDirection = glm::vec2(1.0f, 0.0f);
 	m_vertexData.numVertices = sizeof(stackVerts) / sizeof(Vertex);
 	m_vertexData.vData = new Vertex[m_vertexData.numVertices];
@@ -131,10 +137,19 @@ glm::vec2 Robot::PlainPosition(void)
 }
 void Robot::MoveTowardsPlayer(glm::vec2 playerPosition)
 {
-	m_viewDirection = playerPosition - m_translateVectorPlainPosition;
+	m_viewDirection = glm::normalize(playerPosition - m_translateVectorPlainPosition);
 	m_translateVectorPlainPosition += m_viewDirection * m_robotSpeed;
 }
 const bool Robot::DetectCollision(glm::vec3 bullet, float bulletRadius)
 {
 	return glm::distance(m_worldCoordinates, bullet) < bulletRadius + m_circleRadius;
+}
+const bool Robot::Alive(void)
+{
+	return m_lives > 0;
+}
+void Robot::RemoveLife(void)
+{
+	--m_lives;
+	std::cout << m_lives << std::endl;
 }

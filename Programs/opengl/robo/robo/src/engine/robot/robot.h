@@ -13,7 +13,7 @@ struct UniformLocations;
 class Robot
 {
 public:
-	explicit Robot(float radius);		//the robot is a cube
+	explicit Robot(float radius, glm::vec2 plainPosition);		//the robot is a cube
 public:
 	void Draw(glm::mat4& proj, glm::mat4& view, 
 		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* timeData);
@@ -21,6 +21,8 @@ public:
 	void MoveTowardsPlayer(glm::vec2 playerPosition);
 	void UpdateTranslateMatrix(float height);
 	const bool DetectCollision(glm::vec3 bullet, float bulletRadius);
+	const bool Alive(void);
+	void RemoveLife(void);
 private:
 	void SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, 
 		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time);
@@ -38,6 +40,7 @@ private:
 	float m_circleRadius;
 	float m_robotSpeed;
 	glm::vec2 m_viewDirection;
+	unsigned int m_lives;
 };
 
 #endif

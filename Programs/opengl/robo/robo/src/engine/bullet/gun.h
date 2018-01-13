@@ -18,7 +18,6 @@ public:
 	void Shoot(glm::vec3 playerViewDirection, glm::vec3 playerEyePos)
 	{ 
 		m_bullets.push_back(Bullet(playerViewDirection, playerEyePos));
-		m_tests.push_back(Robot(3.0f));
 	}
 	void Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
 		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Robot>& vec)
@@ -40,7 +39,6 @@ private:
 			{
 				m_bullets[i].DeleteBuffer();
 				m_bullets.erase(m_bullets.begin() + i);
-				std::cout << "collision with terrain" << std::endl;
 			}
 			else
 			{
@@ -52,7 +50,6 @@ private:
 	}
 private:
 	std::vector<Bullet> m_bullets;
-	std::vector<Robot> m_tests;
 };
 
 #endif

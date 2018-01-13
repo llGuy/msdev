@@ -51,6 +51,9 @@ private:
 	void DrawRobots(glm::mat4& proj, glm::mat4& view,
 		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time);
 	void InitRobots(void);
+	void SpawnRobot(void);
+	const bool AllRobotsDied(void);
+	void ResurectRobots(void);
 private:
 	Configs m_configurations;
 	Time m_timeData;

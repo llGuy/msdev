@@ -34,12 +34,10 @@ glm::vec2 Bullet::PlainPosition(void)
 void Bullet::Move(void)
 {
 	m_worldCoordinates += m_direction * m_bulletSpeed;
-	//std::cout << m_worldCoordinates.x << " " << m_worldCoordinates.y << " " << m_worldCoordinates.z << std::endl;
 }
 void Bullet::UpdateTranslateMatrix(void)
 {
 	m_translateMatrix = glm::translate(m_worldCoordinates);
-	//m_translateMatrix = glm::translate(glm::vec3(0.0f, 30.0f, 0.0f));
 	m_translateVectorPlainPosition = glm::vec2(m_worldCoordinates.x, m_worldCoordinates.z);
 }
 const bool Bullet::CollisionCheck(float heightOfTerrain, std::vector<Robot>& vec)
@@ -47,7 +45,9 @@ const bool Bullet::CollisionCheck(float heightOfTerrain, std::vector<Robot>& vec
 	for (unsigned short i = 0; i < vec.size(); ++i)
 		if (vec[i].DetectCollision(m_worldCoordinates, m_circleRadius))
 		{
-			vec.erase(vec.begin() + i);
+			vec[i].RemoveLife();
+			if (!vec[i].Alive()) vec.erase(vec.begin() + i);
+			std::cout << vec.size() << " robots remain!" << std::endl;
 			return true;
 		}
 	if (fabs(heightOfTerrain - m_worldCoordinates.y) < 0.7f)
