@@ -162,6 +162,10 @@ public:
 	{
 		m_pData.speed = speed;
 	}
+	void Die(void)
+	{
+		std::cout << "dead" << std::endl;
+	}
 private:
 	FPSPlayerData m_pData;
 	glm::vec3 m_up;

@@ -13,12 +13,13 @@
 
 struct Time;
 struct UniformLocations;
+class FPSPlayer;
 
 class Bullet
 {
 public:
 	explicit Bullet(glm::vec3 playerViewDirection,
-		glm::vec3 playerEyePos);
+		glm::vec3 playerEyePos, float bulletSpeed = 0.3f);
 	~Bullet(void);
 
 	void Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
@@ -26,6 +27,7 @@ public:
 	void Move(void);
 	void UpdateTranslateMatrix(void);
 	const bool CollisionCheck(float heightOfTerrain, std::vector<Robot>& vec);
+	const bool CollisionCheck(float heightOfTerrain, FPSPlayer* player);
 	const bool EscapedTerrainLimits(float x, float y);
 	void DeleteBuffer(void);
 

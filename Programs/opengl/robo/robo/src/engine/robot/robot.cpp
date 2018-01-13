@@ -6,23 +6,25 @@
 #include "../engine.h"
 
 #include "../data/time.h"
+#include "../bullet/gun.h"
 
 Robot::Robot(float radius, glm::vec2 plainPosition)
 	: m_cubeRadius(radius), m_buffer()
 {
 	m_translateVectorPlainPosition = plainPosition;
-	if (isnan(m_translateVectorPlainPosition.x))
-		std::cout << "error" << std::endl;
+	m_gun = new Gun(0.1f);
 	CreateVertices();
 	CreateIndices();
 	InitBuffer();
 }
 void Robot::Draw(glm::mat4& proj, glm::mat4& view, 
-	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* timeData)
+	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* timeData, Terrain* terrain, FPSPlayer* player)
 {
 	m_buffer.BindAll();
 	SendUniformData(proj, view, m_translateMatrix, eyePos, lightPos, locations, timeData);
 	glDrawElements(GL_TRIANGLES, m_indexData.numIndices, GL_UNSIGNED_SHORT, 0);
+	if (WantsToShoot()) Shoot(eyePos);
+	if (m_gun->BulletAiring()) m_gun->Draw(proj, view, eyePos, lightPos, locations, timeData, terrain, player);
 }
 void Robot::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, 
 	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time)
@@ -36,7 +38,7 @@ void Robot::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model,
 }
 void Robot::CreateVertices(void)
 {
-	m_lives = m_cubeRadius * 3;
+	m_lives = m_cubeRadius * 4;
 	std::cout << m_lives << std::endl;
 	m_robotSpeed = 0.007f / m_cubeRadius;
 	glm::vec3 color = glm::vec3(0.1f, 0.1f, 0.1f);
@@ -152,4 +154,12 @@ void Robot::RemoveLife(void)
 {
 	--m_lives;
 	std::cout << m_lives << std::endl;
+}
+const bool Robot::WantsToShoot(void)
+{
+	return rand() % 137 == 41;
+}
+void Robot::Shoot(glm::vec3 playerPosition)
+{
+	m_gun->Shoot(glm::normalize(playerPosition - m_worldCoordinates), m_worldCoordinates + glm::vec3(0.0f, 0.5f, 0.0f));
 }

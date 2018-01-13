@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <math.h>
+#include <iostream>
 
 #include "..\shape\cube.h"
 #include "apple.h"

@@ -2,6 +2,7 @@
 #define APPLE_HEADER
 
 #include "..\shape\cube.h"
+#include <ctime>
 
 class Apple
 {

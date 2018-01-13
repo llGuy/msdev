@@ -9,7 +9,7 @@ RoboEngine::RoboEngine(float windowWidth, float windowHeight)
 { 
 	srand(time(NULL));
 
-	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, m_configurations.terrainMaxHeight }, Biome::VOLCANO);
+	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, m_configurations.terrainMaxHeight }, Biome::PLANES);
 	m_fps = new FPSPlayer({ glm::vec3(m_configurations.originalPlayerPosition.x,
 		m_terrain->GetYPosOfPlayer(m_configurations.originalPlayerPosition.x, m_configurations.originalPlayerPosition.z), m_configurations.originalPlayerPosition.z),
 		m_configurations.originalPlayerViewDirection, m_configurations.playerSpeed, m_configurations.playerHeight, m_configurations.playerViewBobbing,
@@ -153,7 +153,7 @@ void RoboEngine::DrawRobots(glm::mat4& proj, glm::mat4& view,
 {
 	for (auto& iter : m_robots)
 	{
-		iter.Draw(proj, view, eyePos, lightPos, locations, time);
+		iter.Draw(proj, view, eyePos, lightPos, locations, time, m_terrain, m_fps);
 	}
 }
 void RoboEngine::InitRobots(void)

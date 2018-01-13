@@ -5,8 +5,8 @@
 #include "../engine.h"
 
 Bullet::Bullet(glm::vec3 playerViewDirection,
-	glm::vec3 playerEyePos)
-	: m_cubeRadius(0.1f), m_buffer(), m_bulletSpeed(0.3f)
+	glm::vec3 playerEyePos, float bulletSpeed)
+	: m_cubeRadius(0.1f), m_buffer(), m_bulletSpeed(bulletSpeed)
 {
 	Init(playerViewDirection, playerEyePos);
 	CreateVertices();
@@ -47,10 +47,22 @@ const bool Bullet::CollisionCheck(float heightOfTerrain, std::vector<Robot>& vec
 		{
 			vec[i].RemoveLife();
 			if (!vec[i].Alive()) vec.erase(vec.begin() + i);
-			std::cout << vec.size() << " robots remain!" << std::endl;
+			//std::cout << vec.size() << " robots remain!" << std::endl;
 			return true;
 		}
-	if (fabs(heightOfTerrain - m_worldCoordinates.y) < 0.7f)
+	if (fabs(heightOfTerrain - m_worldCoordinates.y) < 0.01f || heightOfTerrain > m_worldCoordinates.y)
+		return true;
+	return false;
+}
+const bool Bullet::CollisionCheck(float heightOfTerrain, FPSPlayer* player)
+{
+	if (glm::all(glm::lessThan(glm::abs(player->Position() - m_worldCoordinates), glm::vec3(0.5f))))
+	{
+		player->Die();
+		exit(1);
+		return true;
+	}
+	if (fabs(heightOfTerrain - m_worldCoordinates.y) < 0.01f || heightOfTerrain > m_worldCoordinates.y)
 		return true;
 	return false;
 }
@@ -143,6 +155,8 @@ void Bullet::CreateIndices(void)
 }
 const bool Bullet::EscapedTerrainLimits(float x, float z)
 {
+	if ((fabs(m_worldCoordinates.x) > x / 2) || (fabs(m_worldCoordinates.z) > z / 2))
+		std::cout << "woops " << std::endl;
 	return (fabs(m_worldCoordinates.x) > x / 2) || (fabs(m_worldCoordinates.z) > z / 2);
 }
 void Bullet::CreateBuffer(void)
