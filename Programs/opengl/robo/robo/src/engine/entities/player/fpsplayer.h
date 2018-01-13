@@ -1,6 +1,7 @@
 #ifndef PLAYER_HEADER
 #define PLAYER_HEADER
 
+#include <math.h>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
@@ -27,6 +28,14 @@ public:
 		glm::vec3 gravity;
 		bool jumping;
 	};
+	struct FlourishData
+	{
+		glm::vec3 velocity;
+		glm::vec3 gravity;
+		bool flourishing;
+		float yInclination;
+		float angle;
+	};
 	enum move_t
 	{
 		FORWARD,
@@ -50,6 +59,7 @@ public:
 		m_viewBobbingDelta = m_viewBobbing;
 		m_runningDelta = pData.runningDelta;
 		m_jd.jumping = false;
+		m_fd.flourishing = false;
 	}
 	glm::vec3& Position(void)
 	{
@@ -57,16 +67,21 @@ public:
 	}
 	glm::mat4 ViewMatrix(float terrainHeight, Time* time)
 	{
+		if (m_fd.flourishing)
+		{
+			Flourish(time->deltaT);
+			CheckFlourishLanding(terrainHeight);
+		}
 		if (m_jd.jumping)
 		{
 			Jump(time->deltaT);
-			CheckLanding(terrainHeight);
+			CheckJumpLanding(terrainHeight);
 		}
 		return glm::lookAt(m_pData.position, m_pData.position + m_pData.viewDirection, m_up);
 	}
 	void ViewBobbing(void)
 	{
-		if (!m_jd.jumping)
+		if (!m_jd.jumping && !m_fd.flourishing)
 		{
 			if (m_running) m_viewBobbing += m_viewBobbingDelta * 1.5f;
 			else m_viewBobbing += m_viewBobbingDelta;
@@ -89,7 +104,7 @@ public:
 			glm::vec3 toMoveVector = glm::vec3(m_pData.viewDirection.x, 0.0f, m_pData.viewDirection.z);
 			m_pData.position -= toMoveVector * m_pData.speed;
 		}
-		if(!m_jd.jumping)
+		if(!m_jd.jumping && !m_fd.flourishing)
 			m_pData.position.y = y + m_pData.height;
 	}
 	void Strafe(strafe_t strafe, float y)
@@ -104,7 +119,7 @@ public:
 			glm::vec3 strafeDirection = glm::cross(m_pData.viewDirection, m_up);
 			m_pData.position -= strafeDirection * m_pData.speed;
 		}
-		if(!m_jd.jumping)
+		if(!m_jd.jumping && !m_fd.flourishing)
 			m_pData.position.y = y + m_pData.height;
 	}
 	void Look(glm::vec2 newMousePosition)
@@ -124,16 +139,49 @@ public:
 			m_jd.velocity = glm::vec3(0.0f, 3.5f, 0.0f);
 		}
 	}
+	void InitializeFlourish(double deltaT)
+	{
+		if (!m_fd.flourishing)
+		{
+			m_fd.flourishing = true;
+			m_fd.gravity = glm::vec3(0.0f, -9.8f, 0.0f);
+			m_fd.velocity = glm::vec3(0.0f, 3.5f * 10.0f, 0.0f);
+			m_fd.angle = 0.0f;
+		}
+	}
 	void Jump(float deltaT)
 	{
 		m_pData.position = m_pData.position + m_jd.velocity * deltaT;
 		m_jd.velocity = m_jd.velocity + m_jd.gravity * deltaT;
 	}
-	void CheckLanding(float terrainHeight)
+	void Flourish(float deltaT)
+	{
+		m_pData.position = m_pData.position + m_fd.velocity * deltaT;
+		m_fd.velocity = m_fd.velocity + m_fd.gravity * deltaT;
+
+		m_fd.yInclination = -(rand() % 9);
+		glm::vec3 directionOfBullet = glm::vec3(sin(glm::radians(m_fd.angle)), m_fd.yInclination, cos(glm::radians(m_fd.angle)));
+		m_gun.Shoot(directionOfBullet, m_pData.position + glm::vec3(0.0f, 1.0f, 0.0f));
+
+		m_fd.yInclination = -(rand() % 9);
+		directionOfBullet = glm::vec3(sin(glm::radians(180 + m_fd.angle)), m_fd.yInclination, cos(glm::radians(180 + m_fd.angle)));
+		m_gun.Shoot(directionOfBullet, m_pData.position + glm::vec3(0.0f, 1.0f, 0.0f));
+
+		m_fd.angle += 1.0f;
+	}
+	void CheckJumpLanding(float terrainHeight)
 	{
 		if (m_pData.position.y - m_pData.height < terrainHeight)
 		{
 			m_jd.jumping = false;
+			m_pData.position.y = terrainHeight + m_pData.height;
+		}
+	}
+	void CheckFlourishLanding(float terrainHeight)
+	{
+		if (m_pData.position.y - m_pData.height < terrainHeight)
+		{
+			m_fd.flourishing = false;
 			m_pData.position.y = terrainHeight + m_pData.height;
 		}
 	}
@@ -176,6 +224,7 @@ private:
 	bool m_running;
 
 	JumpData m_jd;
+	FlourishData m_fd;
 	Gun m_gun;
 };
 

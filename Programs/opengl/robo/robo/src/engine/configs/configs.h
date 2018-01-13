@@ -3,7 +3,7 @@
 
 struct Configs
 {
-	unsigned int numberOfRobots = 2;
+	unsigned int numberOfRobots = 10;
 
 	float playerSpeed = 0.02f;
 	float playerRunningSpeedDelta = 1.4f;

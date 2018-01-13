@@ -9,7 +9,7 @@ RoboEngine::RoboEngine(float windowWidth, float windowHeight)
 { 
 	srand(time(NULL));
 
-	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, m_configurations.terrainMaxHeight }, Biome::PLANES);
+	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, m_configurations.terrainMaxHeight }, Biome::VOLCANO);
 	m_fps = new FPSPlayer({ glm::vec3(m_configurations.originalPlayerPosition.x,
 		m_terrain->GetYPosOfPlayer(m_configurations.originalPlayerPosition.x, m_configurations.originalPlayerPosition.z), m_configurations.originalPlayerPosition.z),
 		m_configurations.originalPlayerViewDirection, m_configurations.playerSpeed, m_configurations.playerHeight, m_configurations.playerViewBobbing,
@@ -81,6 +81,10 @@ void RoboEngine::KeyInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_SPACE))
 	{
 		m_fps->InitializeJump(m_timeData.deltaT);
+	}
+	if (glfwGetKey(window, GLFW_KEY_T))
+	{
+		m_fps->InitializeFlourish(m_timeData.deltaT);
 	}
 	if (movement)
 	{

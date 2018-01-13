@@ -155,8 +155,6 @@ void Bullet::CreateIndices(void)
 }
 const bool Bullet::EscapedTerrainLimits(float x, float z)
 {
-	if ((fabs(m_worldCoordinates.x) > x / 2) || (fabs(m_worldCoordinates.z) > z / 2))
-		std::cout << "woops " << std::endl;
 	return (fabs(m_worldCoordinates.x) > x / 2) || (fabs(m_worldCoordinates.z) > z / 2);
 }
 void Bullet::CreateBuffer(void)

@@ -41,7 +41,7 @@ void Robot::CreateVertices(void)
 	m_lives = m_cubeRadius * 4;
 	std::cout << m_lives << std::endl;
 	m_robotSpeed = 0.007f / m_cubeRadius;
-	glm::vec3 color = glm::vec3(0.1f, 0.1f, 0.1f);
+	glm::vec3 color = glm::vec3(0.0f / 255.0f, 191.0f / 255.0f, 255.0f / 255.0f);
 	Vertex stackVerts[] = {
 		{glm::vec3(-m_cubeRadius, +m_cubeRadius, +m_cubeRadius), // 0
 		color}, // Color
