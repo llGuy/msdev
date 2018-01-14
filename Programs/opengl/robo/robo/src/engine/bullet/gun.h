@@ -69,8 +69,8 @@ private:
 				m_bullets[i].Move();
 				m_bullets[i].UpdateTranslateMatrix();
 			}
-			return false;
 		}
+		return false;
 	}
 	void MoveBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
 		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Robot>& vec)

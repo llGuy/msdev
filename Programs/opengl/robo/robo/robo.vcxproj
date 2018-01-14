@@ -126,6 +126,7 @@
     <ClCompile Include="src\engine\engine.cpp" />
     <ClCompile Include="src\engine\heightmap\heightmap.cpp" />
     <ClCompile Include="src\engine\robot\robot.cpp" />
+    <ClCompile Include="src\engine\shape\cube.cpp" />
     <ClCompile Include="src\engine\terrain\terrain.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\window\window.cpp" />
@@ -149,6 +150,8 @@
     <ClInclude Include="src\engine\engine_comon.h" />
     <ClInclude Include="src\engine\entities\player\fpsplayer.h" />
     <ClInclude Include="src\engine\entities\troop\troop.h" />
+    <ClInclude Include="src\engine\events\keyboard.h" />
+    <ClInclude Include="src\engine\events\mouse.h" />
     <ClInclude Include="src\engine\heightmap\heightmap.h" />
     <ClInclude Include="src\engine\mesh\mesh.h" />
     <ClInclude Include="src\engine\primitives\vertex.h" />

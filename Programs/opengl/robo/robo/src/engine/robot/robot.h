@@ -6,6 +6,7 @@
 #include "../../buffer/buffer.h"
 #include "../data/index_data.h"
 #include "../data/vertex_data.h"
+#include "../shape/cube.h"
 
 struct Time;
 struct UniformLocations;
@@ -16,7 +17,8 @@ class Gun;
 class Robot
 {
 public:
-	explicit Robot(float radius, glm::vec2 plainPosition);		//the robot is a cube
+	explicit Robot(float radius, glm::vec2 plainPosition,
+		glm::vec3 color = glm::vec3(0.0f / 255.0f, 191.0f / 255.0f, 255.0f / 255.0f));		//the robot is a cube
 public:
 	const bool Draw(glm::mat4& proj, glm::mat4& view, 
 		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* timeData, Terrain* terrain, FPSPlayer* player);
@@ -26,18 +28,15 @@ public:
 	const bool DetectCollision(glm::vec3 bullet, float bulletRadius);
 	const bool Alive(void);
 	void RemoveLife(void);
+	void DeleteBuffers(void);
 private:
 	void SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, 
 		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time);
-	void CreateVertices(void);
-	void CreateIndices(void);
-	void InitBuffer(void);
+	void RobotDataInit(void);
 	const bool WantsToShoot(void);
 	void Shoot(glm::vec3 playerPosition);
-private:
-	VertexData m_vertexData;
-	IndexData m_indexData;
-	Buffer m_buffer;
+private:	
+	Shape* m_cube;
 	Gun* m_gun;
 	glm::vec2 m_translateVectorPlainPosition;
 	glm::vec3 m_worldCoordinates;

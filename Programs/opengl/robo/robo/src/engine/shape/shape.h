@@ -17,6 +17,7 @@ public:
 		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations,
 		Time* timeData) = 0;
 	virtual void Init(void) = 0;
+	virtual void DeleteBuffers(void) = 0;
 protected:
 	virtual void VerticesInit(void) = 0;
 	virtual void IndicesInit(void) = 0;
