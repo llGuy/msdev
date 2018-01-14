@@ -17,14 +17,17 @@ Robot::Robot(float radius, glm::vec2 plainPosition)
 	CreateIndices();
 	InitBuffer();
 }
-void Robot::Draw(glm::mat4& proj, glm::mat4& view, 
-	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* timeData, Terrain* terrain, FPSPlayer* player)
+const bool Robot::Draw(glm::mat4& proj, glm::mat4& view, 
+	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, 
+	Time* timeData, Terrain* terrain, FPSPlayer* player)
 {
+	m_hitPlayer = false;
 	m_buffer.BindAll();
 	SendUniformData(proj, view, m_translateMatrix, eyePos, lightPos, locations, timeData);
 	glDrawElements(GL_TRIANGLES, m_indexData.numIndices, GL_UNSIGNED_SHORT, 0);
 	if (WantsToShoot()) Shoot(eyePos);
-	if (m_gun->BulletAiring()) m_gun->Draw(proj, view, eyePos, lightPos, locations, timeData, terrain, player);
+	if (m_gun->BulletAiring()) m_hitPlayer = m_gun->Draw(proj, view, eyePos, lightPos, locations, timeData, terrain, player);
+	return m_hitPlayer;
 }
 void Robot::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, 
 	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time)

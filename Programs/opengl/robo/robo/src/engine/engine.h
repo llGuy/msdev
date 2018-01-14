@@ -27,10 +27,18 @@ public:
 		glm::mat4 projection;
 		glm::mat4 view;
 	};
-	
 	struct Lighting
 	{
 		glm::vec3 lightPosition;
+	};
+	struct SkyColor
+	{
+		glm::vec3 resurrectColor;
+		glm::vec3 playerHitColor;
+		glm::vec3 defaultSkyColor;
+		glm::vec3 currentSkyColor;
+		std::chrono::high_resolution_clock::time_point startOfChange;
+		float timeBetweenChange;
 	};
 
 	explicit RoboEngine(float windowWidth, float windowHeight);
@@ -56,12 +64,14 @@ private:
 	void SpawnRobot(void);
 	const bool AllRobotsDied(void);
 	void ResurectRobots(void);
+	void ChangeSkyColorIfColorChangedForEnoughTime(void);
 private:
 	Configs m_configurations;
 	Time m_timeData;
 	FPSPlayer* m_fps;
 	Terrain* m_terrain;
 	SHProgram* m_shaders;
+	SkyColor m_skyColor;
 	Lighting m_lighting;
 	UniformLocations m_uniformLocations;
 	TransformMatrices m_transformMatrices;

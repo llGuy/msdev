@@ -28,25 +28,38 @@ public:
 			i.Draw(proj, view, eyePos, lightPos, locations, time);
 	}
 	// draw function for the robots
-	void Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
+	const bool Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
 		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, FPSPlayer* player)
 	{
-		MoveBullets(proj, view, eyePos, lightPos, locations, time, terrain, player);
+		bool hitPlayer = MoveBullets(proj, view, eyePos, lightPos, locations, time, terrain, player);
 		for (auto& i : m_bullets)
 			i.Draw(proj, view, eyePos, lightPos, locations, time);
+		return hitPlayer;
 	}
 	const bool BulletAiring(void)
 	{
 		return m_bullets.size() > 0;
 	}
 private:
-	void MoveBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
+	const bool MoveBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
 		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, FPSPlayer* player)
 	{
 		for (unsigned short i = 0; i < m_bullets.size(); ++i)
 		{
-			if (m_bullets[i].CollisionCheck(terrain->GetYPosOfPlayer(m_bullets[i].PlainPosition().x, m_bullets[i].PlainPosition().y), player) ||
-				m_bullets[i].EscapedTerrainLimits(terrain->Dimensions().x, terrain->Dimensions().y))
+			if (m_bullets[i].CollisionCheck(terrain->GetYPosOfPlayer(m_bullets[i].PlainPosition().x, 
+				m_bullets[i].PlainPosition().y), player))
+			{
+				m_bullets[i].DeleteBuffer();
+				m_bullets.erase(m_bullets.begin() + i);
+				return true;
+			}
+			else if (m_bullets[i].CheckTerrainCollision(terrain->GetYPosOfPlayer(m_bullets[i].PlainPosition().x, 
+				m_bullets[i].PlainPosition().y)))
+			{
+				m_bullets[i].DeleteBuffer();
+				m_bullets.erase(m_bullets.begin() + i);
+			}
+			else if (m_bullets[i].EscapedTerrainLimits(terrain->Dimensions().x, terrain->Dimensions().y))
 			{
 				m_bullets[i].DeleteBuffer();
 				m_bullets.erase(m_bullets.begin() + i);
@@ -56,6 +69,7 @@ private:
 				m_bullets[i].Move();
 				m_bullets[i].UpdateTranslateMatrix();
 			}
+			return false;
 		}
 	}
 	void MoveBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,

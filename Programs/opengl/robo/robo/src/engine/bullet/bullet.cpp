@@ -49,17 +49,19 @@ const bool Bullet::CollisionCheck(float heightOfTerrain, std::vector<Robot>& vec
 			if (!vec[i].Alive()) vec.erase(vec.begin() + i);
 			return true;
 		}
-	if (fabs(heightOfTerrain - m_worldCoordinates.y) < 0.01f || heightOfTerrain > m_worldCoordinates.y)
-		return true;
 	return false;
 }
 const bool Bullet::CollisionCheck(float heightOfTerrain, FPSPlayer* player)
 {
 	if (glm::all(glm::lessThan(glm::abs(player->Position() - m_worldCoordinates), glm::vec3(0.5f))))
 	{
-		player->Die();
+		player->RemoveLife();
 		return true;
 	}
+	return false;
+}
+const bool Bullet::CheckTerrainCollision(float heightOfTerrain)
+{
 	if (fabs(heightOfTerrain - m_worldCoordinates.y) < 0.01f || heightOfTerrain > m_worldCoordinates.y)
 		return true;
 	return false;

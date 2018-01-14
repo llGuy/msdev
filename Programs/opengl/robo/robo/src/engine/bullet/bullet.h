@@ -28,6 +28,7 @@ public:
 	void UpdateTranslateMatrix(void);
 	const bool CollisionCheck(float heightOfTerrain, std::vector<Robot>& vec);
 	const bool CollisionCheck(float heightOfTerrain, FPSPlayer* player);
+	const bool CheckTerrainCollision(float heightOfTerrain);
 	const bool EscapedTerrainLimits(float x, float y);
 	void DeleteBuffer(void);
 

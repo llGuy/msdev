@@ -49,7 +49,8 @@ void Terrain::BufferInit(void)
 {
 	InitBuffer();
 }
-void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time)
+void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat, glm::vec3& eyePos, 
+	glm::vec3& lightPos, UniformLocations* locations, Time* time)
 {
 	m_buffer.BindAll();
 	glm::mat4 modelMat = glm::mat4(1.0f);
@@ -160,7 +161,8 @@ float Terrain::GetYPosOfPlayer(float x, float z, float debug)
 
 	return height;
 }
-void Terrain::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time)
+void Terrain::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos, 
+	glm::vec3& lightPos, UniformLocations* locations, Time* time)
 {
 	glUniformMatrix4fv(locations->m_uniLocProjection, 1, GL_FALSE, &proj[0][0]);
 	glUniformMatrix4fv(locations->m_uniLocView, 1, GL_FALSE, &view[0][0]);

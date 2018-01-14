@@ -12,7 +12,9 @@ RoboEngine::RoboEngine(float windowWidth, float windowHeight)
 	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, 
 		m_configurations.terrainMaxHeight }, Biome::VOLCANO);
 
+	Configure();
 	Configs& c = m_configurations;
+
 	m_fps = new FPSPlayer({ glm::vec3(c.originalPlayerPosition.x,
 		m_terrain->GetYPosOfPlayer(c.originalPlayerPosition.x, 
 			c.originalPlayerPosition.z), c.originalPlayerPosition.z),
@@ -37,7 +39,7 @@ void RoboEngine::Configure(void)
 {
 	Configs& c = m_configurations;
 
-	c.numberOfRobots = 30;
+	c.numberOfRobots = 10;
 
 	c.playerSpeed = 0.02f;
 	c.playerRunningSpeedDelta = 1.4f;
@@ -58,11 +60,17 @@ void RoboEngine::Configure(void)
 	c.vsh = "res\\vsh.shader";
 	c.fsh = "res\\fsh.shader";
 	c.gsh = "res\\gsh.shader";
+
+	m_skyColor.currentSkyColor = m_terrain->Sky();
+	m_skyColor.defaultSkyColor = m_terrain->Sky();
+	m_skyColor.playerHitColor = glm::vec3(0.8f, 0.0f, 0.0f);
+	m_skyColor.resurrectColor = glm::vec3(0.0f, 0.8f, 0.0f);
+	m_skyColor.timeBetweenChange = 0.2f;
 }
 void RoboEngine::Draw(void)
 {
-	glm::vec3 m_skyColor = m_terrain->Sky();
-	glClearColor(m_skyColor.r, m_skyColor.g, m_skyColor.b, 1.0f);
+	glClearColor(m_skyColor.currentSkyColor.r, m_skyColor.currentSkyColor.g,
+		m_skyColor.currentSkyColor.b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if (AllRobotsDied()) ResurectRobots();
@@ -71,6 +79,7 @@ void RoboEngine::Draw(void)
 	MoveRobots();
 	m_shaders->UseProgram();
 	DrawAll();
+	ChangeSkyColorIfColorChangedForEnoughTime();
 }
 void RoboEngine::DrawAll(void)
 {
@@ -79,9 +88,12 @@ void RoboEngine::DrawAll(void)
 		m_fps->DrawBullets(m_transformMatrices.projection, m_transformMatrices.view,
 			m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData, m_terrain, m_robots);
 	}
-	DrawRobots(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
-	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
+	DrawRobots(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), 
+		m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
+	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), 
+		m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
 }
+
 void RoboEngine::KeyInput(GLFWwindow* window)
 {
 	bool movement = false;
@@ -122,6 +134,12 @@ void RoboEngine::KeyInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_T))
 	{
 		m_fps->InitializeFlourish(m_timeData.deltaT);
+		m_fps->DisableFlourish();
+	}
+	if (glfwGetKey(window, GLFW_KEY_B))
+	{
+		m_fps->InitializeBoost(m_timeData.deltaT);
+		m_fps->DisableBoost();
 	}
 	if (movement)
 	{
@@ -143,8 +161,9 @@ void RoboEngine::MouseButtonInput(int button)
 }
 void RoboEngine::MatricesInit(float windowWidth, float windowHeight)
 {
-	m_transformMatrices.projection = glm::perspective(m_configurations.fov, (float)windowWidth / windowHeight, 0.1f, m_configurations.renderDistance);
-	m_transformMatrices.view = m_fps->ViewMatrix(m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z), &m_timeData);
+	m_transformMatrices.projection = glm::perspective(m_configurations.fov, 
+		(float)windowWidth / windowHeight, 0.1f, m_configurations.renderDistance);
+	m_transformMatrices.view = m_fps->ViewMatrix(m_terrain, &m_timeData);
 }
 void RoboEngine::CompileShaders(void)
 {
@@ -167,12 +186,13 @@ void RoboEngine::GetUniformLocations(void)
 }
 void RoboEngine::UpdateMatrices(void)
 {
-	m_transformMatrices.view = m_fps->ViewMatrix(m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z), &m_timeData);
+	m_transformMatrices.view = m_fps->ViewMatrix(m_terrain, &m_timeData);
 }
 void RoboEngine::InitializeTime(void)
 {
 	m_timeData.currentTime = std::chrono::high_resolution_clock::now();
 	m_timeData.beginning = std::chrono::high_resolution_clock::now();
+	m_skyColor.startOfChange = std::chrono::high_resolution_clock::now();
 }
 void RoboEngine::UpdateTimeData(void)
 {
@@ -194,7 +214,12 @@ void RoboEngine::DrawRobots(glm::mat4& proj, glm::mat4& view,
 {
 	for (auto& iter : m_robots)
 	{
-		iter.Draw(proj, view, eyePos, lightPos, locations, time, m_terrain, m_fps);
+		bool changeColor = iter.Draw(proj, view, eyePos, lightPos, locations, time, m_terrain, m_fps);
+		if (changeColor)
+		{
+			m_skyColor.currentSkyColor = m_skyColor.playerHitColor;
+			m_skyColor.startOfChange = std::chrono::high_resolution_clock::now();
+		}
 	}
 }
 void RoboEngine::InitRobots(void)
@@ -220,8 +245,18 @@ const bool RoboEngine::AllRobotsDied(void)
 }
 void RoboEngine::ResurectRobots(void)
 {
+	m_skyColor.currentSkyColor = m_skyColor.resurrectColor;
+	m_skyColor.startOfChange = std::chrono::high_resolution_clock::now();
+	m_fps->EnableFlourish();
+	m_fps->EnableBoost();
 	m_configurations.numberOfRobots += 2;
 	std::cout << "RESURRECTED THE ROBOTS!!!" << std::endl;
 	for (unsigned int i = 0; i < m_configurations.numberOfRobots; ++i)
 		SpawnRobot();
+}
+void RoboEngine::ChangeSkyColorIfColorChangedForEnoughTime(void)
+{
+	double duration = (double)((std::chrono::high_resolution_clock::now() - m_skyColor.startOfChange).count()) / 1000000000;
+	if (duration > m_skyColor.timeBetweenChange)
+		m_skyColor.currentSkyColor = m_skyColor.defaultSkyColor;
 }

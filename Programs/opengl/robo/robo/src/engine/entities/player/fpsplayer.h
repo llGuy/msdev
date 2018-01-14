@@ -9,6 +9,7 @@
 
 #include "../../bullet/gun.h"
 #include "../../robot/robot.h"
+#include "../troop/troop.h"
 
 class FPSPlayer
 {
@@ -22,6 +23,15 @@ public:
 		float viewBobbingValue;
 		float runningDelta;
 	};
+	struct BoostData
+	{
+		glm::vec2 viewDirection;
+		glm::vec2 resistance;
+		glm::vec2 velocity;
+		bool boosting;
+
+		bool allowedToBoost;
+	};
 	struct JumpData
 	{
 		glm::vec3 velocity;
@@ -33,6 +43,7 @@ public:
 		glm::vec3 velocity;
 		glm::vec3 gravity;
 		bool flourishing;
+		bool disabled;
 		float yInclination;
 		float angle;
 		unsigned int colorIndex;
@@ -73,6 +84,9 @@ public:
 		m_runningDelta = pData.runningDelta;
 		m_jd.jumping = false;
 		m_fd.flourishing = false;
+		m_bd.allowedToBoost = true;
+
+		m_lives = 5;
 	}
 public:
 	// getter methods
@@ -80,17 +94,23 @@ public:
 	{
 		return m_pData.position;
 	}
-	glm::mat4 ViewMatrix(float terrainHeight, Time* time)
+	glm::mat4 ViewMatrix(Terrain* terrain, Time* time)
 	{
 		if (m_fd.flourishing)
 		{
 			Flourish(static_cast<float>(time->deltaT));
-			CheckFlourishLanding(terrainHeight);
+			CheckFlourishLanding(terrain->GetYPosOfPlayer(m_pData.position.x, m_pData.position.z));
 		}
 		if (m_jd.jumping)
 		{
 			Jump(static_cast<float>(time->deltaT));
-			CheckJumpLanding(terrainHeight);
+			CheckJumpLanding(terrain->GetYPosOfPlayer(m_pData.position.x, m_pData.position.z));
+		}
+		if (m_bd.boosting)
+		{
+			Boost(static_cast<float>(time->deltaT));
+			m_pData.position.y = terrain->GetYPosOfPlayer(m_pData.position.x, m_pData.position.z) + m_pData.height;
+			CheckBoostEnd();
 		}
 		return glm::lookAt(m_pData.position, m_pData.position + m_pData.viewDirection, m_up);
 	}
@@ -158,13 +178,24 @@ public:
 	}
 	void InitializeFlourish(double deltaT)
 	{
-		if (!m_fd.flourishing)
+		if (!m_fd.flourishing && !m_fd.disabled)
 		{
 			m_fd.flourishing = true;
 			m_fd.gravity = glm::vec3(0.0f, -9.8f, 0.0f);
 			m_fd.velocity = glm::vec3(0.0f, 3.5f * 15.0f, 0.0f);
 			m_fd.angle = 0.0f;
 			m_fd.colorIndex = 0;
+		}
+	}
+	void InitializeBoost(double deltaT)
+	{
+		if (!m_bd.boosting && !m_fd.flourishing && m_bd.allowedToBoost)
+		{
+			m_bd.boosting = true;
+			glm::vec2 plainViewDirection = glm::vec2(m_pData.viewDirection.x, m_pData.viewDirection.z);
+			m_bd.viewDirection = plainViewDirection;
+			m_bd.resistance = -plainViewDirection * 40.0f;
+			m_bd.velocity = plainViewDirection * 60.0f;
 		}
 	}
 	void Jump(float deltaT)
@@ -189,6 +220,12 @@ public:
 
 		m_fd.angle += 1.0f;
 	}
+	void Boost(float deltaT)
+	{
+		glm::vec3 worldVelocity = glm::vec3(m_bd.velocity.x, m_pData.position.y, m_bd.velocity.y);
+		m_pData.position = m_pData.position + worldVelocity * deltaT;
+		m_bd.velocity = m_bd.velocity + m_bd.resistance * deltaT;
+	}
 	void CheckJumpLanding(float terrainHeight)
 	{
 		if (m_pData.position.y - m_pData.height < terrainHeight)
@@ -203,6 +240,13 @@ public:
 		{
 			m_fd.flourishing = false;
 			m_pData.position.y = terrainHeight + m_pData.height;
+		}
+	}
+	void CheckBoostEnd(void)
+	{
+		if (fabs(m_bd.velocity.x) < 1.0f || fabs(m_bd.velocity.y) < 1.0f)
+		{
+			m_bd.boosting = false;
 		}
 	}
 public:
@@ -234,10 +278,35 @@ public:
 		m_pData.speed = speed;
 	}
 public:
+	void DisableFlourish(void)
+	{
+		m_fd.disabled = true;
+	}
+	void EnableFlourish(void)
+	{
+		m_fd.disabled = false;
+	}
+	void DisableBoost(void)
+	{
+		m_bd.allowedToBoost = false;
+	}
+	void EnableBoost(void)
+	{
+		m_bd.allowedToBoost = true;
+	}
+public:
 	// what happens when the player dies
 	void Die(void)
 	{
-		std::cout << "dead" << std::endl;
+		// die code
+		std::cout << "player died" << std::endl;
+		exit(1);
+	}
+	void RemoveLife(void)
+	{
+		--m_lives;
+		if (m_lives == 0) Die();
+		// change the sky color
 	}
 private:
 	glm::vec3 m_up;
@@ -245,12 +314,16 @@ private:
 	float m_viewBobbing;
 	float m_viewBobbingDelta;
 	float m_runningDelta;
+
 	bool m_running;
 
 	Gun m_gun;
 	JumpData m_jd;
+	BoostData m_bd;
 	FlourishData m_fd;
 	FPSPlayerData m_pData;
+
+	unsigned int m_lives;
 };
 
 #endif

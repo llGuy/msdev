@@ -18,7 +18,7 @@ class Robot
 public:
 	explicit Robot(float radius, glm::vec2 plainPosition);		//the robot is a cube
 public:
-	void Draw(glm::mat4& proj, glm::mat4& view, 
+	const bool Draw(glm::mat4& proj, glm::mat4& view, 
 		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* timeData, Terrain* terrain, FPSPlayer* player);
 	glm::vec2 PlainPosition(void);
 	void MoveTowardsPlayer(glm::vec2 playerPosition);
@@ -47,6 +47,7 @@ private:
 	float m_robotSpeed;
 	glm::vec2 m_viewDirection;
 	unsigned int m_lives;
+	bool m_hitPlayer;
 };
 
 #endif
