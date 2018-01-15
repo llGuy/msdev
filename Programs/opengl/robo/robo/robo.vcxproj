@@ -148,6 +148,7 @@
     <ClInclude Include="src\engine\data\vertex_data.h" />
     <ClInclude Include="src\engine\engine.h" />
     <ClInclude Include="src\engine\engine_comon.h" />
+    <ClInclude Include="src\engine\entities\entity.h" />
     <ClInclude Include="src\engine\entities\player\fpsplayer.h" />
     <ClInclude Include="src\engine\entities\troop\troop.h" />
     <ClInclude Include="src\engine\events\keyboard.h" />
