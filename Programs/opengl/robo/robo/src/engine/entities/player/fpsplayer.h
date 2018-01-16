@@ -2,6 +2,7 @@
 #define PLAYER_HEADER
 
 #include <math.h>
+#include <vector>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
@@ -10,8 +11,10 @@
 #include "../../bullet/gun.h"
 #include "../../robot/robot.h"
 #include "../troop/troop.h"
+#include "../entity.h"
 
-class FPSPlayer
+class FPSPlayer final
+	: public Entity
 {
 public:
 	struct FPSPlayerData
@@ -59,19 +62,6 @@ public:
 			glm::vec3(1.0f, 0.0f, 0.0f) * 0.6f
 		};
 	};
-	enum move_t
-	{
-		FORWARD,
-
-		BACKWARD
-	};
-	enum strafe_t
-	{
-		RIGHT,
-
-		LEFT
-	};
-
 public:
 	explicit FPSPlayer(FPSPlayerData pData)
 		:	m_pData(pData),
@@ -90,11 +80,15 @@ public:
 	}
 public:
 	// getter methods
-	glm::vec3& Position(void)
+	glm::vec3 Position(void) override
 	{
 		return m_pData.position;
 	}
-	glm::mat4 ViewMatrix(Terrain* terrain, Time* time)
+	glm::vec3* ViewDirection(void) override
+	{
+		return &m_pData.viewDirection;
+	}
+	void UpdData(Terrain* terrain, Time* time) override
 	{
 		if (m_fd.flourishing)
 		{
@@ -112,7 +106,6 @@ public:
 			m_pData.position.y = terrain->GetYPosOfPlayer(m_pData.position.x, m_pData.position.z) + m_pData.height;
 			CheckBoostEnd();
 		}
-		return glm::lookAt(m_pData.position, m_pData.position + m_pData.viewDirection, m_up);
 	}
 public:
 	void ViewBobbing(void)
@@ -128,35 +121,36 @@ public:
 			m_pData.position.y += m_viewBobbing;
 		}
 	}
-	void Move(move_t move, float y)
+	void Move(const move_t&& movement, const float& terrHeight,
+		const glm::vec3& direction = glm::vec3(0.0f)) override
 	{
-		if (move == FORWARD)
+		if (movement == Entity::move_t::FORWARD)
 		{
 			glm::vec3 toMoveVector = glm::vec3(m_pData.viewDirection.x, 0.0f, m_pData.viewDirection.z);
 			m_pData.position += toMoveVector * m_pData.speed;
 		}
-		else if (move == BACKWARD)
+		else if (movement == Entity::move_t::BACKWARD)
 		{
 			glm::vec3 toMoveVector = glm::vec3(m_pData.viewDirection.x, 0.0f, m_pData.viewDirection.z);
 			m_pData.position -= toMoveVector * m_pData.speed;
 		}
 		if(!m_jd.jumping && !m_fd.flourishing)
-			m_pData.position.y = y + m_pData.height;
+			m_pData.position.y = terrHeight + m_pData.height;
 	}
-	void Strafe(strafe_t strafe, float y)
+	void Strafe(const strafe_t&& strafe, const float& terrHeight) override
 	{
-		if (strafe == RIGHT)
+		if (strafe == Entity::strafe_t::RIGHT)
 		{
 			glm::vec3 strafeDirection = glm::cross(m_pData.viewDirection, m_up);
 			m_pData.position += strafeDirection * m_pData.speed;
 		}
-		else if (strafe == LEFT)
+		else if (strafe == Entity::strafe_t::LEFT)
 		{
 			glm::vec3 strafeDirection = glm::cross(m_pData.viewDirection, m_up);
 			m_pData.position -= strafeDirection * m_pData.speed;
 		}
 		if(!m_jd.jumping && !m_fd.flourishing)
-			m_pData.position.y = y + m_pData.height;
+			m_pData.position.y = terrHeight + m_pData.height;
 	}
 	void Look(glm::vec2 newMousePosition)
 	{
@@ -167,7 +161,17 @@ public:
 		m_oldMousePosition = newMousePosition;
 	}
 public:
-	void InitializeJump(double deltaT)
+	void Power(const power_t&& power, 
+		const glm::vec3& playerPos = glm::vec3(0.0f)) override 
+	{
+		if (power == Entity::power_t::JUMP) InitializeJump();
+		else if (power == Entity::power_t::FLOURISH) InitializeFlourish();
+		else if (power == Entity::power_t::BOOST) InitializeBoost();
+		else if (power == Entity::power_t::TROOP) AddTroop();
+		else if (power == Entity::power_t::SHOOT) Shoot();
+	}
+private:
+	void InitializeJump(void)
 	{
 		if (!m_jd.jumping)
 		{
@@ -176,7 +180,7 @@ public:
 			m_jd.velocity = glm::vec3(0.0f, 3.5f, 0.0f);
 		}
 	}
-	void InitializeFlourish(double deltaT)
+	void InitializeFlourish(void)
 	{
 		if (!m_fd.flourishing && !m_fd.disabled)
 		{
@@ -187,7 +191,7 @@ public:
 			m_fd.colorIndex = 0;
 		}
 	}
-	void InitializeBoost(double deltaT)
+	void InitializeBoost(void)
 	{
 		if (!m_bd.boosting && !m_fd.flourishing && m_bd.allowedToBoost)
 		{
@@ -197,6 +201,11 @@ public:
 			m_bd.resistance = -plainViewDirection * 40.0f;
 			m_bd.velocity = plainViewDirection * 60.0f;
 		}
+	}
+	void AddTroop(void)
+	{
+		if(!m_troopDisabled)
+			m_troop.push_back(new Troop(1.0f, m_pData.position));
 	}
 	void Jump(float deltaT)
 	{
@@ -251,49 +260,93 @@ public:
 	}
 public:
 	void DrawBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Robot>& vec)
+		glm::vec3& lightPos, UniformLocations* locations, Time* time,
+		Terrain* terrain, std::vector<Entity*>& vec) override
 	{
 		m_gun.Draw(proj, view, eyePos, lightPos, locations, time, terrain, vec);
-	}
-	const bool BulletAiring(void)
-	{
-		return m_gun.BulletAiring();
 	}
 	void Shoot(void)
 	{
 		m_gun.Shoot(m_pData.viewDirection, m_pData.position);
 	}
+	const bool Alive(void) override
+	{
+		return m_lives > 0;
+	}
+	void RemoveLife(void) override
+	{
+		--m_lives;
+		if (m_lives == 0)
+			Die();
+	}
+	void ViewBob(void)
+	{
+		ViewBobbing();
+	}
 public:
 	// other getters
-	bool& Running(void)
+	bool* Running(void) override 
 	{
-		return m_running;
+		return &m_running; 
 	}
-	void SpeedUp(void)
+	void SpeedUp(void) override 
 	{
 		m_pData.speed *= m_runningDelta;
 	}
-	void NormalSpeed(float speed)
+	void NeutralizeSpeed(const float& speed) override 
 	{
 		m_pData.speed = speed;
 	}
 public:
-	void DisableFlourish(void)
+	void DisablePower(const power_t&& power) override
 	{
-		m_fd.disabled = true;
+		if (power == Entity::power_t::FLOURISH) DisableFlourish();
+		else if (power == Entity::power_t::BOOST) DisableBoost();
+		else if (power == Entity::power_t::TROOP) DisableTroop();
+		else return;
 	}
-	void EnableFlourish(void)
+	void EnablePower(const power_t&& power) override
 	{
-		m_fd.disabled = false;
+		if (power == Entity::power_t::FLOURISH) EnableFlourish();
+		else if (power == Entity::power_t::BOOST) EnableBoost();
+		else if (power == Entity::power_t::TROOP) EnableTroop();
+		else return;
 	}
-	void DisableBoost(void)
+	const bool BulletAiring(void) override
 	{
-		m_bd.allowedToBoost = false;
-	}
-	void EnableBoost(void)
+		return m_gun.BulletAiring();
+	}	
+	void DrawTroops(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
+		glm::vec3& lightPos, UniformLocations* locations, Time* time,
+		Terrain* terrain, std::vector<Entity*>& vec) override
 	{
-		m_bd.allowedToBoost = true;
+		for (auto& i : m_troop)
+		{
+			i->Draw(proj, view, eyePos, lightPos, locations, time, terrain, vec);
+			if(i->BulletAiring())
+				i->DrawBullets(proj, view, eyePos, lightPos, locations, time, terrain, vec);
+		}
 	}
+private:
+	// troops stuff
+	void CheckDeadTroops(void)
+	{
+		for (unsigned int i = 0; i < m_troop.size(); ++i)
+		{
+			if (m_troop[i]->Alive())
+			{
+				m_troop[i]->DeleteBuffers();
+				m_troop.erase(m_troop.begin() + i);
+			}
+		}
+	}
+private:
+	void DisableFlourish(void) { m_fd.disabled = true; }
+	void EnableFlourish(void) { m_fd.disabled = false; }
+	void DisableBoost(void) { m_bd.allowedToBoost = false; }
+	void EnableBoost(void) { m_bd.allowedToBoost = true; }
+	void DisableTroop(void) { m_troopDisabled = true; }
+	void EnableTroop(void) { m_troopDisabled = false; }
 public:
 	// what happens when the player dies
 	void Die(void)
@@ -301,12 +354,6 @@ public:
 		// die code
 		std::cout << "player died" << std::endl;
 		exit(1);
-	}
-	void RemoveLife(void)
-	{
-		--m_lives;
-		if (m_lives == 0) Die();
-		// change the sky color
 	}
 private:
 	glm::vec3 m_up;
@@ -322,6 +369,8 @@ private:
 	BoostData m_bd;
 	FlourishData m_fd;
 	FPSPlayerData m_pData;
+	std::vector<Entity*> m_troop;
+	bool m_troopDisabled;
 
 	unsigned int m_lives;
 };

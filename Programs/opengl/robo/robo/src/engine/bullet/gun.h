@@ -6,6 +6,7 @@
 #include "bullet.h"
 #include "../terrain/terrain.h"
 #include "../robot/robot.h"
+#include "../entities/entity.h"
 
 class Gun
 {
@@ -21,7 +22,7 @@ public:
 	}
 	// draw function for the player
 	void Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Robot>& vec)
+		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Entity*>& vec)
 	{
 		MoveBullets(proj, view, eyePos, lightPos, locations, time, terrain, vec);
 		for (auto& i : m_bullets)
@@ -29,7 +30,7 @@ public:
 	}
 	// draw function for the robots
 	const bool Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, FPSPlayer* player)
+		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, Entity* player)
 	{
 		bool hitPlayer = MoveBullets(proj, view, eyePos, lightPos, locations, time, terrain, player);
 		for (auto& i : m_bullets)
@@ -42,7 +43,7 @@ public:
 	}
 private:
 	const bool MoveBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, FPSPlayer* player)
+		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, Entity* player)
 	{
 		for (unsigned short i = 0; i < m_bullets.size(); ++i)
 		{
@@ -73,7 +74,7 @@ private:
 		return false;
 	}
 	void MoveBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Robot>& vec)
+		glm::vec3& lightPos, UniformLocations* locations, Time* time, Terrain* terrain, std::vector<Entity*>& vec)
 	{
 		for (unsigned short i = 0; i < m_bullets.size(); ++i)
 		{

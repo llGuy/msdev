@@ -2,6 +2,7 @@
 #include <math.h>
 
 #include "bullet.h"
+#include "../entities/entity.h"
 #include "../engine.h"
 
 Bullet::Bullet(glm::vec3 playerViewDirection,
@@ -38,22 +39,22 @@ void Bullet::UpdateTranslateMatrix(void)
 	m_translateMatrix = glm::translate(m_worldCoordinates);
 	m_translateVectorPlainPosition = glm::vec2(m_worldCoordinates.x, m_worldCoordinates.z);
 }
-const bool Bullet::CollisionCheck(float heightOfTerrain, std::vector<Robot>& vec)
+const bool Bullet::CollisionCheck(float heightOfTerrain, std::vector<Entity*>& vec)
 {
 	for (unsigned short i = 0; i < vec.size(); ++i)
-		if (vec[i].DetectCollision(m_worldCoordinates, m_circleRadius))
+		if (vec[i]->DetectBulletCollision(m_worldCoordinates, m_circleRadius))
 		{
-			vec[i].RemoveLife();
-			if (!vec[i].Alive())
+			vec[i]->RemoveLife();
+			if (!vec[i]->Alive())
 			{
-				vec[i].DeleteBuffers();
+				vec[i]->DeleteBuffers();
 				vec.erase(vec.begin() + i);
 			}
 			return true;
 		}
 	return false;
 }
-const bool Bullet::CollisionCheck(float heightOfTerrain, FPSPlayer* player)
+const bool Bullet::CollisionCheck(float heightOfTerrain, Entity* player)
 {
 	if (glm::all(glm::lessThan(glm::abs(player->Position() - m_worldCoordinates), glm::vec3(0.5f))))
 	{

@@ -3,6 +3,7 @@
 
 #include "engine_comon.h"
 #include "configs/configs.h"
+#include "../camera/camera.h"
 
 #include <chrono>
 #include <vector>
@@ -41,7 +42,7 @@ public:
 		float timeBetweenChange;
 	};
 
-	explicit RoboEngine(float windowWidth, float windowHeight);
+	explicit RoboEngine(float windowWidth, float windowHeight, glm::vec2 mousePosition);
 	~RoboEngine(void);
 	
 	void Draw(void);
@@ -68,15 +69,16 @@ private:
 private:
 	Configs m_configurations;
 	Time m_timeData;
-	FPSPlayer* m_fps;
+	Entity* m_fps;
 	Terrain* m_terrain;
 	SHProgram* m_shaders;
 	SkyColor m_skyColor;
 	Lighting m_lighting;
+	Camera m_camera;
 	UniformLocations m_uniformLocations;
 	TransformMatrices m_transformMatrices;
 
-	std::vector<Robot> m_robots;
+	std::vector<Entity*> m_robots;
 };
 
 #endif

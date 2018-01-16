@@ -106,5 +106,8 @@ void Window::AfterGLEWInit(void)
 {
 	glEnable(GL_DEPTH_TEST);
 
-	m_engine = new RoboEngine(static_cast<float>(m_width), static_cast<float>(m_height));
+	double x, y;
+	glfwGetCursorPos(m_glfwWindow, &x, &y);
+	glm::vec2 position = glm::vec2(static_cast<float>(x), static_cast<float>(y));
+	m_engine = new RoboEngine(static_cast<float>(m_width), static_cast<float>(m_height), position);
 }

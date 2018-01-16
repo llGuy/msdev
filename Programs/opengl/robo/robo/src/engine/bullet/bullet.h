@@ -27,8 +27,8 @@ public:
 		glm::vec3& lightPos, UniformLocations* locations, Time* time);
 	void Move(void);
 	void UpdateTranslateMatrix(void);
-	const bool CollisionCheck(float heightOfTerrain, std::vector<Robot>& vec);
-	const bool CollisionCheck(float heightOfTerrain, FPSPlayer* player);
+	const bool CollisionCheck(float heightOfTerrain, std::vector<Entity*>& vec);
+	const bool CollisionCheck(float heightOfTerrain, Entity* player);
 	const bool CheckTerrainCollision(float heightOfTerrain);
 	const bool EscapedTerrainLimits(float x, float y);
 	void DeleteBuffer(void);
@@ -40,17 +40,11 @@ private:
 	void Init(glm::vec3& playerViewDirection,
 		glm::vec3 playerEyePos);
 	void BulletDataInit(void);
-	/*void CreateVertices(void);
-	void CreateIndices(void);
-	void CreateBuffer(void);*/
 	void SendUnifromData(glm::mat4 proj, glm::mat4 view, glm::mat4 model,
 		glm::vec3 eyePos, glm::vec3 lightPos, UniformLocations* locations, Time* time);
 private:
 	float m_cubeRadius;			//bullet is a cube like the robot
 	float m_bulletSpeed;
-	/*VertexData m_vertexData;
-	IndexData m_indexData;
-	Buffer m_buffer;*/
 	glm::vec2 m_translateVectorPlainPosition;
 	glm::vec3 m_worldCoordinates;
 	glm::mat4 m_translateMatrix;

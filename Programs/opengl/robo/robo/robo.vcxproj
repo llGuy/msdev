@@ -124,6 +124,7 @@
     <ClCompile Include="src\buffer\buffer.cpp" />
     <ClCompile Include="src\engine\bullet\bullet.cpp" />
     <ClCompile Include="src\engine\engine.cpp" />
+    <ClCompile Include="src\engine\entities\troop\troop.cpp" />
     <ClCompile Include="src\engine\heightmap\heightmap.cpp" />
     <ClCompile Include="src\engine\robot\robot.cpp" />
     <ClCompile Include="src\engine\shape\cube.cpp" />

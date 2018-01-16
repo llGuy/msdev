@@ -5,8 +5,9 @@
 #include <ctime>
 #include <cmath>
 
-RoboEngine::RoboEngine(float windowWidth, float windowHeight)
-	: m_lighting({ glm::vec3(0.0f, 100.0f, 0.0f) }), m_configurations()
+RoboEngine::RoboEngine(float windowWidth, float windowHeight, glm::vec2 cursorPos)
+	: m_lighting({ glm::vec3(0.0f, 100.0f, 0.0f) }), m_configurations(),
+	  m_camera(cursorPos)
 { 
 	srand(static_cast<int>(time(NULL)));
 
@@ -22,6 +23,7 @@ RoboEngine::RoboEngine(float windowWidth, float windowHeight)
 		c.originalPlayerViewDirection, c.playerSpeed, c.playerHeight, c.playerViewBobbing,
 		c.playerRunningSpeedDelta});
 	
+	m_camera.Bind(m_fps);
 	InitRobots();
 
 	if (m_terrain->BiomeType() == Biome::VOLCANO) m_shaders = new SHProgram("..\\robo\\res\\lavaVsh.shader", 
@@ -84,14 +86,17 @@ void RoboEngine::Draw(void)
 }
 void RoboEngine::DrawAll(void)
 {
+	glm::vec3 playerPosition = m_fps->Position();
 	if (m_fps->BulletAiring())
 	{
-		m_fps->DrawBullets(m_transformMatrices.projection, m_transformMatrices.view,
-			m_fps->Position(), m_lighting.lightPosition, &m_uniformLocations, &m_timeData, m_terrain, m_robots);
+		m_fps->DrawBullets(m_transformMatrices.projection, m_transformMatrices.view, playerPosition,	
+			m_lighting.lightPosition, &m_uniformLocations, &m_timeData, m_terrain, m_robots);
 	}
-	DrawRobots(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), 
+	m_fps->DrawTroops(m_transformMatrices.projection, m_transformMatrices.view, playerPosition,
+		m_lighting.lightPosition, &m_uniformLocations, &m_timeData, m_terrain, m_robots);
+	DrawRobots(m_transformMatrices.projection, m_transformMatrices.view, playerPosition, 
 		m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
-	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, m_fps->Position(), 
+	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, playerPosition, 
 		m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
 }
 
@@ -100,71 +105,70 @@ void RoboEngine::KeyInput(GLFWwindow* window)
 	bool movement = false;
 	if (m_fps->Running())
 	{
-		m_fps->NormalSpeed(m_configurations.playerSpeed);
-		m_fps->Running() = false;
+		m_fps->NeutralizeSpeed(m_configurations.playerSpeed);
+		*m_fps->Running() = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_R))
 	{
-		m_fps->Running() = true;
+		*m_fps->Running() = true;
 		m_fps->SpeedUp();
 	}
 	if (glfwGetKey(window, GLFW_KEY_W))
 	{
-		m_fps->Move(FPSPlayer::FORWARD, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
+		m_fps->Move(Entity::move_t::FORWARD, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
 		movement = true;
 	}
 	if (glfwGetKey(window, GLFW_KEY_S))
 	{
-		m_fps->Move(FPSPlayer::BACKWARD, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
+		m_fps->Move(Entity::move_t::BACKWARD, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
 		movement = true;
 	}
 	if (glfwGetKey(window, GLFW_KEY_A))
 	{
-		m_fps->Strafe(FPSPlayer::LEFT, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
+		m_fps->Strafe(Entity::strafe_t::LEFT, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
 		movement = true;
 	}
 	if (glfwGetKey(window, GLFW_KEY_D))
 	{
-		m_fps->Strafe(FPSPlayer::RIGHT, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
+		m_fps->Strafe(Entity::strafe_t::RIGHT, m_terrain->GetYPosOfPlayer(m_fps->Position().x, m_fps->Position().z));
 		movement = true;
 	}
-	if (glfwGetKey(window, GLFW_KEY_SPACE))
+	if (glfwGetKey(window, GLFW_KEY_SPACE)) m_fps->Power(Entity::power_t::JUMP);
+	if (glfwGetKey(window, GLFW_KEY_T)) 
 	{
-		m_fps->InitializeJump(m_timeData.deltaT);
-	}
-	if (glfwGetKey(window, GLFW_KEY_T))
-	{
-		m_fps->InitializeFlourish(m_timeData.deltaT);
-		m_fps->DisableFlourish();
+		m_fps->Power(Entity::power_t::FLOURISH);
+		m_fps->DisablePower(Entity::power_t::FLOURISH);
 	}
 	if (glfwGetKey(window, GLFW_KEY_B))
 	{
-		m_fps->InitializeBoost(m_timeData.deltaT);
-		m_fps->DisableBoost();
+		m_fps->Power(Entity::power_t::BOOST);
+		m_fps->DisablePower(Entity::power_t::BOOST);
+	}
+	if (glfwGetKey(window, GLFW_KEY_F))
+	{
+		m_fps->Power(Entity::power_t::TROOP);
+		m_fps->DisablePower(Entity::power_t::TROOP);
 	}
 	if (movement)
 	{
-		m_fps->ViewBobbing();
+		m_fps->ViewBob();
 	}
 }
 void RoboEngine::MouseInput(GLFWwindow* window)
 {
 	double x, y;
 	glfwGetCursorPos(window, &x, &y);
-	m_fps->Look(glm::vec2(x, y));
+	m_camera.Look(glm::vec2(x, y));
 }
 void RoboEngine::MouseButtonInput(int button)
 {
-	if (button == GLFW_MOUSE_BUTTON_LEFT)
-	{
-		m_fps->Shoot();
-	}
+	if (button == GLFW_MOUSE_BUTTON_LEFT) m_fps->Power(Entity::power_t::SHOOT);
 }
 void RoboEngine::MatricesInit(float windowWidth, float windowHeight)
 {
 	m_transformMatrices.projection = glm::perspective(m_configurations.fov, 
 		(float)windowWidth / windowHeight, 0.1f, m_configurations.renderDistance);
-	m_transformMatrices.view = m_fps->ViewMatrix(m_terrain, &m_timeData);
+	m_transformMatrices.view = m_camera.ViewMat();
 }
 void RoboEngine::CompileShaders(void)
 {
@@ -187,7 +191,8 @@ void RoboEngine::GetUniformLocations(void)
 }
 void RoboEngine::UpdateMatrices(void)
 {
-	m_transformMatrices.view = m_fps->ViewMatrix(m_terrain, &m_timeData);
+	m_fps->UpdData(m_terrain, &m_timeData);
+	m_transformMatrices.view = m_camera.ViewMat();
 }
 void RoboEngine::InitializeTime(void)
 {
@@ -204,10 +209,10 @@ void RoboEngine::MoveRobots(void)
 {
 	for (auto& iter : m_robots)
 	{
-		float heightOfRobot = m_terrain->GetYPosOfPlayer(iter.PlainPosition().x, iter.PlainPosition().y);
+		float heightOfRobot = m_terrain->GetYPosOfPlayer(iter->PlainPosition().x, iter->PlainPosition().y);
 		glm::vec2 playerPlainPositions = glm::vec2(m_fps->Position().x, m_fps->Position().z);
-		iter.MoveTowardsPlayer(playerPlainPositions);
-		iter.UpdateTranslateMatrix(heightOfRobot);
+		iter->Move(Entity::move_t::TO_PLAYER, playerPlainPositions);
+		iter->UpdTransMat(heightOfRobot);
 	}
 }
 void RoboEngine::DrawRobots(glm::mat4& proj, glm::mat4& view,
@@ -215,7 +220,7 @@ void RoboEngine::DrawRobots(glm::mat4& proj, glm::mat4& view,
 {
 	for (auto& iter : m_robots)
 	{
-		bool changeColor = iter.Draw(proj, view, eyePos, lightPos, locations, time, m_terrain, m_fps);
+		bool changeColor = iter->Draw(proj, view, eyePos, lightPos, locations, time, m_terrain, m_fps);
 		if (changeColor)
 		{
 			m_skyColor.currentSkyColor = m_skyColor.playerHitColor;
@@ -238,7 +243,7 @@ void RoboEngine::SpawnRobot(void)
 	radius /= 2;
 	if (radius < 0.25f) radius = 0.25f;
 
-	m_robots.push_back(Robot(radius, glm::vec2(x, z)));
+	m_robots.push_back(new Robot(radius, glm::vec2(x, z)));
 }
 const bool RoboEngine::AllRobotsDied(void)
 {
@@ -248,8 +253,9 @@ void RoboEngine::ResurectRobots(void)
 {
 	m_skyColor.currentSkyColor = m_skyColor.resurrectColor;
 	m_skyColor.startOfChange = std::chrono::high_resolution_clock::now();
-	m_fps->EnableFlourish();
-	m_fps->EnableBoost();
+	m_fps->EnablePower(Entity::power_t::FLOURISH);
+	m_fps->EnablePower(Entity::power_t::BOOST);
+	m_fps->EnablePower(Entity::power_t::TROOP);
 	m_configurations.numberOfRobots += 2;
 	std::cout << "RESURRECTED THE ROBOTS!!!" << std::endl;
 	for (unsigned int i = 0; i < m_configurations.numberOfRobots; ++i)

@@ -1,6 +1,6 @@
 #ifndef KEYBOARD_HEADER
 #define KEYBOARD_HEADER
-
+/*/
 #include "../entities/player/fpsplayer.h"
 #include "../terrain/terrain.h"
 #include "../data/time.h"
@@ -17,7 +17,7 @@ public:
 	{
 		auto r = [&](FPSPlayer* p, Terrain* t, bool& m, Time* ti)->void 
 		{
-			p->Running() = true;
+			*p->Running() = true;
 			p->SpeedUp();
 		};
 		auto w = [&](FPSPlayer* p, Terrain* t, bool& m, Time* ti)->void
@@ -63,5 +63,5 @@ public:
 private:
 	std::unordered_map<unsigned int, std::function<void(FPSPlayer* p, Terrain* t, bool& m, Time* ti)>> m_events;
 };
-
+*/
 #endif

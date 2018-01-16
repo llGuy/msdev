@@ -12,6 +12,7 @@
 #include "../data/vertex_data.h"
 #include "../data/index_data.h"
 #include "../data/time.h"
+#include "../heightmap/heightmap.h"
 
 struct UniformLocations;
 class Terrain
