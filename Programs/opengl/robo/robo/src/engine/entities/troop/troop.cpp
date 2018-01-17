@@ -4,7 +4,7 @@
 
 Troop::Troop(float radius, glm::vec3 plainPosition,
 	glm::vec3 color)
-	: m_lives(30), m_yElevation(5.0f)
+	: m_lives(10), m_yElevation(5.0f)
 {
 	m_worldCoordinates = plainPosition + glm::vec3(0.0f, m_yElevation, 0.0f);
 	m_cube = new Cube(radius, color, false);

@@ -62,8 +62,10 @@ public:
 	typedef Entity* Player_t;
 	typedef Entity* Troop_t;
 	typedef std::vector<Entity*> Robots_t;
-	
+	typedef std::vector<Entity*> Troops_t;
 
+	virtual Troops_t* Troops(void) { return nullptr; }
+	virtual const bool PlacedTroops(void) { return false; }
 	virtual glm::vec2 PlainPosition(void) { return glm::vec2(); }
 	virtual glm::vec3* ViewDirection(void) { return nullptr; }
 	virtual glm::vec3 Position(void) { return glm::vec3(); }
@@ -71,11 +73,12 @@ public:
 	virtual void UpdTransMat(const float& terrHeight) {}
 	virtual void UpdData(Terrain* terrain, Time* time) {}
 
-	virtual const bool Draw(UniData& ud, UniformLocations* ul, DrawData& dd, Player_t player) { return false; }
+	virtual const bool Draw(UniData& ud, UniformLocations* ul, DrawData& dd, Player_t player, Troops_t& troops) { return false; }
 	virtual const bool Draw(UniData& ud, UniformLocations* ul, DrawData& dd, Robots_t& robots) { return false; }
 	virtual void DrawBullets(UniData& ud, UniformLocations* ul, DrawData& dd, Robots_t& vec) {}
-	virtual void DrawBullets(UniData& ud, UniformLocations* ul, DrawData& dd, Player_t*) {} // this function is for the robots when they shoot the player
+	virtual void DrawBullets(UniData& ud, UniformLocations* ul, DrawData& dd, Player_t*) {} 
 	virtual void DrawTroops(UniData& ud, UniformLocations* locations, DrawData& drawData, Robots_t& robots) {}
+	virtual void FindClosestTroop(Troops_t& troops) {}
 
 	virtual void Move(const move_t&& movement, const float& terrHeight,
 		const glm::vec3& direction = glm::vec3(0.0f)) {}

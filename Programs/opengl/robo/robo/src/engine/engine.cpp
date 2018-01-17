@@ -219,6 +219,9 @@ void RoboEngine::MoveRobots(void)
 	{
 		float heightOfRobot = m_terrain->GetYPosOfPlayer(iter->PlainPosition().x, iter->PlainPosition().y);
 		glm::vec2 playerPlainPositions = glm::vec2(m_fps->Position().x, m_fps->Position().z);
+		
+		if(m_fps->PlacedTroops()) 
+			iter->FindClosestTroop(*m_fps->Troops());
 		iter->Move(Entity::move_t::TO_PLAYER, playerPlainPositions);
 		iter->UpdTransMat(heightOfRobot);
 	}
@@ -227,7 +230,7 @@ void RoboEngine::DrawRobots(Entity::UniData& ud, UniformLocations* locations, En
 {
 	for (auto& iter : m_robots)
 	{
-		bool changeColor = iter->Draw(ud, locations, dd, m_fps);
+		bool changeColor = iter->Draw(ud, locations, dd, m_fps, *m_fps->Troops());
 		if (changeColor)
 		{
 			m_skyColor.currentSkyColor = m_skyColor.playerHitColor;

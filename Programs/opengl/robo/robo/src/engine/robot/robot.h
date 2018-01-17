@@ -23,7 +23,7 @@ public:
 		glm::vec3 color = glm::vec3(0.0f / 255.0f, 191.0f / 255.0f, 255.0f / 255.0f));		//the robot is a cube
 public:
 	const bool Draw(Entity::UniData& ud, UniformLocations* locations,
-		Entity::DrawData& dd, Entity* player) override;
+		Entity::DrawData& dd, Entity* player, Entity::Troops_t& troops) override;
 
 	//new 
 	void Move(const move_t&& movement, const glm::vec2& playerPlainPos) override;
@@ -36,7 +36,9 @@ public:
 	glm::vec2 PlainPosition(void) override;
 	void Power(const power_t&& power, const glm::vec3& playerPos) override;
 	glm::vec3 Position(void) override;
-	//not new
+	void FindClosestTroop(Troops_t& troops) override;
+	const bool TroopAlive(void);
+	//not new 
 private:
 	void SendUniformData(Entity::UniData& ud, glm::mat4& model, UniformLocations* locations, Time* time);
 	void RobotDataInit(void);
@@ -54,6 +56,10 @@ private:
 	glm::vec2 m_viewDirection;
 	unsigned int m_lives;
 	bool m_hitPlayer;
+
+	Entity* m_lockedTroop;
+	float m_troopProximity;
+	bool m_lockedOnTroop;
 };
 
 #endif

@@ -80,6 +80,14 @@ public:
 	}
 public:
 	// getter methods
+	const bool PlacedTroops(void) override
+	{
+		return m_troop.size() > 0;
+	}
+	Troops_t* Troops(void) override
+	{
+		return &m_troop;
+	}
 	glm::vec3 Position(void) override
 	{
 		return m_pData.position;

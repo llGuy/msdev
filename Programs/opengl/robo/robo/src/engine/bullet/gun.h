@@ -21,7 +21,7 @@ public:
 		m_bullets.push_back(Bullet(playerViewDirection, playerEyePos, m_bulletSpeed, color));
 	}
 	// draw function for the player
-	void Draw(Entity::UniData& ud, UniformLocations* locations, Entity::DrawData& dd, Entity::Robots_t& vec)
+	void Draw(Entity::UniData& ud, UniformLocations* locations, Entity::DrawData& dd, std::vector<Entity*>& vec)
 	{
 		MoveBullets(ud, locations, dd, vec);
 		for (auto& i : m_bullets)
@@ -70,7 +70,7 @@ private:
 		}
 		return false;
 	}
-	void MoveBullets(Entity::UniData& ud, UniformLocations* locations, Entity::DrawData& dd, Entity::Robots_t& robots)
+	void MoveBullets(Entity::UniData& ud, UniformLocations* locations, Entity::DrawData& dd, std::vector<Entity*>& robots)
 	{
 		for (unsigned short i = 0; i < m_bullets.size(); ++i)
 		{

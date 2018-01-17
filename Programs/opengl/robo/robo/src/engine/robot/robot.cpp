@@ -9,7 +9,7 @@
 #include "../bullet/gun.h"
 
 Robot::Robot(float radius, glm::vec2 plainPosition, glm::vec3 color)
-	: m_cubeRadius(radius)
+	: m_cubeRadius(radius), m_troopProximity(40.0f), m_lockedOnTroop(false), m_lockedTroop(nullptr)
 {
 	m_cube = new Cube(m_cubeRadius, color, true);
 	m_translateVectorPlainPosition = plainPosition;
@@ -39,30 +39,62 @@ const bool Robot::WantsToShoot(void)
 }
 void Robot::Shoot(glm::vec3 playerPosition)
 {
-	m_gun->Shoot(glm::normalize(playerPosition - m_worldCoordinates), 
-		m_worldCoordinates + glm::vec3(0.0f, 0.5f, 0.0f));
+	if (!m_lockedOnTroop)
+	{
+		m_gun->Shoot(glm::normalize(playerPosition - m_worldCoordinates),
+			m_worldCoordinates + glm::vec3(0.0f, 0.5f, 0.0f));
+	}
+	else
+	{
+		if(TroopAlive())
+			m_gun->Shoot(glm::normalize(m_lockedTroop->Position() - m_worldCoordinates), m_worldCoordinates + glm::vec3(0.0f, 0.5f, 0.0f));
+		else
+		{
+			m_lockedOnTroop = false;
+			m_lockedTroop = nullptr;
+		}
+	}
 }
-
-
+const bool Robot::TroopAlive(void)
+{
+	return m_lockedTroop->Alive();
+}
 
 // new
 
 const bool Robot::Draw(Entity::UniData& ud, UniformLocations* locations,
-	Entity::DrawData& dd, Entity* player)
+	Entity::DrawData& dd, Entity* player, Entity::Troops_t& troops)
 {
 	m_hitPlayer = false;
 	m_cube->Draw(ud, m_translateMatrix, locations, dd.timeData);
 	if (WantsToShoot()) Shoot(ud.eyePosition);
-	if (m_gun->BulletAiring()) m_hitPlayer = m_gun->Draw(ud, locations, dd, player);
+	if (m_gun->BulletAiring())
+	{
+		if(!m_lockedOnTroop)
+			m_hitPlayer = m_gun->Draw(ud, locations, dd, player);
+		else
+		{
+			if (TroopAlive()) m_gun->Draw(ud, locations, dd, troops);
+		}
+	}
 	return m_hitPlayer;
 }
 void Robot::Move(const Entity::move_t&& movement, const glm::vec2& playerPlainPos)
 {
 	if (movement == Entity::move_t::TO_PLAYER)
 	{
-		glm::vec2 dir = normalize(playerPlainPos - m_translateVectorPlainPosition);
-		m_translateVectorPlainPosition += dir * m_robotSpeed;
-		m_translateMatrix = glm::translate(m_worldCoordinates);
+		if(!m_lockedOnTroop)
+		{
+			glm::vec2 dir = glm::normalize(playerPlainPos - m_translateVectorPlainPosition);
+			m_translateVectorPlainPosition += dir * m_robotSpeed;
+			m_translateMatrix = glm::translate(m_worldCoordinates);
+		}
+		else
+		{
+			glm::vec2 dir = glm::normalize(m_viewDirection);
+			m_translateVectorPlainPosition += dir * m_robotSpeed;
+			m_translateMatrix = glm::translate(m_worldCoordinates);
+		}
 	}
 	else return;
 }
@@ -101,4 +133,18 @@ void Robot::Power(const power_t&& power, const glm::vec3& playerPos)
 glm::vec3 Robot::Position(void)
 {
 	return m_worldCoordinates;
+}
+void Robot::FindClosestTroop(Troops_t& troops)
+{
+	for (auto& i : troops)
+	{
+		if (glm::distance(i->PlainPosition(), this->PlainPosition()) < m_troopProximity)
+		{
+			m_lockedOnTroop = true;
+			m_viewDirection = i->PlainPosition();
+			m_lockedTroop = i;
+
+			break;
+		}
+	}
 }
