@@ -13,6 +13,21 @@ class FPSPlayer;
 class Entity
 {
 public:
+	// the uniform data needed for an entity to be drawn
+	struct UniData
+	{
+		glm::mat4 projection;
+		glm::mat4 view;
+		glm::vec3 eyePosition;
+		glm::vec3 lightPosition;
+	};
+	// draw data needed for an entity to be drawn
+	struct DrawData
+	{
+		Time* timeData;
+		Terrain* terrain;
+	};
+
 	/*	the player moves forward or backward
 		the robot only moves towards the player */
 	enum class move_t
@@ -44,6 +59,11 @@ public:
 		SHOOT
 	};
 
+	typedef Entity* Player_t;
+	typedef Entity* Troop_t;
+	typedef std::vector<Entity*> Robots_t;
+	
+
 	virtual glm::vec2 PlainPosition(void) { return glm::vec2(); }
 	virtual glm::vec3* ViewDirection(void) { return nullptr; }
 	virtual glm::vec3 Position(void) { return glm::vec3(); }
@@ -51,21 +71,11 @@ public:
 	virtual void UpdTransMat(const float& terrHeight) {}
 	virtual void UpdData(Terrain* terrain, Time* time) {}
 
-	virtual const bool Draw(glm::mat4& proj, glm::mat4& view,
-		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations,
-		Time* timeData, Terrain* terrain, Entity* player) { return false; }
-	virtual const bool Draw(glm::mat4& proj, glm::mat4& view,
-		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations,
-		Time* timeData, Terrain* terrain, std::vector<Entity*>& robots) { return false; }
-	virtual void DrawBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time, 
-		Terrain* terrain, std::vector<Entity*>& vec) {}
-	virtual void DrawBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time, 
-		Terrain* terrain, Entity*) {} // this function is for the robots when they shoot the player
-	virtual void DrawTroops(glm::mat4& proj, glm::mat4& view,
-		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations,
-		Time* timeData, Terrain* terrain, std::vector<Entity*>& robots) {}
+	virtual const bool Draw(UniData& ud, UniformLocations* ul, DrawData& dd, Player_t player) { return false; }
+	virtual const bool Draw(UniData& ud, UniformLocations* ul, DrawData& dd, Robots_t& robots) { return false; }
+	virtual void DrawBullets(UniData& ud, UniformLocations* ul, DrawData& dd, Robots_t& vec) {}
+	virtual void DrawBullets(UniData& ud, UniformLocations* ul, DrawData& dd, Player_t*) {} // this function is for the robots when they shoot the player
+	virtual void DrawTroops(UniData& ud, UniformLocations* locations, DrawData& drawData, Robots_t& robots) {}
 
 	virtual void Move(const move_t&& movement, const float& terrHeight,
 		const glm::vec3& direction = glm::vec3(0.0f)) {}

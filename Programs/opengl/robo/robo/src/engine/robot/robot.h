@@ -22,16 +22,8 @@ public:
 	explicit Robot(float radius, glm::vec2 plainPosition,
 		glm::vec3 color = glm::vec3(0.0f / 255.0f, 191.0f / 255.0f, 255.0f / 255.0f));		//the robot is a cube
 public:
-	const bool Draw(glm::mat4& proj, glm::mat4& view,
-		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations,
-		Time* timeData, Terrain* terrain, Entity* player) override;
-	//glm::vec2& PlainPosition(void) override;
-	/*void MoveTowardsPlayer(glm::vec2 playerPosition);
-	void UpdateTranslateMatrix(float height);
-	const bool DetectCollision(glm::vec3 bullet, float bulletRadius);*/
-	/*const bool Alive(void);
-	void RemoveLife(void);
-	void DeleteBuffers(void);*/
+	const bool Draw(Entity::UniData& ud, UniformLocations* locations,
+		Entity::DrawData& dd, Entity* player) override;
 
 	//new 
 	void Move(const move_t&& movement, const glm::vec2& playerPlainPos) override;
@@ -46,8 +38,7 @@ public:
 	glm::vec3 Position(void) override;
 	//not new
 private:
-	void SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, 
-		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time);
+	void SendUniformData(Entity::UniData& ud, glm::mat4& model, UniformLocations* locations, Time* time);
 	void RobotDataInit(void);
 	const bool WantsToShoot(void);
 	void Shoot(glm::vec3 playerPosition);

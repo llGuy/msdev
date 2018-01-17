@@ -259,11 +259,9 @@ private:
 		}
 	}
 public:
-	void DrawBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time,
-		Terrain* terrain, std::vector<Entity*>& vec) override
+	void DrawBullets(Entity::UniData& ud, UniformLocations* locations, DrawData& dd, Entity::Robots_t& vec) override
 	{
-		m_gun.Draw(proj, view, eyePos, lightPos, locations, time, terrain, vec);
+		m_gun.Draw(ud, locations, dd, vec);
 	}
 	void Shoot(void)
 	{
@@ -316,15 +314,13 @@ public:
 	{
 		return m_gun.BulletAiring();
 	}	
-	void DrawTroops(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time,
-		Terrain* terrain, std::vector<Entity*>& vec) override
+	void DrawTroops(Entity::UniData& ud, UniformLocations* locations, Entity::DrawData& dd, Entity::Robots_t& vec) override
 	{
 		for (auto& i : m_troop)
 		{
-			i->Draw(proj, view, eyePos, lightPos, locations, time, terrain, vec);
+			i->Draw(ud, locations, dd, vec);
 			if(i->BulletAiring())
-				i->DrawBullets(proj, view, eyePos, lightPos, locations, time, terrain, vec);
+				i->DrawBullets(ud, locations, dd, vec);
 		}
 	}
 private:

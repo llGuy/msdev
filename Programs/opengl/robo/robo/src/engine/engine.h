@@ -4,6 +4,7 @@
 #include "engine_comon.h"
 #include "configs/configs.h"
 #include "../camera/camera.h"
+#include "entities/entity.h"
 
 #include <chrono>
 #include <vector>
@@ -18,7 +19,6 @@ struct UniformLocations
 	signed int m_uniLocTime;
 	signed int m_uniLocLavaHeightTopPosition;
 };
-
 
 class RoboEngine
 {
@@ -42,7 +42,8 @@ public:
 		float timeBetweenChange;
 	};
 
-	explicit RoboEngine(float windowWidth, float windowHeight, glm::vec2 mousePosition);
+	explicit RoboEngine(float windowWidth, 
+		float windowHeight, glm::vec2 mousePosition);
 	~RoboEngine(void);
 	
 	void Draw(void);
@@ -50,6 +51,7 @@ public:
 	void MouseInput(GLFWwindow*);
 	void MouseButtonInput(int button);
 private:
+	void UpdateData(void);
 	void Configure(void);
 	void MatricesInit(float windowWidth, float windowHeight);
 	void CompileShaders(void);
@@ -58,18 +60,17 @@ private:
 	void InitializeTime(void);
 	void UpdateTimeData(void);
 	void MoveRobots(void);
-	void DrawRobots(glm::mat4& proj, glm::mat4& view,
-		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time);
+	void DrawRobots(Entity::UniData& ud, UniformLocations* locations, Entity::DrawData& dd);
 	void DrawAll(void);
 	void InitRobots(void);
 	void SpawnRobot(void);
 	const bool AllRobotsDied(void);
 	void ResurectRobots(void);
 	void ChangeSkyColorIfColorChangedForEnoughTime(void);
+	void InitDrawData(void);
 private:
 	Configs m_configurations;
 	Time m_timeData;
-	Entity* m_fps;
 	Terrain* m_terrain;
 	SHProgram* m_shaders;
 	SkyColor m_skyColor;
@@ -78,7 +79,10 @@ private:
 	UniformLocations m_uniformLocations;
 	TransformMatrices m_transformMatrices;
 
-	std::vector<Entity*> m_robots;
+	Entity::Player_t m_fps; 
+	Entity::Robots_t m_robots;
+	Entity::UniData m_uniformData;
+	Entity::DrawData m_drawData;
 };
 
 #endif

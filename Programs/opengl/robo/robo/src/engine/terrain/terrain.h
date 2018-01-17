@@ -13,6 +13,7 @@
 #include "../data/index_data.h"
 #include "../data/time.h"
 #include "../heightmap/heightmap.h"
+#include "../entities/entity.h"
 
 struct UniformLocations;
 class Terrain
@@ -39,7 +40,7 @@ public:
 	explicit Terrain(Terrain::TerrainDimensions, Biome::biome_t);
 	~Terrain(void);
 
-	void Draw(glm::mat4& proj, glm::mat4& viewMat, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations*, Time*);
+	void Draw(Entity::UniData& ud, UniformLocations*, Time*);
 	glm::vec3 Sky(void);
 	float GetYPosOfPlayer(float x, float z, float debug = 0.0f);
 	__forceinline glm::vec2 Dimensions(void)
@@ -58,7 +59,7 @@ private:
 	void InitializeHeights(void);
 	void GenerateColors(void);
 private:
-	void SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time*);
+	void SendUniformData(Entity::UniData& ud, glm::mat4& model, UniformLocations* locations, Time*);
 	void InitBuffer(void);
 	void InitBiome(Biome::biome_t);
 	__forceinline glm::vec2 GetPositionOfPlayerOnTile(float x, float z)

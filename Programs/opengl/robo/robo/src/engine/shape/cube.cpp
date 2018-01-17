@@ -9,12 +9,11 @@ Cube::Cube(float rad, glm::vec3 color, const bool elevate)
 	: m_cubeRadius(rad), m_color(color), m_elevate(elevate)
 {
 }
-void Cube::Draw(glm::mat4& proj, glm::mat4& view, glm::mat4& model,
-	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations,
-	Time* timeData) 
+void Cube::Draw(Entity::UniData& ud, glm::mat4& model,
+	UniformLocations* locations, Time* timeData)
 {
 	m_buffer.BindAll();
-	UniformData(proj, view, model, eyePos, lightPos, timeData, locations);
+	UniformData(ud, model, timeData, locations);
 	glDrawElements(GL_TRIANGLES, m_buffer.NumIndices(), GL_UNSIGNED_SHORT, 0);
 }
 void Cube::Init(void) 
@@ -120,14 +119,13 @@ void Cube::DeleteRAM(void)
 	delete[] m_id.iData;
 }
 
-void Cube::UniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model,
-	glm::vec3& eyePos, glm::vec3& lightPos,
+void Cube::UniformData(Entity::UniData& ud, glm::mat4& model,
 	Time* timeData, UniformLocations* locations) 
 {
-	glUniformMatrix4fv(locations->m_uniLocProjection, 1, GL_FALSE, &proj[0][0]);
-	glUniformMatrix4fv(locations->m_uniLocView, 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(locations->m_uniLocProjection, 1, GL_FALSE, &ud.projection[0][0]);
+	glUniformMatrix4fv(locations->m_uniLocView, 1, GL_FALSE, &ud.view[0][0]);
 	glUniformMatrix4fv(locations->m_uniLocModel, 1, GL_FALSE, &model[0][0]);
-	glUniform3fv(locations->m_uniLocLightPosition, 1, &lightPos[0]);
-	glUniform3fv(locations->m_uniLocEyePosition, 1, &eyePos[0]);
+	glUniform3fv(locations->m_uniLocLightPosition, 1, &ud.lightPosition[0]);
+	glUniform3fv(locations->m_uniLocEyePosition, 1, &ud.eyePosition[0]);
 	glUniform1f(locations->m_uniLocTime, (float)(timeData->currentTime - timeData->beginning).count() / 1000000000);
 }

@@ -17,14 +17,13 @@ Robot::Robot(float radius, glm::vec2 plainPosition, glm::vec3 color)
 	m_cube->Init();
 	RobotDataInit();
 }
-void Robot::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, 
-	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time)
+void Robot::SendUniformData(Entity::UniData& ud, glm::mat4& model, UniformLocations* locations, Time* time)
 {
-	glUniformMatrix4fv(locations->m_uniLocProjection, 1, GL_FALSE, &proj[0][0]);
-	glUniformMatrix4fv(locations->m_uniLocView, 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(locations->m_uniLocProjection, 1, GL_FALSE, &ud.projection[0][0]);
+	glUniformMatrix4fv(locations->m_uniLocView, 1, GL_FALSE, &ud.view[0][0]);
 	glUniformMatrix4fv(locations->m_uniLocModel, 1, GL_FALSE, &model[0][0]);
-	glUniform3fv(locations->m_uniLocLightPosition, 1, &lightPos[0]);
-	glUniform3fv(locations->m_uniLocEyePosition, 1, &eyePos[0]);
+	glUniform3fv(locations->m_uniLocLightPosition, 1, &ud.lightPosition[0]);
+	glUniform3fv(locations->m_uniLocEyePosition, 1, &ud.eyePosition[0]);
 	glUniform1f(locations->m_uniLocTime, (float)(time->currentTime - time->beginning).count() / 1000000000);
 }
 void Robot::RobotDataInit(void)
@@ -48,14 +47,13 @@ void Robot::Shoot(glm::vec3 playerPosition)
 
 // new
 
-const bool Robot::Draw(glm::mat4& proj, glm::mat4& view,
-	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations,
-	Time* timeData, Terrain* terrain, Entity* player)
+const bool Robot::Draw(Entity::UniData& ud, UniformLocations* locations,
+	Entity::DrawData& dd, Entity* player)
 {
 	m_hitPlayer = false;
-	m_cube->Draw(proj, view, m_translateMatrix, eyePos, lightPos, locations, timeData);
-	if (WantsToShoot()) Shoot(eyePos);
-	if (m_gun->BulletAiring()) m_hitPlayer = m_gun->Draw(proj, view, eyePos, lightPos, locations, timeData, terrain, player);
+	m_cube->Draw(ud, m_translateMatrix, locations, dd.timeData);
+	if (WantsToShoot()) Shoot(ud.eyePosition);
+	if (m_gun->BulletAiring()) m_hitPlayer = m_gun->Draw(ud, locations, dd, player);
 	return m_hitPlayer;
 }
 void Robot::Move(const Entity::move_t&& movement, const glm::vec2& playerPlainPos)

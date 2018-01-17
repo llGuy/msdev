@@ -11,14 +11,17 @@ RoboEngine::RoboEngine(float windowWidth, float windowHeight, glm::vec2 cursorPo
 { 
 	srand(static_cast<int>(time(NULL)));
 
-	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, 
-		m_configurations.terrainMaxHeight }, Biome::VOLCANO);
-
 	Configure();
 	Configs& c = m_configurations;
 
+	m_terrain = new Terrain({ m_configurations.terrainWidth, m_configurations.terrainDepth, 
+		m_configurations.terrainMaxHeight }, Biome::VOLCANO);
+
+	m_skyColor.currentSkyColor = m_terrain->Sky();
+	m_skyColor.defaultSkyColor = m_terrain->Sky();
+
 	m_fps = new FPSPlayer({ glm::vec3(c.originalPlayerPosition.x,
-		m_terrain->GetYPosOfPlayer(c.originalPlayerPosition.x, 
+		m_terrain->GetYPosOfPlayer(c.originalPlayerPosition.x,
 			c.originalPlayerPosition.z), c.originalPlayerPosition.z),
 		c.originalPlayerViewDirection, c.playerSpeed, c.playerHeight, c.playerViewBobbing,
 		c.playerRunningSpeedDelta});
@@ -34,6 +37,9 @@ RoboEngine::RoboEngine(float windowWidth, float windowHeight, glm::vec2 cursorPo
 	CompileShaders();
 	GetUniformLocations();
 	InitializeTime();
+	InitDrawData();
+
+	UpdateData();
 }
 RoboEngine::~RoboEngine(void)
 {
@@ -64,8 +70,6 @@ void RoboEngine::Configure(void)
 	c.fsh = "res\\fsh.shader";
 	c.gsh = "res\\gsh.shader";
 
-	m_skyColor.currentSkyColor = m_terrain->Sky();
-	m_skyColor.defaultSkyColor = m_terrain->Sky();
 	m_skyColor.playerHitColor = glm::vec3(0.8f, 0.0f, 0.0f);
 	m_skyColor.resurrectColor = glm::vec3(0.0f, 0.8f, 0.0f);
 	m_skyColor.timeBetweenChange = 0.2f;
@@ -80,24 +84,28 @@ void RoboEngine::Draw(void)
 	UpdateMatrices();
 	UpdateTimeData();
 	MoveRobots();
+	UpdateData();
 	m_shaders->UseProgram();
 	DrawAll();
 	ChangeSkyColorIfColorChangedForEnoughTime();
+}
+void RoboEngine::UpdateData(void)
+{
+	m_uniformData.projection = m_transformMatrices.projection;
+	m_uniformData.view = m_transformMatrices.view;
+	m_uniformData.eyePosition = m_fps->Position();
+	m_uniformData.lightPosition = m_lighting.lightPosition;
 }
 void RoboEngine::DrawAll(void)
 {
 	glm::vec3 playerPosition = m_fps->Position();
 	if (m_fps->BulletAiring())
 	{
-		m_fps->DrawBullets(m_transformMatrices.projection, m_transformMatrices.view, playerPosition,	
-			m_lighting.lightPosition, &m_uniformLocations, &m_timeData, m_terrain, m_robots);
+		m_fps->DrawBullets(m_uniformData, &m_uniformLocations, m_drawData, m_robots);
 	}
-	m_fps->DrawTroops(m_transformMatrices.projection, m_transformMatrices.view, playerPosition,
-		m_lighting.lightPosition, &m_uniformLocations, &m_timeData, m_terrain, m_robots);
-	DrawRobots(m_transformMatrices.projection, m_transformMatrices.view, playerPosition, 
-		m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
-	m_terrain->Draw(m_transformMatrices.projection, m_transformMatrices.view, playerPosition, 
-		m_lighting.lightPosition, &m_uniformLocations, &m_timeData);
+	m_fps->DrawTroops(m_uniformData, &m_uniformLocations, m_drawData, m_robots);
+	DrawRobots(m_uniformData, &m_uniformLocations, m_drawData);
+	m_terrain->Draw(m_uniformData, &m_uniformLocations, &m_timeData);
 }
 
 void RoboEngine::KeyInput(GLFWwindow* window)
@@ -215,12 +223,11 @@ void RoboEngine::MoveRobots(void)
 		iter->UpdTransMat(heightOfRobot);
 	}
 }
-void RoboEngine::DrawRobots(glm::mat4& proj, glm::mat4& view,
-	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time)
+void RoboEngine::DrawRobots(Entity::UniData& ud, UniformLocations* locations, Entity::DrawData& dd)
 {
 	for (auto& iter : m_robots)
 	{
-		bool changeColor = iter->Draw(proj, view, eyePos, lightPos, locations, time, m_terrain, m_fps);
+		bool changeColor = iter->Draw(ud, locations, dd, m_fps);
 		if (changeColor)
 		{
 			m_skyColor.currentSkyColor = m_skyColor.playerHitColor;
@@ -266,4 +273,9 @@ void RoboEngine::ChangeSkyColorIfColorChangedForEnoughTime(void)
 	double duration = (double)((std::chrono::high_resolution_clock::now() - m_skyColor.startOfChange).count()) / 1000000000;
 	if (duration > m_skyColor.timeBetweenChange)
 		m_skyColor.currentSkyColor = m_skyColor.defaultSkyColor;
+}
+void RoboEngine::InitDrawData(void)
+{
+	m_drawData.terrain = m_terrain;
+	m_drawData.timeData = &m_timeData;
 }

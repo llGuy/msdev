@@ -11,9 +11,8 @@ class Cube
 {
 public:
 	explicit Cube(float rad, glm::vec3 color, const bool elevate);
-	void Draw(glm::mat4& proj, glm::mat4& view, glm::mat4& model,
-		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations,
-		Time* timeData) override;
+	void Draw(Entity::UniData& ud, glm::mat4& model,
+		UniformLocations* locations, Time* timeData) override;
 	void Init(void) override;
 	void DeleteBuffers(void) override;
 protected:
@@ -22,8 +21,7 @@ protected:
 	void BufferInit(void) override;
 	void DeleteRAM(void) override;
 
-	void UniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model,
-		glm::vec3& eyePos, glm::vec3& lightPos,
+	void UniformData(Entity::UniData& ud, glm::mat4& model,
 		Time* timeData, UniformLocations* locations) override;
 protected:
 	glm::vec3 m_color;

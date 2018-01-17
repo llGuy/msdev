@@ -21,10 +21,9 @@ void Bullet::DeleteBuffer(void)
 {
 	m_cube->DeleteBuffers();
 }
-void Bullet::Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-	glm::vec3& lightPos, UniformLocations* locations, Time* time)
+void Bullet::Draw(Entity::UniData& ud, UniformLocations* locations, Time* time)
 {
-	m_cube->Draw(proj, view, m_translateMatrix, eyePos, lightPos, locations, time);
+	m_cube->Draw(ud, m_translateMatrix, locations, time);
 }
 glm::vec2 Bullet::PlainPosition(void)
 {

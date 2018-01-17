@@ -88,12 +88,12 @@ public:
 	{
 		return glm::vec3(0.2f, 0.2f, 0.2f);
 	}
-	void RenderBiomeElements(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos, glm::vec3& lightPos, Time* time) override
+	void RenderBiomeElements(Entity::UniData& ud, Time* time) override
 	{
 		m_buffer.BindAll();
 		m_lavaShprogram.UseProgram();
 		glm::mat4 model = glm::mat4(1.0f);
-		SendUniformData(proj, view, model, eyePos, lightPos, (float)(time->currentTime - time->beginning).count() / 1000000000);
+		SendUniformData(ud, model, (float)(time->currentTime - time->beginning).count() / 1000000000);
 		glDrawElements(GL_TRIANGLES, m_indexData.numIndices, GL_UNSIGNED_SHORT, 0);
 	}
 	void SendAdditionalUniformData(signed int location) override
@@ -128,13 +128,13 @@ protected:
 		m_locations.lightPosLoc = glGetUniformLocation(m_lavaShprogram.ProgramID(), "u_lightPosition");
 		m_locations.timeLoc = glGetUniformLocation(m_lavaShprogram.ProgramID(), "u_time");
 	}
-	void SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos, glm::vec3& lightPos, float time)
+	void SendUniformData(Entity::UniData& ud, glm::mat4& model, float time)
 	{
-		glUniformMatrix4fv(m_locations.projectionLoc, 1, GL_FALSE, &proj[0][0]);
-		glUniformMatrix4fv(m_locations.viewLoc, 1, GL_FALSE, &view[0][0]);
+		glUniformMatrix4fv(m_locations.projectionLoc, 1, GL_FALSE, &ud.projection[0][0]);
+		glUniformMatrix4fv(m_locations.viewLoc, 1, GL_FALSE, &ud.view[0][0]);
 		glUniformMatrix4fv(m_locations.modelLoc, 1, GL_FALSE, &model[0][0]);
-		glUniform3fv(m_locations.eyePosLoc, 1, &eyePos[0]);
-		glUniform3fv(m_locations.lightPosLoc, 1, &lightPos[0]);
+		glUniform3fv(m_locations.eyePosLoc, 1, &ud.eyePosition[0]);
+		glUniform3fv(m_locations.lightPosLoc, 1, &ud.lightPosition[0]);
 		glUniform1f(m_locations.timeLoc, time);
 	}
 	// lava mesh that waves

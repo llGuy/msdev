@@ -49,14 +49,13 @@ void Terrain::BufferInit(void)
 {
 	InitBuffer();
 }
-void Terrain::Draw(glm::mat4& projMat, glm::mat4& viewMat, glm::vec3& eyePos, 
-	glm::vec3& lightPos, UniformLocations* locations, Time* time)
+void Terrain::Draw(Entity::UniData& ud, UniformLocations* locations, Time* time)
 {
 	m_buffer.BindAll();
 	glm::mat4 modelMat = glm::mat4(1.0f);
-	SendUniformData(projMat, viewMat, modelMat, eyePos, lightPos, locations, time);
+	SendUniformData(ud, modelMat, locations, time);
 	glDrawElements(GL_TRIANGLES, m_meshData.indices.numIndices, GL_UNSIGNED_SHORT, 0);
-	m_biome->RenderBiomeElements(projMat, viewMat, eyePos, lightPos, time);
+	m_biome->RenderBiomeElements(ud, time);
 }
 glm::vec3 Terrain::Sky(void)
 {
@@ -161,14 +160,13 @@ float Terrain::GetYPosOfPlayer(float x, float z, float debug)
 
 	return height;
 }
-void Terrain::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model, glm::vec3& eyePos, 
-	glm::vec3& lightPos, UniformLocations* locations, Time* time)
+void Terrain::SendUniformData(Entity::UniData& ud, glm::mat4& model, UniformLocations* locations, Time* time)
 {
-	glUniformMatrix4fv(locations->m_uniLocProjection, 1, GL_FALSE, &proj[0][0]);
-	glUniformMatrix4fv(locations->m_uniLocView, 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(locations->m_uniLocProjection, 1, GL_FALSE, &ud.projection[0][0]);
+	glUniformMatrix4fv(locations->m_uniLocView, 1, GL_FALSE, &ud.view[0][0]);
 	glUniformMatrix4fv(locations->m_uniLocModel, 1, GL_FALSE, &model[0][0]);
-	glUniform3fv(locations->m_uniLocLightPosition, 1, &lightPos[0]);
-	glUniform3fv(locations->m_uniLocEyePosition, 1, &eyePos[0]);
+	glUniform3fv(locations->m_uniLocLightPosition, 1, &ud.lightPosition[0]);
+	glUniform3fv(locations->m_uniLocEyePosition, 1, &ud.eyePosition[0]);
 	glUniform1f(locations->m_uniLocTime, (float)(time->currentTime - time->beginning).count() / 1000000000);
 	m_biome->SendAdditionalUniformData(locations->m_uniLocLavaHeightTopPosition);
 }

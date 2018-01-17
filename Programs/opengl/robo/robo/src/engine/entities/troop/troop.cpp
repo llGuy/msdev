@@ -13,11 +13,9 @@ Troop::Troop(float radius, glm::vec3 plainPosition,
 	TroopDataInit();
 }
 
-const bool Troop::Draw(glm::mat4& proj, glm::mat4& view,
-	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations,
-	Time* timeData, Terrain* terrain, std::vector<Entity*>& robots)
+const bool Troop::Draw(Entity::UniData& ud, UniformLocations* locations, Entity::DrawData& dd, Entity::Robots_t& robots)
 {
-	m_cube->Draw(proj, view, m_translateMatrix, eyePos, lightPos, locations, timeData);
+	m_cube->Draw(ud, m_translateMatrix, locations, dd.timeData);
 	if (WantsToShoot())
 		Shoot(robots);
 
@@ -54,20 +52,17 @@ void Troop::Power(const power_t&& power, const std::vector<Entity*>& robots)
 		if (WantsToShoot()) 
 			Shoot(robots);
 }
-void Troop::DrawBullets(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-	glm::vec3& lightPos, UniformLocations* locations, Time* time,
-	Terrain* terrain, std::vector<Entity*>& vec)
+void Troop::DrawBullets(Entity::UniData& ud, UniformLocations* locations, Entity::DrawData& dd, Entity::Robots_t& vec)
 {
-	m_gun->Draw(proj, view, eyePos, lightPos, locations, time, terrain, vec);
+	m_gun->Draw(ud, locations, dd, vec);
 }
-void Troop::SendUniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model,
-	glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations, Time* time)
+void Troop::SendUniformData(Entity::UniData& ud, glm::mat4& model, UniformLocations* locations, Time* time)
 {
-	glUniformMatrix4fv(locations->m_uniLocProjection, 1, GL_FALSE, &proj[0][0]);
-	glUniformMatrix4fv(locations->m_uniLocView, 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(locations->m_uniLocProjection, 1, GL_FALSE, &ud.projection[0][0]);
+	glUniformMatrix4fv(locations->m_uniLocView, 1, GL_FALSE, &ud.view[0][0]);
 	glUniformMatrix4fv(locations->m_uniLocModel, 1, GL_FALSE, &model[0][0]);
-	glUniform3fv(locations->m_uniLocLightPosition, 1, &lightPos[0]);
-	glUniform3fv(locations->m_uniLocEyePosition, 1, &eyePos[0]);
+	glUniform3fv(locations->m_uniLocLightPosition, 1, &ud.lightPosition[0]);
+	glUniform3fv(locations->m_uniLocEyePosition, 1, &ud.eyePosition[0]);
 	glUniform1f(locations->m_uniLocTime, (float)(time->currentTime - time->beginning).count() / 1000000000);
 }
 void Troop::TroopDataInit(void)

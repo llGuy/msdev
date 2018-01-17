@@ -23,8 +23,7 @@ public:
 		glm::vec3 playerEyePos, float bulletSpeed = 0.3f, glm::vec3 color = glm::vec3(0.7f, 0.7f, 0.7f));
 	~Bullet(void);
 
-	void Draw(glm::mat4& proj, glm::mat4& view, glm::vec3& eyePos,
-		glm::vec3& lightPos, UniformLocations* locations, Time* time);
+	void Draw(Entity::UniData& ud, UniformLocations* locations, Time* time);
 	void Move(void);
 	void UpdateTranslateMatrix(void);
 	const bool CollisionCheck(float heightOfTerrain, std::vector<Entity*>& vec);
@@ -40,8 +39,6 @@ private:
 	void Init(glm::vec3& playerViewDirection,
 		glm::vec3 playerEyePos);
 	void BulletDataInit(void);
-	void SendUnifromData(glm::mat4 proj, glm::mat4 view, glm::mat4 model,
-		glm::vec3 eyePos, glm::vec3 lightPos, UniformLocations* locations, Time* time);
 private:
 	float m_cubeRadius;			//bullet is a cube like the robot
 	float m_bulletSpeed;

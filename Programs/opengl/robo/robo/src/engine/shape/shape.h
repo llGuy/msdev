@@ -6,6 +6,7 @@
 #include "../data/vertex_data.h"
 #include "../data/index_data.h"
 #include "../../buffer/buffer.h"
+#include "../entities/entity.h"
 
 struct UniformLocations;
 struct Time;
@@ -13,8 +14,7 @@ struct Time;
 class Shape
 {
 public:
-	virtual void Draw(glm::mat4& proj, glm::mat4& view, glm::mat4& model,
-		glm::vec3& eyePos, glm::vec3& lightPos, UniformLocations* locations,
+	virtual void Draw(Entity::UniData& ud, glm::mat4& model, UniformLocations* locations,
 		Time* timeData) = 0;
 	virtual void Init(void) = 0;
 	virtual void DeleteBuffers(void) = 0;
@@ -24,8 +24,7 @@ protected:
 	virtual void BufferInit(void) = 0;
 	virtual void DeleteRAM(void) = 0;
 
-	virtual void UniformData(glm::mat4& proj, glm::mat4& view, glm::mat4& model,
-		glm::vec3& eyePos, glm::vec3& lightPos,
+	virtual void UniformData(Entity::UniData& ud, glm::mat4& model,
 		Time* timeData, UniformLocations* locations) = 0;
 protected:
 	VertexData m_vd;
