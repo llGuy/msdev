@@ -43,6 +43,9 @@ RoboEngine::RoboEngine(float windowWidth, float windowHeight, glm::vec2 cursorPo
 }
 RoboEngine::~RoboEngine(void)
 {
+	delete m_terrain;
+	delete m_fps;
+	delete m_shaders;
 }
 void RoboEngine::Configure(void)
 {

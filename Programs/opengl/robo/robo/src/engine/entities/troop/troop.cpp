@@ -4,10 +4,11 @@
 
 Troop::Troop(float radius, glm::vec3 plainPosition,
 	glm::vec3 color)
-	: m_lives(10), m_yElevation(5.0f)
+	: m_lives(20), m_yElevation(1.0f), m_cubeRadius(radius)
 {
 	m_worldCoordinates = plainPosition + glm::vec3(0.0f, m_yElevation, 0.0f);
 	m_cube = new Cube(radius, color, false);
+	m_circleRadius = glm::distance(glm::vec3(0.0f), glm::vec3(+m_cubeRadius, +m_cubeRadius, +m_cubeRadius));
 	m_cube->Init();
 	m_gun = new Gun();
 	TroopDataInit();
@@ -30,6 +31,10 @@ const bool Troop::DetectBulletCollision(const glm::vec3& worldCoords,
 {
 	return glm::distance(m_worldCoordinates, worldCoords) < circleRad + m_circleRadius;
 }
+glm::vec3 Troop::Position(void)
+{
+	return m_worldCoordinates;
+}
 const bool Troop::Alive(void)
 {
 	return m_lives > 0;
@@ -44,7 +49,7 @@ void Troop::RemoveLife(void)
 }
 glm::vec2 Troop::PlainPosition(void)
 {
-	return glm::vec2();
+	return glm::vec2(m_worldCoordinates.x, m_worldCoordinates.z);
 }
 void Troop::Power(const power_t&& power, const std::vector<Entity*>& robots)
 {

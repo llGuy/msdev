@@ -24,6 +24,7 @@ public:
 	const bool BulletAiring(void) override;
 	void DeleteBuffers(void) override;
 	void RemoveLife(void) override;
+	glm::vec3 Position(void) override;
 	glm::vec2 PlainPosition(void) override;
 	void Power(const power_t&& power, const std::vector<Entity*>& robots) override;
 	void DrawBullets(Entity::UniData& ud, UniformLocations* locations, Entity::DrawData& dd, Entity::Robots_t& vec) override;

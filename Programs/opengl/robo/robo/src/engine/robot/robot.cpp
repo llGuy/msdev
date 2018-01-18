@@ -46,8 +46,11 @@ void Robot::Shoot(glm::vec3 playerPosition)
 	}
 	else
 	{
-		if(TroopAlive())
-			m_gun->Shoot(glm::normalize(m_lockedTroop->Position() - m_worldCoordinates), m_worldCoordinates + glm::vec3(0.0f, 0.5f, 0.0f));
+		if (TroopAlive())
+		{
+			glm::vec3 direction = glm::normalize(m_lockedTroop->Position() - m_worldCoordinates);
+			m_gun->Shoot(direction, m_worldCoordinates + glm::vec3(0.0f, 0.5f, 0.0f));
+		}
 		else
 		{
 			m_lockedOnTroop = false;
@@ -91,7 +94,7 @@ void Robot::Move(const Entity::move_t&& movement, const glm::vec2& playerPlainPo
 		}
 		else
 		{
-			glm::vec2 dir = glm::normalize(m_viewDirection);
+			glm::vec2 dir = glm::normalize(m_lockedTroop->Position() - m_worldCoordinates);
 			m_translateVectorPlainPosition += dir * m_robotSpeed;
 			m_translateMatrix = glm::translate(m_worldCoordinates);
 		}
@@ -138,7 +141,10 @@ void Robot::FindClosestTroop(Troops_t& troops)
 {
 	for (auto& i : troops)
 	{
-		if (glm::distance(i->PlainPosition(), this->PlainPosition()) < m_troopProximity)
+		int wantsToLockOnTroop = rand() % 23;
+		if (wantsToLockOnTroop == 3 && 
+			glm::distance(i->PlainPosition(), this->PlainPosition()) < m_troopProximity && 
+			!m_lockedOnTroop)
 		{
 			m_lockedOnTroop = true;
 			m_viewDirection = i->PlainPosition();
