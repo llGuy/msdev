@@ -9,22 +9,18 @@ Engine::Engine(signed int seed)
 void Engine::Init(void)
 {
 	for (int i = 0; i < 4; ++i)
-	{
 		for (int j = 0; j < 4; ++j)
 		{
 			WVec2 c = { j - 2, i - 2 };
-			
 			Chunk::WCoordChunk wcc = c;
 			m_chunkMap[wcc] = Chunk(wcc);
 		}
-	}
 }
 
 WVec2 Engine::CalculateCoordsInChunks(const glm::vec2& worldxz)
 {
 	signed int x = static_cast<signed int>(worldxz.x);
 	signed int z = static_cast<signed int>(worldxz.y);
-
 	return {x / 16, z / 16};
 }
 
@@ -32,7 +28,6 @@ glm::vec3 Engine::BlockWPos(glm::vec3 wpos)
 {
 	Chunk::WCoordChunk wcc = CalculateChunkCoordinateOfWPos(wpos);
 	CVec2 blockChunkCoordinate = CalculateBlockCoordInChunk(wcc, wpos);
-	//CVec2 coordsInsideChunk = { static_cast<unsigned char>(fabs(x8 % 16)), static_cast<unsigned char>(fabs(z8 % 16)) };
 	return m_chunkMap[wcc].BlockWorldCoord(blockChunkCoordinate, static_cast<signed int>(wpos.y));
 }
 
@@ -50,6 +45,5 @@ CVec2 Engine::CalculateBlockCoordInChunk(const Chunk::WCoordChunk& wcc, const gl
 		static_cast<unsigned char>(v.x - (wcc.wpos.x * 16 + 8 * (-wcc.wpos.x / wcc.wpos.x)));
 	unsigned char z = wcc.wpos.z == 0 ? static_cast<unsigned char>(v.z + 8) :
 		static_cast<unsigned char>(v.z - (wcc.wpos.z * 16 + 8 * (-wcc.wpos.z / wcc.wpos.z)));
-
 	return { x , z };
 }

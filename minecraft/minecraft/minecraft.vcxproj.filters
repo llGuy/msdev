@@ -83,6 +83,9 @@
     <ClInclude Include="src\engine\chunk\map\cmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\chunk\chunk_tex_map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\vsh.shader" />

@@ -13,11 +13,8 @@ public:
 		WCoordChunk(const WVec2& v)
 			: wpos(v) {}
 		WVec2 wpos;
-
 		bool operator==(const WCoordChunk& c)
-		{
-			return (c.wpos.x == wpos.x && c.wpos.z == wpos.z);
-		}
+		{ return (c.wpos.x == wpos.x && c.wpos.z == wpos.z); }
 	};
 	Chunk(void) : m_wcoordChunk() {}
 	explicit Chunk(const WCoordChunk& wcoordChunk);

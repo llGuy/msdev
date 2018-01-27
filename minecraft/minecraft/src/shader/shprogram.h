@@ -44,9 +44,7 @@ public:
 
 		}
 		if (CheckProgramStatus(m_programID))
-		{
 			glUseProgram(m_programID);
-		}
 	}
 	unsigned int ProgramID(void)
 	{
@@ -62,9 +60,7 @@ private:
 	void BindAttribLocations(const std::vector<const char*>& locs)
 	{
 		for(unsigned int i = 0; i < locs.size(); ++i)
-		{
 			glBindAttribLocation(m_programID, i, locs[i]);
-		}
 	}
 	void DeleteShaders(void)
 	{
@@ -81,11 +77,9 @@ private:
 			GLint infoLogLength = 0;
 			glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
 			GLchar* buffer = (GLchar*)alloca(infoLogLength * sizeof(GLchar));
-
 			GLsizei bufferSize;
 			glGetShaderInfoLog(shaderID, infoLogLength * sizeof(GLchar), &bufferSize, buffer);
 			Log(buffer);
-
 			return false;
 		}
 		return true;
@@ -99,18 +93,15 @@ private:
 			GLint infoLogLength = 0;
 			glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
 			GLchar* buffer = (GLchar*)alloca(infoLogLength * sizeof(GLchar));
-
 			GLsizei bufferSize;
 			glGetProgramInfoLog(programID, infoLogLength * sizeof(GLchar), &bufferSize, buffer);
 			Log(buffer);
-
 			return false;
 		}
 		return true;
 	}
 private:
 	unsigned int m_programID;
-
 	Shader m_vsh;
 	Shader m_fsh;
 	Shader m_gsh;

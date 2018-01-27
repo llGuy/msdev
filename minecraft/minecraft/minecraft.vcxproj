@@ -31,6 +31,7 @@
     <ClInclude Include="src\engine\buffer\ids.h" />
     <ClInclude Include="src\engine\chunk\chunk.h" />
     <ClInclude Include="src\engine\chunk\chunk_data_base.h" />
+    <ClInclude Include="src\engine\chunk\chunk_tex_map.h" />
     <ClInclude Include="src\engine\chunk\cvec2.h" />
     <ClInclude Include="src\engine\chunk\map\cmap.h" />
     <ClInclude Include="src\engine\data\common.h" />

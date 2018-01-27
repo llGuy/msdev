@@ -47,11 +47,6 @@ private:
 	{
 		unsigned char x = static_cast<unsigned char>(cc.x);
 		unsigned char z = static_cast<unsigned char>(cc.z);
-		unsigned char a = (x << 4);
-		unsigned char b = z;
-		unsigned char result = static_cast<unsigned char>((x << 4) + z);
-		CCoord cresult = { static_cast<unsigned char>((x << 4) + z) };
-
 		return { static_cast<unsigned char>((x << 4) + z) };
 	}
 private:

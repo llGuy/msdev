@@ -9,6 +9,7 @@
 Window::Window(unsigned int width, unsigned int height, const char* title)
 	: m_width(width), m_height(height), m_title(title)
 {
+	// all initializations
 	GLFWInit();
 	WindowInit();
 	GLEWInit();

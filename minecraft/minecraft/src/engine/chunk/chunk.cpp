@@ -34,10 +34,5 @@ Chunk::WCoordChunk Chunk::ChunkCoordinate(void)
 
 WVec2 Chunk::NegativeCornerWPos(void) const
 {
-	/*signed int xcomp = (abs(m_wcoordChunk.wpos.x * 16) - 8.0f) * abs(m_wcoordChunk.wpos.x) / (m_wcoordChunk.wpos.x);
-	signed int zcomp = (abs(m_wcoordChunk.wpos.z * 16) - 8.0f) * abs(m_wcoordChunk.wpos.z) / (m_wcoordChunk.wpos.z);
-
-	signed int finalVx = (m_wcoordChunk.wpos.x == 0 ? -8 : xcomp);
-	signed int finalVz = (m_wcoordChunk.wpos.z == 0 ? -8 : zcomp);*/
 	return { m_wcoordChunk.wpos.x * 16 - 8, m_wcoordChunk.wpos.z * 16 - 8 };
 }

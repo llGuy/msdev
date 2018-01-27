@@ -17,6 +17,7 @@ public:
 	}
 	void Init(void)
 	{
+		// all image loading
 		ImageData id = LoadImageData(m_file);
 		SendData(id);
 	}

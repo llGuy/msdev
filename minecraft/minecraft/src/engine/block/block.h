@@ -22,6 +22,7 @@ public:
 		STONE, DIRT, GRASS, INV /* will add more types of blocks */
 	};
 	static tex_id m_textureID[3];
+
 	static const unsigned int AVAILABLE_TEXTURES;
 public:
 	explicit Block(void) = default;
