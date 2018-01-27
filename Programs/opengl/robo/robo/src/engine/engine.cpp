@@ -51,7 +51,7 @@ void RoboEngine::Configure(void)
 {
 	Configs& c = m_configurations;
 
-	c.numberOfRobots = 10;
+	c.numberOfRobots = 2;
 
 	c.playerSpeed = 0.02f;
 	c.playerRunningSpeedDelta = 1.4f;

@@ -22,10 +22,10 @@ void Cube::Init(void)
 	IndicesInit();
 	BufferInit();
 
-	DeleteRAM();
+	DeleteRAM();         
 }
 void Cube::DeleteBuffers(void)
-{
+{                                                            
 	m_buffer.DeleteBuffer();
 }
 void Cube::VerticesInit(void) 
