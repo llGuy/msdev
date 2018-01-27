@@ -19,6 +19,8 @@ public:
 private:
 	void Init(void);
 	WVec2 CalculateCoordsInChunks(const glm::vec2& worldxz);
+	Chunk::WCoordChunk CalculateChunkCoordinateOfWPos(const glm::vec3& v) const;
+	CVec2 CalculateBlockCoordInChunk(const Chunk::WCoordChunk& wcc, const glm::vec3& v) const;
 private:
 	cmap::CMap m_chunkMap;
 	signed int m_seed;

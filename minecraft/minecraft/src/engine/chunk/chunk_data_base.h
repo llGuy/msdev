@@ -21,7 +21,7 @@ public:
 				{
 					CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
 					/* TEMPORARY THAT THE BLOCK TYPE IS DIRT */
-					/* THIS WILL CHANGE LATER */
+					/* THIS WILL CHANGE LATER */					
 					m_blocks[Index(cc)].ystrip[y - 25] = 
 						Block(CompressChunkCoord(cc), Block::BlType::DIRT);
 				}
@@ -30,9 +30,9 @@ public:
 	}
 public:
 	/* getter */
-	glm::vec3 WCoord(WVec2 wchunkCoord, CVec2 ccoord, unsigned char elevation)
+	glm::vec3 WCoord(WVec2 wchunkCoord, CVec2 ccoord, unsigned char elevation, const WVec2&& negativeCornerWPos)
 	{
-		return m_blocks[Index(ccoord)].ystrip[elevation].WPos(wchunkCoord, elevation);
+		return m_blocks[Index(ccoord)].ystrip[elevation].WPos(wchunkCoord, elevation, negativeCornerWPos);
 	}
 	const Block::BlType BlockType(CVec2 ccoord, unsigned char elevation)
 	{

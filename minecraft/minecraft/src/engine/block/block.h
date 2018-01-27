@@ -29,7 +29,7 @@ public:
 	explicit Block(const CCoord&& cc, const BlType&& bt);
 public:
 	/* getter */
-	glm::vec3 WPos(const WVec2 chunkCoordinate, signed int y) const;
+	glm::vec3 WPos(const WVec2 chunkCoordinate, signed int y, const WVec2 negativeCornerWPos) const;
 	CVec2 ExtrCPos(void) const;
 	const BlType BlockType(void) const;
 private:

@@ -40,12 +40,9 @@ namespace cmap
 		{
 			if (m_size == m_nll)
 			{
+				for (std::size_t i = 0; i < m_nll; ++i)
+					m_llists.push_back(std::list<Chunk>());
 				m_nll *= 2;
-				std::vector<std::list<Chunk>> newllists;
-				newllists.reserve(m_nll);
-				for (std::size_t i = 0; i < m_nll / 2; ++i)
-					newllists[i] = m_llists[i];
-				m_llists = newllists;
 			}
 			int h = CHash()(v) % m_nll;
 			m_llists[h].push_back(Chunk());

@@ -15,11 +15,11 @@ Block::Block(const CCoord&& cc, const BlType&& bt)
 {
 }
 
-glm::vec3 Block::WPos(const WVec2 chunkCoordinate, signed int y) const
+glm::vec3 Block::WPos(const WVec2 chunkCoordinate, signed int y, const WVec2 negativeCornerWPos) const
 {
 	CVec2 blockPosOnChunk = ExtrCPos();
-	return glm::vec3(chunkCoordinate.x * 16 - 8.0f + blockPosOnChunk.x, y, 
-		chunkCoordinate.z * 16 - 8.0f + blockPosOnChunk.z);
+	return glm::vec3(negativeCornerWPos.x + blockPosOnChunk.x, y,
+		negativeCornerWPos.z + blockPosOnChunk.z);
 } 
 
 CVec2 Block::ExtrCPos(void) const

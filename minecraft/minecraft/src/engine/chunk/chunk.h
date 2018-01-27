@@ -29,6 +29,7 @@ public:
 	Block::BlType BlockType(const CVec2 cc, signed int elevation);
 private:
 	void Init(void);
+	WVec2 NegativeCornerWPos(void) const;
 private:
 	WCoordChunk m_wcoordChunk;
 	ChunkDB m_dataBase;
