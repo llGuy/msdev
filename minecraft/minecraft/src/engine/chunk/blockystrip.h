@@ -4,11 +4,14 @@
 #include <unordered_map>
 #include "../block/block.h"
 
-typedef std::unordered_map<signed int, Block> ysmap_t;
-
-struct BlockYStrip
+namespace chunk
 {
-	ysmap_t ystrip;
-};
+	typedef std::unordered_map<signed int, Block> ysmap_t;
+
+	struct BlockYStrip
+	{
+		ysmap_t ystrip;
+	};
+}
 
 #endif

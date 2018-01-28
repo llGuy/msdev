@@ -4,13 +4,16 @@
 #include "../block/block.h"
 #include <glm/glm.hpp>
 
-namespace gpu
+namespace chunk
 {
-	struct BData
+	namespace gpu
 	{
-		glm::vec3 pos;
-		Block::BlType tex;
-	};
+		struct BData
+		{
+			glm::vec3 pos;
+			Block::BlType tex;
+		};
+	}
 }
 
 #endif

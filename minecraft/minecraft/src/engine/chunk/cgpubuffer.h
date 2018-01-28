@@ -6,30 +6,34 @@
 #include "gpublockdata.h"
 #include "../buffer/vao.h"
 
-namespace gpu
+namespace chunk
 {
-	class CGPUVAO
-		: public VAO
+	namespace gpu
 	{
-	public:
-		explicit CGPUVAO(void) = default;
-		void Init(void) override;
-		void Bind(void) const override;
-	};
+		class CGPUVAO
+			: public VAO
+		{
+		public:
+			explicit CGPUVAO(void) = default;
+			void Init(void) override;
+			void Bind(void) const override;
+			void UnBind(void) const override;
+		};
 
-	class CGPUBuffer
-	{
-	public:
-		explicit CGPUBuffer(void) = default;
-		void Init(std::size_t components, BData* data);
-		VAO* Vao(void);
-	private:
-		void BufferInit(std::size_t components, BData* data);
-		void UnBind(void) const;
-	private:
-		unsigned int m_bufferID;
-		VAO* m_vao;
-	};
+		class CGPUBuffer
+		{
+		public:
+			explicit CGPUBuffer(void) = default;
+			void Init(std::size_t components, BData* data);
+			VAO* Vao(void);
+		private:
+			void BufferInit(std::size_t components, BData* data);
+			void UnBind(void) const;
+		private:
+			unsigned int m_bufferID;
+			VAO* m_vao;
+		};
+	}
 }
 
 #endif

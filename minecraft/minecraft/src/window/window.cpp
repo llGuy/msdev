@@ -9,11 +9,12 @@
 Window::Window(unsigned int width, unsigned int height, const char* title)
 	: m_width(width), m_height(height), m_title(title), m_engine(0)
 {
+	minecraft::ent::Player::Name n = QueryName();
 	// all initializations
 	GLFWInit();
 	WindowInit();
 	GLEWInit();
-	AfterGLEWInit();
+	AfterGLEWInit(n);
 }
 Window::~Window(void)
 {
@@ -32,6 +33,13 @@ const bool Window::WindowOpen(void)
 {
 	return !glfwWindowShouldClose(m_glfwWindow)
 		&& !(glfwGetKey(m_glfwWindow, GLFW_KEY_ESCAPE));
+}
+minecraft::ent::Player::Name Window::QueryName(void)
+{
+	Log("enter player name:");
+	minecraft::ent::Player::Name name = minecraft::ent::Player::Name();
+	std::cin >> name.name;
+	return name;
 }
 void Window::WindowInit(void)
 {
@@ -68,9 +76,21 @@ void Window::GLEWInit(void)
 		exit(1);
 	}
 }
-void Window::AfterGLEWInit(void)
+void Window::AfterGLEWInit(minecraft::ent::Player::Name pname)
 {
 	glEnable(GL_DEPTH_TEST);
 
-	m_engine.AfterGLEWInit();
+	double x, y;
+	glfwGetCursorPos(m_glfwWindow, &x, &y);
+	m_engine.AfterGLEWInit(m_width, m_height, glm::vec2(x, y), pname);
+}
+void Window::PollKeys(void) 
+{
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_W))
+		m_engine.RecieveKeyInput(minecraft::Engine::key_t::W);
+	/* other keys ... */
+}
+void Window::PollMouseMovement(void)
+{
+
 }
