@@ -34,6 +34,14 @@ namespace cmap
 				if (i.ChunkCoordinate() == v) return i;
 			return App(v);
 		}
+		void AfterGLEWInit(void)
+		{
+			for(auto& i : m_llists)
+				for (auto& j : i)
+				{
+					j.AfterGLEWInit();
+				}
+		}
 	private:
 		/* append */
 		Chunk& App(const Chunk::WCoordChunk& v)

@@ -14,7 +14,12 @@ Chunk::Chunk(const WCoordChunk&& wcoordChunk)
 
 void Chunk::Init(void)
 {
-	m_dataBase.Initialize();
+	m_dataBase.Init(m_wcoordChunk.wpos, NegativeCornerWPos());
+}
+
+void Chunk::AfterGLEWInit(void) 
+{
+	m_dataBase.AfterGLEWInit();
 }
 
 glm::vec3 Chunk::BlockWorldCoord(const CVec2 cc, signed int elevation) 

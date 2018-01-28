@@ -3,6 +3,7 @@
 
 #include "../block/block.h"
 #include "chunk_data_base.h"
+#include "chunk_gpu_side_handler.h"
 
 class Chunk
 {
@@ -19,6 +20,7 @@ public:
 	Chunk(void) : m_wcoordChunk() {}
 	explicit Chunk(const WCoordChunk& wcoordChunk);
 	explicit Chunk(const WCoordChunk&& wcoordChunk);
+	void AfterGLEWInit(void);
 public:
 	/* getters */
 	glm::vec3 BlockWorldCoord(const CVec2 cc, signed int elevation);

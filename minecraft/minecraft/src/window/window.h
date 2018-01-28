@@ -2,6 +2,7 @@
 #define WINDOW_HEADER
 
 #include <glm/glm.hpp>
+#include "../engine/engine.h"
 
 struct GLFWwindow;
 
@@ -24,6 +25,7 @@ private:
 	unsigned int m_height;
 	const char* m_title;
 	GLFWwindow* m_glfwWindow;
+	minecraft::Engine m_engine;
 	glm::mat4 m_projectionMatrix;
 };
 

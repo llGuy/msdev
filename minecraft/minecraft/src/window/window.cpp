@@ -7,7 +7,7 @@
 #include "../log.h"
 
 Window::Window(unsigned int width, unsigned int height, const char* title)
-	: m_width(width), m_height(height), m_title(title)
+	: m_width(width), m_height(height), m_title(title), m_engine(0)
 {
 	// all initializations
 	GLFWInit();
@@ -72,5 +72,5 @@ void Window::AfterGLEWInit(void)
 {
 	glEnable(GL_DEPTH_TEST);
 
-	// initializations
+	m_engine.AfterGLEWInit();
 }
