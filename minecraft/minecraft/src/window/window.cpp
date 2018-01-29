@@ -9,37 +9,32 @@
 Window::Window(unsigned int width, unsigned int height, const char* title)
 	: m_width(width), m_height(height), m_title(title), m_engine(0)
 {
-	minecraft::ent::Player::Name n = QueryName();
 	// all initializations
 	GLFWInit();
 	WindowInit();
 	GLEWInit();
-	AfterGLEWInit(n);
+	AfterGLEWInit();
 }
 Window::~Window(void)
 {
 }
 void Window::Draw(void)
 { 
-	glClearColor(0.0f, 0.2f, 0.8f, 0.2f);
+	glClearColor(1.0f, 1.0f, 1.0f, 0.2f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	m_engine.Render();
 }
 void Window::Update(void)
 {
 	glfwSwapBuffers(m_glfwWindow);
 	glfwPollEvents();
+	PollKeys();
+	PollMouseMovement();
 }
 const bool Window::WindowOpen(void)
 {
 	return !glfwWindowShouldClose(m_glfwWindow)
 		&& !(glfwGetKey(m_glfwWindow, GLFW_KEY_ESCAPE));
-}
-minecraft::ent::Player::Name Window::QueryName(void)
-{
-	Log("enter player name:");
-	minecraft::ent::Player::Name name = minecraft::ent::Player::Name();
-	std::cin >> name.name;
-	return name;
 }
 void Window::WindowInit(void)
 {
@@ -76,21 +71,27 @@ void Window::GLEWInit(void)
 		exit(1);
 	}
 }
-void Window::AfterGLEWInit(minecraft::ent::Player::Name pname)
+void Window::AfterGLEWInit(void)
 {
 	glEnable(GL_DEPTH_TEST);
 
 	double x, y;
 	glfwGetCursorPos(m_glfwWindow, &x, &y);
-	m_engine.AfterGLEWInit(m_width, m_height, glm::vec2(x, y), pname);
+	m_engine.AfterGLEWInit(m_width, m_height, glm::vec2(x, y));
 }
 void Window::PollKeys(void) 
 {
-	if (glfwGetKey(m_glfwWindow, GLFW_KEY_W))
-		m_engine.RecieveKeyInput(minecraft::Engine::key_t::W);
-	/* other keys ... */
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_W))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::W); 
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_A))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::A);
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::S);
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::D);
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_SPACE))		m_engine.RecieveKeyInput(minecraft::Engine::key_t::SPACE);
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_LEFT_SHIFT))	m_engine.RecieveKeyInput(minecraft::Engine::key_t::LSHIFT);
 }
 void Window::PollMouseMovement(void)
 {
-
+	double x, y;
+	glfwGetCursorPos(m_glfwWindow, &x, &y);
+	m_engine.RecieveMouseMovement(
+		glm::vec2(static_cast<float>(x), static_cast<float>(y)));
 }

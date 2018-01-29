@@ -28,6 +28,14 @@ namespace minecraft
 				LEFT
 			};
 
+			/* vertical movement */
+			enum class vmove_t
+			{
+				UP, 
+
+				DOWN
+			};
+
 			/* so that the camera can bind to a certain entity */
 			virtual glm::vec3* EntityViewDirection(void) { return nullptr; }
 			virtual glm::vec3* EntityWorldPosition(void) { return nullptr; }
@@ -35,6 +43,7 @@ namespace minecraft
 			virtual void UpdData(void) {}
 			virtual void Move(const move_t&& movement, data::Time* time) {}
 			virtual void Strafe(const strafe_t&& strafe, data::Time* time) {}
+			virtual void VMove(const vmove_t&& vmovement, data::Time* time) {}
 		};
 	}
 }

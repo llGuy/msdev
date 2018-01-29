@@ -6,8 +6,8 @@ namespace minecraft
 {
 	namespace ent
 	{
-		Player::Player(Name name)
-			: m_name(name), m_playerViewDirection(0.0f, -1.0f, 0.0f), 
+		Player::Player(void)
+			: m_playerViewDirection(0.0f, 0.0f, 1.0f), 
 			m_playerPosition(0.0f), UP(0.0f, 1.0f, 0.0f), m_speed(1.0f)
 		{
 
@@ -27,7 +27,7 @@ namespace minecraft
 		}
 		void Player::Move(const move_t&& movement, data::Time* time)
 		{
-			glm::vec3 moveVector = glm::normalize(glm::vec3(m_playerViewDirection.x, 0.0f, m_playerViewDirection.y));
+			glm::vec3 moveVector = glm::normalize(glm::vec3(m_playerViewDirection.x, 0.0f, m_playerViewDirection.z));
 			switch (movement)
 			{
 			case Entity::move_t::FORWARD:
@@ -46,6 +46,17 @@ namespace minecraft
 			case Entity::strafe_t::RIGHT:
 				m_playerPosition += moveVector * Speed(time);
 			case Entity::strafe_t::LEFT:
+				m_playerPosition -= moveVector * Speed(time);
+			}
+		}
+		void Player::VMove(const vmove_t&& vmovement, data::Time* time)
+		{
+			glm::vec3 moveVector = glm::vec3(0.0f, 1.0f, 0.0f);
+			switch (vmovement)
+			{
+			case Entity::vmove_t::UP:
+				m_playerPosition += moveVector * Speed(time);
+			case Entity::vmove_t::DOWN:
 				m_playerPosition -= moveVector * Speed(time);
 			}
 		}

@@ -57,9 +57,9 @@
     <ClInclude Include="src\window\window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\fsh.shader" />
-    <None Include="res\shaders\gsh.shader" />
-    <None Include="res\shaders\vsh.shader" />
+    <None Include="res\shaders\block\fsh.shader" />
+    <None Include="res\shaders\block\gsh.shader" />
+    <None Include="res\shaders\block\vsh.shader" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

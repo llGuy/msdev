@@ -5,12 +5,13 @@
 namespace minecraft
 {
 	Engine::Engine(signed int seed)
-		: m_seed(seed), m_chunkMap(), m_shprogram(), m_camera()
+		: m_seed(seed), m_chunkMap(), m_chunkshprogram(), m_camera()
 	{
 		Init();
 	}
 	void Engine::Render(void)
 	{
+		UpdateUniformData();
 		for (auto it = m_chunkMap.Begin(); it != m_chunkMap.End(); ++it)
 		{
 			for (auto& jt : *it)
@@ -41,33 +42,37 @@ namespace minecraft
 	{
 		m_variableConfigs.FOV = glm::radians(60.0f);
 		m_variableConfigs.renderDistance = 50.0f;
+		m_variableConfigs.mouseSensitivity = 0.02f;
 	}
 	void Engine::SHProgramInit(void)
 	{
-		std::vector<const char*> attribs({"vertexPosition", "texture"});
-		m_shprogram.Init("", "", "");
-		m_shprogram.Compile();
-		m_shprogram.Link(attribs);
+		std::vector<const char*> attribs({"vertex_position", "texture_type"});
+		m_chunkshprogram.Init("res\\shaders\\block\\vsh.shader", "res\\shaders\\block\\fsh.shader", 
+			"res\\shaders\\block\\gsh.shader");
+		m_chunkshprogram.Compile();
+		m_chunkshprogram.Link(attribs);
 	}
 	void Engine::UDataInit(unsigned int wwidth, unsigned int wheight)
 	{
-		m_udataloc.projectionMatrixLocation = glGetUniformLocation(m_shprogram.ProgramID(), "projectionMatrix");
-		m_udataloc.viewMatrixLocation = glGetUniformLocation(m_shprogram.ProgramID(), "viewMatrix");
-		m_udataloc.lightPositionLocation = glGetUniformLocation(m_shprogram.ProgramID(), "lightPosition");
-		m_udataloc.eyePositionLocation = glGetUniformLocation(m_shprogram.ProgramID(), "eyePosition");
+		m_udataloc.projectionMatrixLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "projection_matrix");
+		m_udataloc.viewMatrixLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "view_matrix");
+		m_udataloc.lightPositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "light_position");
+		m_udataloc.eyePositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "eye_position");
 
 		m_udata.projectionMatrix = glm::perspective(m_variableConfigs.FOV, (float)wwidth / wheight, 0.1f, 50.0f);
 	}
 	void Engine::AfterGLEWInit(unsigned int wwidth, unsigned int wheight, 
-		glm::vec2 cursorPosition, ent::Player::Name name)
+		glm::vec2 cursorPosition)
 	{
 		m_chunkMap.AfterGLEWInit();
 		SHProgramInit();
 		UDataInit(wwidth, wheight);
-		m_player = new ent::Player(name);
+		m_player = new ent::Player();
 		m_camera = ent::Camera(cursorPosition);
 		m_camera.Bind(m_player);
 		TimeDataInit();
+
+		m_chunkshprogram.UseProgram();
 	}
 	WVec2 Engine::CalculateCoordsInChunks(const glm::vec2& worldxz)
 	{
@@ -98,15 +103,16 @@ namespace minecraft
 			m_player->Strafe(ent::Entity::strafe_t::RIGHT, &m_time);
 			break;
 		case key_t::SPACE:
+			m_player->VMove(ent::Entity::vmove_t::UP, &m_time);
 			break;
 		case key_t::LSHIFT:
+			m_player->VMove(ent::Entity::vmove_t::DOWN, &m_time);
 			break;
-
 		}
 	}
 	void Engine::RecieveMouseMovement(glm::vec2 newMousePosition)
 	{
-
+		m_camera.Look(newMousePosition, m_variableConfigs.mouseSensitivity);
 	}
 	chunk::Chunk::WCoordChunk Engine::CalculateChunkCoordinateOfWPos(const glm::vec3& v) const
 	{
@@ -122,5 +128,12 @@ namespace minecraft
 		unsigned char z = wcc.wpos.z == 0 ? static_cast<unsigned char>(v.z + 8) :
 			static_cast<unsigned char>(v.z - (wcc.wpos.z * 16 + 8 * (-wcc.wpos.z / wcc.wpos.z)));
 		return { x , z };
+	}
+	void Engine::UpdateUniformData(void)
+	{
+		m_udata.viewMatrix = m_camera.ViewMatrix();
+
+		m_time.deltaT = (double)((std::chrono::high_resolution_clock::now() - m_time.currentTime).count()) / 1000000000;
+		m_time.currentTime = std::chrono::high_resolution_clock::now();
 	}
 }

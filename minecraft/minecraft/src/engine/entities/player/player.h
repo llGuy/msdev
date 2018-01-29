@@ -3,6 +3,8 @@
 
 #include "../entity.h"
 
+#include <iostream>
+
 namespace minecraft
 {
 	namespace ent
@@ -13,9 +15,9 @@ namespace minecraft
 		public:
 			struct Name
 			{
-				char* name;
+				std::string name;
 			};
-			explicit Player(Name name);
+			explicit Player(void);
 		public:
 			/* so that the camera can bind to a certain entity */
 			glm::vec3* EntityViewDirection(void) override;
@@ -24,6 +26,7 @@ namespace minecraft
 			void UpdData(void) override;
 			void Move(const move_t&& movement, data::Time* time) override;
 			void Strafe(const strafe_t&& strafe, data::Time* time) override;
+			void VMove(const vmove_t&& vmovement, data::Time* time) override;
 			float Speed(data::Time* time) const;
 		private:
 			Name m_name;

@@ -35,7 +35,7 @@ namespace minecraft
 		};
 		explicit Engine(signed int seed);
 		void AfterGLEWInit(unsigned int wwidth, unsigned int wheight, 
-			glm::vec2 cursorPos, ent::Player::Name name);
+			glm::vec2 cursorPos);
 	public:
 		/* getters */
 		glm::vec3 BlockWPos(glm::vec3 wpos);
@@ -51,6 +51,7 @@ namespace minecraft
 		WVec2 CalculateCoordsInChunks(const glm::vec2& worldxz);
 		chunk::Chunk::WCoordChunk CalculateChunkCoordinateOfWPos(const glm::vec3& v) const;
 		CVec2 CalculateBlockCoordInChunk(const chunk::Chunk::WCoordChunk& wcc, const glm::vec3& v) const;
+		void UpdateUniformData(void);
 	private:
 		ent::Camera m_camera;
 		ent::Entity* m_player;
@@ -61,7 +62,7 @@ namespace minecraft
 		configs::VConfigs m_variableConfigs;
 		configs::CConfigs m_constantConfigs;
 		chunk::cmap::CMap m_chunkMap;
-		::sh::SHProgram m_shprogram;
+		::sh::SHProgram m_chunkshprogram;
 		signed int m_seed;
 	};
 }

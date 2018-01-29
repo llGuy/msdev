@@ -11,12 +11,13 @@ namespace chunk
 			glBindVertexArray(m_vaoID);
 
 			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, sizeof(float) * 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3 + sizeof(unsigned int), 0);
-			glVertexAttribDivisor(0, 1);
-
 			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, sizeof(unsigned int), GL_UNSIGNED_INT, GL_FALSE,
+
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3 + sizeof(unsigned int), 0);
+			glVertexAttribPointer(1, 1, GL_UNSIGNED_INT, GL_FALSE,
 				sizeof(float) * 3 + sizeof(unsigned int), (void*)(sizeof(float) * 3));
+
+			glVertexAttribDivisor(0, 1);
 			glVertexAttribDivisor(1, 1);
 		}
 		void CGPUVAO::Bind(void) const

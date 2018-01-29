@@ -18,13 +18,15 @@ namespace minecraft
 		}
 		glm::mat4& Camera::ViewMatrix(void)
 		{
-			m_viewMatrix = glm::lookAt(*m_boundEntity->EntityWorldPosition(), 
-				*m_boundEntity->EntityWorldPosition() + *m_boundEntity->EntityViewDirection(), UP);
+			glm::vec3 position = *m_boundEntity->EntityWorldPosition();
+			glm::vec3 center = position + *m_boundEntity->EntityViewDirection();
+			m_viewMatrix = glm::lookAt(position, center, UP);
 			return m_viewMatrix;
 		}
 		void Camera::Look(glm::vec2 newCursorPosition, float sensitivity)
 		{
-			if (m_currentCursorPosition != newCursorPosition)
+			if (glm::all(glm::lessThan(
+				newCursorPosition - m_currentCursorPosition, glm::vec2(0.00001f))))
 			{
 				glm::vec2 mouseDelta = newCursorPosition - m_currentCursorPosition;
 				/* rotating around the y axis*/

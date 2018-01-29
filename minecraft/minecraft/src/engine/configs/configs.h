@@ -9,6 +9,7 @@ namespace minecraft
 		{
 			float FOV;
 			float renderDistance;
+			float mouseSensitivity;
 		};
 		
 		/* cannot change */

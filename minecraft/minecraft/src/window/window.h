@@ -16,13 +16,12 @@ public:
 	void Update(void);
 	const bool WindowOpen(void);
 private:
-	minecraft::ent::Player::Name QueryName(void);
 	void WindowInit(void);
 	void GLFWInit(void);
 	void GLEWInit(void);
 	void PollKeys(void);
 	void PollMouseMovement(void);
-	void AfterGLEWInit(minecraft::ent::Player::Name pname);
+	void AfterGLEWInit(void);
 private:
 	unsigned int m_width;
 	unsigned int m_height;
