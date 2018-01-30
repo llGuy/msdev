@@ -60,6 +60,7 @@ namespace minecraft
 		m_udataloc.eyePositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "eye_position");
 
 		m_udata.projectionMatrix = glm::perspective(m_variableConfigs.FOV, (float)wwidth / wheight, 0.1f, 50.0f);
+		m_udata.lightPosition = glm::vec3(0.0f, 100.0f, 0.0f);
 	}
 	void Engine::AfterGLEWInit(unsigned int wwidth, unsigned int wheight, 
 		glm::vec2 cursorPosition)
@@ -132,6 +133,7 @@ namespace minecraft
 	void Engine::UpdateUniformData(void)
 	{
 		m_udata.viewMatrix = m_camera.ViewMatrix();
+		m_udata.eyePosition = *(m_player->EntityWorldPosition());
 
 		m_time.deltaT = (double)((std::chrono::high_resolution_clock::now() - m_time.currentTime).count()) / 1000000000;
 		m_time.currentTime = std::chrono::high_resolution_clock::now();

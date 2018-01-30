@@ -13,7 +13,7 @@ namespace chunk
 		void CGPUHandler::Init(BlockYStrip* ys,
 			unsigned int index, signed int y, WVec2 chunkCoords, WVec2 negCorner)
 		{
-			Block* b = &(ys->ystrip[index]);
+			Block* b = &(ys->ystrip[y]);
 			glm::vec3 position = b->WPos(chunkCoords, y, negCorner);
 			m_blocks.push_back({ position, b->BlockType() });
 		}

@@ -45,8 +45,10 @@ namespace minecraft
 			{
 			case Entity::strafe_t::RIGHT:
 				m_playerPosition += moveVector * Speed(time);
+				break;
 			case Entity::strafe_t::LEFT:
 				m_playerPosition -= moveVector * Speed(time);
+				break;
 			}
 		}
 		void Player::VMove(const vmove_t&& vmovement, data::Time* time)
@@ -56,13 +58,15 @@ namespace minecraft
 			{
 			case Entity::vmove_t::UP:
 				m_playerPosition += moveVector * Speed(time);
+				break;
 			case Entity::vmove_t::DOWN:
 				m_playerPosition -= moveVector * Speed(time);
+				break;
 			}
 		}
 		float Player::Speed(data::Time* time) const
 		{
-			return m_speed * static_cast<float>(time->deltaT);
+			return m_speed * static_cast<float>(time->deltaT) * 10.0f;
 		}
 	}
 }

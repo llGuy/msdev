@@ -21,14 +21,14 @@ namespace chunk
 			{
 				for (unsigned int x = 0; x < 16; ++x)
 				{
-					for (unsigned int y = 0; y < 50; ++y)
+					for (unsigned int y = 0; y < 20; ++y)
 					{
 						CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
 						/* TEMPORARY THAT THE BLOCK TYPE IS DIRT */
 						/* THIS WILL CHANGE LATER */
 						BlockYStrip& bys = m_blocks[Index(cc)];
-						bys.ystrip[y - 25] = Block(CompressChunkCoord(cc), Block::BlType::DIRT);
-						m_gpuh.Init(&bys, Index(cc), y - 25, chunkCoords, negCorner);
+						bys.ystrip[y - 10] = Block(CompressChunkCoord(cc), Block::BlType::DIRT);
+						m_gpuh.Init(&bys, Index(cc), y - 10, chunkCoords, negCorner);
 					}
 				}
 			}

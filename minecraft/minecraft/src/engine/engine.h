@@ -64,6 +64,7 @@ namespace minecraft
 		chunk::cmap::CMap m_chunkMap;
 		::sh::SHProgram m_chunkshprogram;
 		signed int m_seed;
+		float m_fps;
 	};
 }
 

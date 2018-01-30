@@ -25,9 +25,9 @@ namespace minecraft
 		}
 		void Camera::Look(glm::vec2 newCursorPosition, float sensitivity)
 		{
-			if (glm::all(glm::lessThan(
-				newCursorPosition - m_currentCursorPosition, glm::vec2(0.00001f))))
-			{
+			//if (glm::all(glm::lessThan(
+				//newCursorPosition - m_currentCursorPosition, glm::vec2(0.00001f))))
+			//{
 				glm::vec2 mouseDelta = newCursorPosition - m_currentCursorPosition;
 				/* rotating around the y axis*/
 				*m_boundEntity->EntityViewDirection() = glm::mat3(glm::rotate(glm::radians(-mouseDelta.x) * sensitivity, UP)) * 
@@ -37,7 +37,7 @@ namespace minecraft
 				*(m_boundEntity->EntityViewDirection()) = glm::mat3(glm::rotate(glm::radians(-mouseDelta.y) * 0.02f, toRotateAround))
 					* *(m_boundEntity->EntityViewDirection());
 				m_currentCursorPosition = newCursorPosition;
-			}
+			//}
 		}
 		Camera& Camera::operator=(const Camera&& cam)
 		{

@@ -20,7 +20,7 @@ Window::~Window(void)
 }
 void Window::Draw(void)
 { 
-	glClearColor(1.0f, 1.0f, 1.0f, 0.2f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.2f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	m_engine.Render();
 }
@@ -84,7 +84,7 @@ void Window::PollKeys(void)
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_W))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::W); 
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_A))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::A);
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::S);
-	if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::D);
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_D))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::D);
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_SPACE))		m_engine.RecieveKeyInput(minecraft::Engine::key_t::SPACE);
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_LEFT_SHIFT))	m_engine.RecieveKeyInput(minecraft::Engine::key_t::LSHIFT);
 }
