@@ -11,6 +11,6 @@ int main(int argc, char* argv[])
 		window.Draw();
 		window.Update();
 	}
-	
+
 	return 0;
 }

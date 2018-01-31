@@ -17,7 +17,8 @@ vec3 CalculateNormal(vec3 v[3])
 	vec3 diffWorldPos2 = normalize(v[2] - v[0]);
 	return normalize(cross(diffWorldPos1, diffWorldPos2));
 }
-void CreateVertex(vec3 offset, vec3 v[3])
+
+void CreateVertex(vec3 offset, vec3 n)
 {
 	vec3 actual_offset = offset * 0.5f;
 	vec3 world_position = pass_world_position[0] + actual_offset;
@@ -25,92 +26,48 @@ void CreateVertex(vec3 offset, vec3 v[3])
 	vec4 view_position = view_matrix * vec4(world_position, 1.0f);
 
 	gl_Position = projection_matrix * view_position;
-	vec3 inormal = CalculateNormal(v);
-	if ((isinf(inormal.x) || isinf(inormal.y) || isinf(inormal.y)) || 
-		(isnan(inormal.x) || isnan(inormal.y) || isnan(inormal.z)))
-		normal = vec3(0.0f, 1.0f, 0.0f);
-	else normal = inormal;
+	
+	normal = n;
 	vertex_position = world_position;
 	EmitVertex();
 }
 
+void CreateFaceVertex(vec3 flags, float vcomp1, float vcomp2, unsigned int i)
+{
+	vec3 v1;
+	v1[i] = flags[i];
+	v1[(i + 1) % 3] = vcomp1;
+	v1[(i + 2) % 3] = vcomp2;
+	CreateVertex(v1, flags);
+}
+
+void CreateFace(vec3 flags)
+{
+	for (unsigned int i = 0; i < 3; ++i)
+	{
+		if (abs(flags[i]) != 0)
+		{
+			CreateFaceVertex(flags, -1.0f, -1.0f, i);
+			CreateFaceVertex(flags, 1.0f, -1.0f, i);
+			CreateFaceVertex(flags, -1.0f, 1.0f, i);
+			CreateFaceVertex(flags, 1.0f, 1.0f, i);
+			EndPrimitive();
+			return;
+		}
+	}
+}
+
+void CreateCube(void)
+{
+	CreateFace(vec3(1.0f, 0.0f, 0.0f));
+	CreateFace(vec3(-1.0f, 0.0f, 0.0f));
+	CreateFace(vec3(0.0f, 1.0f, 0.0f));
+	CreateFace(vec3(0.0f, -1.0f, 0.0f));
+	CreateFace(vec3(0.0f, 0.0f, 1.0f));
+	CreateFace(vec3(0.0f, 0.0f, -1.0f));
+}
 
 void main()
 {
-	vec3 v1s[3] = {
-		vec3(-1.0, 1.0, 1.0),
-		vec3(-1.0, -1.0, 1.0),
-		vec3(1.0, 1.0, 1.0)
-	};
-	CreateVertex(vec3(-1.0, 1.0, 1.0), v1s);
-	CreateVertex(vec3(-1.0, -1.0, 1.0), v1s);
-	CreateVertex(vec3(1.0, 1.0, 1.0), v1s);
-	CreateVertex(vec3(1.0, -1.0, 1.0), v1s);
-
-	EndPrimitive();
-
-	vec3 v2s[3] = {
-		vec3(1.0, 1.0, 1.0),
-		vec3(1.0, -1.0, 1.0),
-		vec3(1.0, 1.0, -1.0)
-	};
-
-	CreateVertex(vec3(1.0, 1.0, 1.0), v2s);
-	CreateVertex(vec3(1.0, -1.0, 1.0), v2s);
-	CreateVertex(vec3(1.0, 1.0, -1.0), v2s);
-	CreateVertex(vec3(1.0, -1.0, -1.0), v2s);
-
-	EndPrimitive();
-
-	vec3 v3s[3] = {
-		vec3(1.0, 1.0, -1.0),
-		vec3(1.0, -1.0, -1.0),
-		vec3(-1.0, 1.0, -1.0)
-	};
-
-	CreateVertex(vec3(1.0, 1.0, -1.0), v3s);
-	CreateVertex(vec3(1.0, -1.0, -1.0), v3s);
-	CreateVertex(vec3(-1.0, 1.0, -1.0), v3s);
-	CreateVertex(vec3(-1.0, -1.0, -1.0), v3s);
-
-	EndPrimitive();
-
-	vec3 v4s[3] = {
-		vec3(-1.0, 1.0, -1.0),
-		vec3(-1.0, -1.0, -1.0),
-		vec3(-1.0, 1.0, 1.0)
-	};
-
-	CreateVertex(vec3(-1.0, 1.0, -1.0), v4s);
-	CreateVertex(vec3(-1.0, -1.0, -1.0), v4s);
-	CreateVertex(vec3(-1.0, 1.0, 1.0), v4s);
-	CreateVertex(vec3(-1.0, -1.0, 1.0), v4s);
-
-	EndPrimitive();
-
-	vec3 v5s[3] = {
-		vec3(1.0, 1.0, 1.0),
-		vec3(1.0, 1.0, -1.0),
-		vec3(-1.0, 1.0, 1.0)
-	};
-
-	CreateVertex(vec3(1.0, 1.0, 1.0), v5s);
-	CreateVertex(vec3(1.0, 1.0, -1.0), v5s);
-	CreateVertex(vec3(-1.0, 1.0, 1.0), v5s);
-	CreateVertex(vec3(-1.0, 1.0, -1.0), v5s);
-
-	EndPrimitive();
-
-	vec3 v6s[3] = {
-		vec3(-1.0, -1.0, 1.0),
-		vec3(-1.0, -1.0, -1.0),
-		vec3(1.0, -1.0, 1.0)
-	};
-
-	CreateVertex(vec3(-1.0, -1.0, 1.0), v6s);
-	CreateVertex(vec3(-1.0, -1.0, -1.0), v6s);
-	CreateVertex(vec3(1.0, -1.0, 1.0), v6s);
-	CreateVertex(vec3(1.0, -1.0, -1.0), v6s);
-
-	EndPrimitive();
+	CreateCube();
 }
