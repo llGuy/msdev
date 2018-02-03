@@ -1,21 +1,22 @@
 #include "cgpubuffer.h"
+#include "gpublockdata.h"
 
 namespace chunk
 {
 	namespace gpu
 	{
 		/* class CGPUVAO: */
-		void CGPUVAO::Init(void)
+		void CGPUVAO::Init(void* bd)
 		{
+			BData* bdata = static_cast<BData*>(bd);
 			glGenVertexArrays(1, &m_vaoID);
 			glBindVertexArray(m_vaoID);
 
 			glEnableVertexAttribArray(0);
 			glEnableVertexAttribArray(1);
 
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3 + sizeof(unsigned int), 0);
-			glVertexAttribPointer(1, 1, GL_UNSIGNED_INT, GL_FALSE,
-				sizeof(float) * 3 + sizeof(unsigned int), (void*)(sizeof(float) * 3));
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(*bdata), 0);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(*bdata), (void*)(sizeof(float) * 3));
 
 			glVertexAttribDivisor(0, 1);
 			glVertexAttribDivisor(1, 1);
@@ -36,7 +37,7 @@ namespace chunk
 		{
 			m_vao = new CGPUVAO();
 			BufferInit(components, bd);
-			m_vao->Init();
+			m_vao->Init(bd);
 			UnBind();
 		}
 

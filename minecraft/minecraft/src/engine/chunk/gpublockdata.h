@@ -11,7 +11,7 @@ namespace chunk
 		struct BData
 		{
 			glm::vec3 pos;
-			Block::BlType tex;
+			TextureData tex;
 		};
 	}
 }

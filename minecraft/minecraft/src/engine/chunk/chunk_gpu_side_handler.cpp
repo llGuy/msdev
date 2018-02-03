@@ -1,6 +1,7 @@
 #include "chunk_gpu_side_handler.h"
 #include "chunk_data_base.h"
 
+
 namespace chunk
 {
 	namespace gpu
@@ -15,7 +16,7 @@ namespace chunk
 		{
 			Block* b = &(ys->ystrip[y]);
 			glm::vec3 position = b->WPos(chunkCoords, y, negCorner);
-			m_blocks.push_back({ position, b->BlockType() });
+			m_blocks.push_back({ position, b->TextureD() });
 		}
 
 		::std::size_t CGPUHandler::NumBlocks(void)

@@ -23,42 +23,25 @@ namespace chunk
 		void Init(WVec2 chunkCoords, WVec2 negCorner)
 		{
 			GenerateCorners(negCorner);
-
 			m_gradientVectors = m_perlinNoiseGenerator->GVectors(m_corners);
-			std::cout << "chunk coordinates " << chunkCoords.x << " , " << chunkCoords.z << std::endl;
-			std::cout << "corners " << std::endl;
-			std::cout << "nn " << m_corners.nn << std::endl;
-			std::cout << "np " << m_corners.np << std::endl;
-			std::cout << "pn " << m_corners.pn << std::endl;
-			std::cout << "pp " << m_corners.pp << std::endl;
-			std::cout << "gradient vectors" << std::endl;
-			std::cout << "nn " << m_gradientVectors.nn << std::endl;
-			std::cout << "np " << m_gradientVectors.np << std::endl;
-			std::cout << "pn " << m_gradientVectors.pn << std::endl;
-			std::cout << "pp " << m_gradientVectors.pp << std::endl;
-			std::cout << std::endl;
-
 			for (signed int z = 0; z < 16; ++z)
 			{
 				for (signed int x = 0; x < 16; ++x)
 				{
-					float blockx = static_cast<float>(negCorner.x + x);
-					float blockz = static_cast<float>(negCorner.z + z);
-					glm::vec2 blockxzworld = glm::vec2(blockx, blockz);
-					float height = m_perlinNoiseGenerator->Height(blockxzworld, m_corners, m_gradientVectors);
-					
+					float height = Height(negCorner, x, z);
 					for (signed int y = -30; y < static_cast<signed int>(height); ++y)
 					{
 						CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
-						/* TEMPORARY THAT THE BLOCK TYPE IS DIRT */
-						/* THIS WILL CHANGE LATER */
 						BlockYStrip& bys = m_blocks[Index(cc)];
-						bys.ystrip[y ] = Block(CompressChunkCoord(cc), Block::BlType::DIRT);
+
+						if(y == static_cast<signed int>(height) - 1)
+							bys.ystrip[y] = Block(CompressChunkCoord(cc), Block::BlType::GRASS);
+						else 
+							bys.ystrip[y] = Block(CompressChunkCoord(cc), Block::BlType::DIRT);
 						m_gpuh.Init(&bys, Index(cc), y, chunkCoords, negCorner);
 					}
 				}
 			}
-			std::cout << std::endl;
 		}
 		void AfterGLEWInit(void)
 		{
@@ -107,6 +90,13 @@ namespace chunk
 				negativeCorner.y - 0.5f);
 			m_corners.pp = glm::vec2(negativeCorner.x + 15.5f,
 				negativeCorner.y + 15.5f);
+		}
+		float Height(const WVec2& negCorner, const signed int& x, const signed int& z)
+		{
+			float blockx = static_cast<float>(negCorner.x + x);
+			float blockz = static_cast<float>(negCorner.z + z);
+			glm::vec2 blockxzworld = glm::vec2(blockx, blockz);
+			return m_perlinNoiseGenerator->Height(blockxzworld, m_corners, m_gradientVectors);
 		}
 	private:
 		CCorners m_corners;

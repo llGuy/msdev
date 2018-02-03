@@ -5,35 +5,35 @@
 namespace minecraft
 {
 	Engine::Engine(void)
-		: m_seed(static_cast<signed int>(time(NULL))), m_chunkMap(m_seed), m_chunkshprogram(), m_camera()
+		: m_seed(static_cast<signed int>(time(NULL))), m_chunkMap(m_seed), m_chunkshprogram(), m_camera(),
+		m_textureAtlas("res\\textures\\texture_atlas.png")
 	{
 		Init();
 	}
 	void Engine::Render(void)
 	{
+		glClearColor(0.0f, 0.2f, 0.8f, 0.2f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		UpdateUniformData();
 		for (auto it = m_chunkMap.Begin(); it != m_chunkMap.End(); ++it)
-		{
 			for (auto& jt : *it)
 			{
 				chunk::Chunk* c = &jt;
 				m_renderer.UniformData(m_udata, m_udataloc);
 				m_renderer.AInstancedRender(GL_POINTS, c->Vao(), 0, 1, c->NumBlocks());
 			}
-		}
 	}
 	void Engine::Init(void)
 	{
-		for (int z = 0; z < 4; ++z)
-			for (int x = 0; x < 4; ++x)
+		for (int z = 0; z < 8; ++z)
+			for (int x = 0; x < 8; ++x)
 			{
-				WVec2 c = { x - 2, z - 2 };
+				WVec2 c = { x - 4, z - 4 };
 				chunk::Chunk::WCoordChunk wcc = c;
 				m_chunkMap[wcc] = chunk::Chunk(wcc, m_seed);
 			}
 		Configure();
-	//	Block::TEXTURE_ATLAS.Init();
-	//	Block::TEXTURE_ATLAS.Bind(0);
 	}
 	void Engine::TimeDataInit(void)
 	{
@@ -48,7 +48,7 @@ namespace minecraft
 	}
 	void Engine::SHProgramInit(void)
 	{
-		std::vector<const char*> attribs({"vertex_position", "texture_type"});
+		std::vector<const char*> attribs({"vertex_position", "texture_data"});
 		m_chunkshprogram.Init("res\\shaders\\block\\vsh.shader", "res\\shaders\\block\\fsh.shader", 
 			"res\\shaders\\block\\gsh.shader");
 		m_chunkshprogram.Compile();
@@ -60,6 +60,7 @@ namespace minecraft
 		m_udataloc.viewMatrixLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "view_matrix");
 		m_udataloc.lightPositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "light_position");
 		m_udataloc.eyePositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "eye_position");
+		m_udataloc.skyColorLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "sky_color");
 
 		m_udata.projectionMatrix = glm::perspective(m_variableConfigs.FOV, (float)wwidth / wheight, 0.1f, 300.0f);
 		m_udata.lightPosition = glm::vec3(0.0f, 100.0f, 0.0f);
@@ -67,6 +68,8 @@ namespace minecraft
 	void Engine::AfterGLEWInit(unsigned int wwidth, unsigned int wheight, 
 		glm::vec2 cursorPosition)
 	{
+		m_textureAtlas.Init();
+		m_textureAtlas.Bind(0);
 		m_chunkMap.AfterGLEWInit();
 		SHProgramInit();
 		UDataInit(wwidth, wheight);
@@ -136,6 +139,7 @@ namespace minecraft
 	{
 		m_udata.viewMatrix = m_camera.ViewMatrix();
 		m_udata.eyePosition = *(m_player->EntityWorldPosition());
+		m_udata.skyColor = glm::vec3(0.0f, 0.1f, 0.9f);
 
 		m_time.deltaT = (double)((std::chrono::high_resolution_clock::now() - m_time.currentTime).count()) / 1000000000;
 		m_time.currentTime = std::chrono::high_resolution_clock::now();

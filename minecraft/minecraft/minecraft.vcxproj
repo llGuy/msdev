@@ -30,11 +30,13 @@
     <ClCompile Include="src\engine\renderer\renderer.cpp" />
     <ClCompile Include="src\engine\utility\glm_vecio.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\texture\texture.cpp" />
     <ClCompile Include="src\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\block\block.h" />
     <ClInclude Include="src\engine\buffer\vao.h" />
+    <ClInclude Include="src\engine\chunk\biome\biome.h" />
     <ClInclude Include="src\engine\chunk\blockystrip.h" />
     <ClInclude Include="src\engine\chunk\cgpubuffer.h" />
     <ClInclude Include="src\engine\chunk\chunk.h" />
@@ -65,6 +67,9 @@
     <None Include="res\shaders\block\fsh.shader" />
     <None Include="res\shaders\block\gsh.shader" />
     <None Include="res\shaders\block\vsh.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\texture_atlas.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -125,10 +130,10 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies/GLFW/include;$(SolutionDir)Dependencies/GLEW/include;$(SolutionDir)Dependencies</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;GLM_ENABLE_EXPERIMENTAL;GLEW_STATIC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_MBCS;GLM_ENABLE_EXPERIMENTAL;GLEW_STATIC;STB_IMAGE_IMPLEMENTATION</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies/GLFW/lib-vc2015;$(SolutionDir)Dependencies/GLEW/lib/Release/Win32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies/GLFW/lib-vc2015;$(SolutionDir)Dependencies/stb-master;$(SolutionDir)Dependencies/GLEW/lib/Release/Win32</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

@@ -51,6 +51,9 @@
     <ClCompile Include="src\engine\utility\glm_vecio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\texture\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\log.h">
@@ -134,10 +137,18 @@
     <ClInclude Include="src\engine\utility\glm_vecio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\chunk\biome\biome.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\block\vsh.shader" />
     <None Include="res\shaders\block\gsh.shader" />
     <None Include="res\shaders\block\fsh.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\texture_atlas.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

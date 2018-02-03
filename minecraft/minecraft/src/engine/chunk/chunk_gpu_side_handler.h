@@ -13,7 +13,6 @@ namespace chunk
 		class CGPUHandler
 		{
 		public:
-
 			explicit CGPUHandler(void);
 		public:
 			/* initializations are gradual							*/

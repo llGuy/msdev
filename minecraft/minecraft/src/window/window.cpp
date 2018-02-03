@@ -20,8 +20,6 @@ Window::~Window(void)
 }
 void Window::Draw(void)
 { 
-	glClearColor(0.0f, 0.2f, 0.8f, 0.2f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	m_engine.Render();
 }
 void Window::Update(void)

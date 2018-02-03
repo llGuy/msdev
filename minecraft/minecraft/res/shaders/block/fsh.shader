@@ -1,13 +1,16 @@
 #version 430
 
-uniform sampler2D diffuse;
+uniform sampler2D diffuse_texture;
 uniform vec3 light_position;
 uniform vec3 eye_position;
+uniform vec3 sky_color;
 
 out vec4 fragment_color;
 
-//in int texture_type;
 in vec3 normal;
+in float texture_data;
+in float visibility;
+in vec2 texture_coords;
 in vec3 vertex_position;
 
 float Diffuse(vec3 light_vector)
@@ -25,6 +28,17 @@ float Specular(vec3 light_vector)
 	return specularity;
 }
 
+vec4 Grass(void)
+{
+	return texture2D(diffuse_texture, texture_coords) + vec4(0.03f, 0.35f, 0.02f, 1.0f);
+}
+
+vec4 FragmentColor(void)
+{
+	if (abs(texture_data - 0.0f) < 0.0001f) return Grass();
+	return texture2D(diffuse_texture, texture_coords);
+}
+
 void main()
 {
 	vec3 light_vector = normalize(light_position - vertex_position);
@@ -38,5 +52,7 @@ void main()
 		diffuse = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	if (isinf(specular.r) && isnan(specular.r))
 		specular = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	fragment_color = clamp(diffuse, 0, 1) + vec4(0.0f, 0.5f, 0.0f, 1.0f) + clamp(specular, 0, 1) * 0.5f;
+
+	fragment_color = clamp(diffuse, 0, 1) * 0.4f + FragmentColor() + clamp(specular, 0, 1) * 0.2f;
+	//fragment_color = mix(vec4(0.0f, 0.0f, 0.0f, 1.0f), fragment_color, visibility);
 }

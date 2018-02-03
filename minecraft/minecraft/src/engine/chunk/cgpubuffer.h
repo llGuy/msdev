@@ -15,7 +15,7 @@ namespace chunk
 		{
 		public:
 			explicit CGPUVAO(void) = default;
-			void Init(void) override;
+			void Init(void* bd) override;
 			void Bind(void) const override;
 			void UnBind(void) const override;
 		};

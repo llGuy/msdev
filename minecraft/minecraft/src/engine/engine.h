@@ -54,6 +54,7 @@ namespace minecraft
 		CVec2 CalculateBlockCoordInChunk(const chunk::Chunk::WCoordChunk& wcc, const glm::vec3& v) const;
 		void UpdateUniformData(void);
 	private:
+		Texture m_textureAtlas;
 		ent::Camera m_camera;
 		ent::Entity* m_player;
 		data::Time m_time;

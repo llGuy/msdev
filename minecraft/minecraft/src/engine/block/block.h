@@ -12,6 +12,11 @@ struct CCoord
 {
 	unsigned char cc;
 };
+struct TextureData
+{
+	// the top, sides, and bottom texture coordinates are stored in vec3
+	glm::vec3 topSidesBottom;
+};
 
 class Block
 {
@@ -25,6 +30,7 @@ public:
 	//static unsigned int m_textures[3];
 
 	static const unsigned int AVAILABLE_TEXTURES;
+	static const TextureData BLOCK_TEXTURE_DATA[static_cast<signed int>(BlType::INV)];
 public:
 	explicit Block(void) = default;
 	explicit Block(const CCoord& cc, const BlType& bt);
@@ -34,9 +40,11 @@ public:
 	glm::vec3 WPos(const WVec2 chunkCoordinate, signed int y, const WVec2 negativeCornerWPos) const;
 	CVec2 ExtrCPos(void) const;
 	const BlType BlockType(void) const;
+	const TextureData& TextureD(void);
 private:
 	CCoord m_cc;
 	BlType m_bt;
+	TextureData m_textureData;
 };
 
 #endif
