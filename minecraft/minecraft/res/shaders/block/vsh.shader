@@ -5,11 +5,15 @@ in layout(location = 1) vec3 texture_data;
 
 out vec3 pass_world_position;
 out vec3 pass_texture_data;
+out float pass_visibility;
 
 uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
 uniform vec3 light_position;
 uniform vec3 eye_position;
+
+const float density = 0.0071;
+const float gradient = 1.5;
 
 void main()
 {

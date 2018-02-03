@@ -5,6 +5,7 @@ layout(triangle_strip, max_vertices = 24) out;
 
 in vec3 pass_world_position[];
 in vec3 pass_texture_data[];
+in float pass_visibility[];
 
 out vec3 normal;
 out float texture_data;
@@ -91,28 +92,31 @@ float CreateOutTextureData(int f)
 	return pass_texture_data[0][f];
 }
 
-float CalculateFog(vec4 relativeToCamera)
+float CalculateFog(vec4 relativeToCameraPosition)
 {
-	float distance = length(relativeToCamera.xyz);
+	float distance = length(relativeToCameraPosition.xyz);
 	float vis = exp(-pow((distance * DENSITY), GRADIENT));
-	vis = clamp(visibility, 0.0f, 1.0f);
+	vis = clamp(vis, 0.0, 1.0);
 	return vis;
 }
 
 void CreateVertex(vec3 offset, vec3 n, vec2 tcoords, int f)
 {
+	// calculating world position
 	vec3 actual_offset = offset * 0.5f;
 	vec3 world_position = pass_world_position[0] + actual_offset;
-
+	// position relative to the camera
 	vec4 view_position = view_matrix * vec4(world_position, 1.0f);
-
 	gl_Position = projection_matrix * view_position;
-	
+	// texture coordinates
 	texture_coords = tcoords;
-	//visibility = CalculateFog(view_position);
+	// fog calculations
+	vec4 relativeToCameraPosition = view_position;
+	visibility = CalculateFog(relativeToCameraPosition);
+	// which face the vertex belongs to
 	texture_data = CreateOutTextureData(f);
+	// normal
 	normal = n;
-	
 	vertex_position = world_position;
 	EmitVertex();
 }

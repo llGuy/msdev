@@ -54,5 +54,5 @@ void main()
 		specular = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	fragment_color = clamp(diffuse, 0, 1) * 0.4f + FragmentColor() + clamp(specular, 0, 1) * 0.2f;
-	//fragment_color = mix(vec4(0.0f, 0.0f, 0.0f, 1.0f), fragment_color, visibility);
+	fragment_color = mix(vec4(sky_color, 1.0), fragment_color, visibility);
 }

@@ -12,7 +12,7 @@ namespace minecraft
 	}
 	void Engine::Render(void)
 	{
-		glClearColor(0.0f, 0.2f, 0.8f, 0.2f);
+		glClearColor(m_udata.skyColor.r, m_udata.skyColor.g, m_udata.skyColor.b, 0.2f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		UpdateUniformData();
