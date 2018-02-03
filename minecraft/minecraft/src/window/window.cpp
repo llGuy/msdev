@@ -7,7 +7,7 @@
 #include "../log.h"
 
 Window::Window(unsigned int width, unsigned int height, const char* title)
-	: m_width(width), m_height(height), m_title(title), m_engine(0)
+	: m_width(width), m_height(height), m_title(title), m_engine()
 {
 	// all initializations
 	GLFWInit();
@@ -20,7 +20,7 @@ Window::~Window(void)
 }
 void Window::Draw(void)
 { 
-	glClearColor(0.0f, 0.0f, 0.0f, 0.2f);
+	glClearColor(0.0f, 0.2f, 0.8f, 0.2f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	m_engine.Render();
 }

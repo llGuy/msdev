@@ -4,8 +4,8 @@
 
 namespace minecraft
 {
-	Engine::Engine(signed int seed)
-		: m_seed(seed), m_chunkMap(), m_chunkshprogram(), m_camera()
+	Engine::Engine(void)
+		: m_seed(static_cast<signed int>(time(NULL))), m_chunkMap(m_seed), m_chunkshprogram(), m_camera()
 	{
 		Init();
 	}
@@ -24,14 +24,16 @@ namespace minecraft
 	}
 	void Engine::Init(void)
 	{
-		for (int i = 0; i < 4; ++i)
-			for (int j = 0; j < 4; ++j)
+		for (int z = 0; z < 4; ++z)
+			for (int x = 0; x < 4; ++x)
 			{
-				WVec2 c = { j - 2, i - 2 };
+				WVec2 c = { x - 2, z - 2 };
 				chunk::Chunk::WCoordChunk wcc = c;
-				m_chunkMap[wcc] = chunk::Chunk(wcc);
+				m_chunkMap[wcc] = chunk::Chunk(wcc, m_seed);
 			}
 		Configure();
+	//	Block::TEXTURE_ATLAS.Init();
+	//	Block::TEXTURE_ATLAS.Bind(0);
 	}
 	void Engine::TimeDataInit(void)
 	{
@@ -59,7 +61,7 @@ namespace minecraft
 		m_udataloc.lightPositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "light_position");
 		m_udataloc.eyePositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "eye_position");
 
-		m_udata.projectionMatrix = glm::perspective(m_variableConfigs.FOV, (float)wwidth / wheight, 0.1f, 50.0f);
+		m_udata.projectionMatrix = glm::perspective(m_variableConfigs.FOV, (float)wwidth / wheight, 0.1f, 300.0f);
 		m_udata.lightPosition = glm::vec3(0.0f, 100.0f, 0.0f);
 	}
 	void Engine::AfterGLEWInit(unsigned int wwidth, unsigned int wheight, 

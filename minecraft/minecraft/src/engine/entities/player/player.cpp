@@ -40,7 +40,7 @@ namespace minecraft
 		}
 		void Player::Strafe(const strafe_t&& strafe, data::Time* time)
 		{
-			glm::vec3 moveVector = glm::cross(m_playerViewDirection, UP);
+			glm::vec3 moveVector = glm::normalize(glm::cross(m_playerViewDirection, UP));
 			switch (strafe)
 			{
 			case Entity::strafe_t::RIGHT:

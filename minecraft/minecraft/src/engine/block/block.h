@@ -21,7 +21,8 @@ public:
 	{
 		STONE, DIRT, GRASS, INV /* will add more types of blocks */
 	};
-	static tex_id m_textureID[3];
+	//static Texture TEXTURE_ATLAS;
+	//static unsigned int m_textures[3];
 
 	static const unsigned int AVAILABLE_TEXTURES;
 public:

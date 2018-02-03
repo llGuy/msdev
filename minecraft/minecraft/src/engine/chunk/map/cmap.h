@@ -25,8 +25,8 @@ namespace chunk
 		public:
 			typedef std::vector<std::list<Chunk>>::iterator iterator;
 
-			CMap(void)
-				: m_nll(4), m_size(0)
+			CMap(signed int seed)
+				: m_nll(4), m_size(0), m_seed(seed)
 			{
 				for (unsigned int i = 0; i < m_nll; ++i)
 					m_llists.push_back(std::list<Chunk>());
@@ -69,7 +69,7 @@ namespace chunk
 					m_nll *= 2;
 				}
 				int h = CHash()(v) % m_nll;
-				m_llists[h].push_back(Chunk());
+				m_llists[h].push_back(Chunk(m_seed));
 				Chunk& newChunk = m_llists[h].back();
 				++m_size;
 				return newChunk;
@@ -80,6 +80,7 @@ namespace chunk
 			std::size_t m_nll;
 			/* size of the Chunk Map */
 			std::size_t m_size;
+			signed int m_seed;
 		};
 	}
 }

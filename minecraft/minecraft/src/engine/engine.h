@@ -12,6 +12,7 @@
 #include "configs/configs.h"
 #include "entities/player/player.h"
 #include "entities/camera/camera.h"
+#include "../texture/texture.h"
 
 namespace minecraft
 {
@@ -33,7 +34,7 @@ namespace minecraft
 			
 			LSHIFT			// crouch
 		};
-		explicit Engine(signed int seed);
+		explicit Engine(void);
 		void AfterGLEWInit(unsigned int wwidth, unsigned int wheight, 
 			glm::vec2 cursorPos);
 	public:

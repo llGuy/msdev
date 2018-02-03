@@ -6,32 +6,59 @@
 #include "../block/block.h"
 #include "chunk_gpu_side_handler.h"
 #include "cvec2.h"
+#include "noise/regular/reg_perlin_noise.h"
 #include "blockystrip.h"
+#include "../utility/glm_vecio.h"
 
 namespace chunk
 {
 	class ChunkDB
 	{
 	public:
-		explicit ChunkDB(void) = default;
+		explicit ChunkDB(signed int seed)
+			: m_perlinNoiseGenerator(new noise::Reg_PerlinNoise(seed))
+		{
+		}
 	public:
 		void Init(WVec2 chunkCoords, WVec2 negCorner)
 		{
-			for (unsigned int z = 0; z < 16; ++z)
+			GenerateCorners(negCorner);
+
+			m_gradientVectors = m_perlinNoiseGenerator->GVectors(m_corners);
+			std::cout << "chunk coordinates " << chunkCoords.x << " , " << chunkCoords.z << std::endl;
+			std::cout << "corners " << std::endl;
+			std::cout << "nn " << m_corners.nn << std::endl;
+			std::cout << "np " << m_corners.np << std::endl;
+			std::cout << "pn " << m_corners.pn << std::endl;
+			std::cout << "pp " << m_corners.pp << std::endl;
+			std::cout << "gradient vectors" << std::endl;
+			std::cout << "nn " << m_gradientVectors.nn << std::endl;
+			std::cout << "np " << m_gradientVectors.np << std::endl;
+			std::cout << "pn " << m_gradientVectors.pn << std::endl;
+			std::cout << "pp " << m_gradientVectors.pp << std::endl;
+			std::cout << std::endl;
+
+			for (signed int z = 0; z < 16; ++z)
 			{
-				for (unsigned int x = 0; x < 16; ++x)
+				for (signed int x = 0; x < 16; ++x)
 				{
-					for (unsigned int y = 0; y < 20; ++y)
+					float blockx = static_cast<float>(negCorner.x + x);
+					float blockz = static_cast<float>(negCorner.z + z);
+					glm::vec2 blockxzworld = glm::vec2(blockx, blockz);
+					float height = m_perlinNoiseGenerator->Height(blockxzworld, m_corners, m_gradientVectors);
+					
+					for (signed int y = -30; y < static_cast<signed int>(height); ++y)
 					{
 						CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
 						/* TEMPORARY THAT THE BLOCK TYPE IS DIRT */
 						/* THIS WILL CHANGE LATER */
 						BlockYStrip& bys = m_blocks[Index(cc)];
-						bys.ystrip[y - 10] = Block(CompressChunkCoord(cc), Block::BlType::DIRT);
-						m_gpuh.Init(&bys, Index(cc), y - 10, chunkCoords, negCorner);
+						bys.ystrip[y ] = Block(CompressChunkCoord(cc), Block::BlType::DIRT);
+						m_gpuh.Init(&bys, Index(cc), y, chunkCoords, negCorner);
 					}
 				}
 			}
+			std::cout << std::endl;
 		}
 		void AfterGLEWInit(void)
 		{
@@ -66,8 +93,26 @@ namespace chunk
 			unsigned char z = static_cast<unsigned char>(cc.z);
 			return { static_cast<unsigned char>((x << 4) + z) };
 		}
+		void GenerateCorners(WVec2 negCorner)
+		{
+			glm::vec2 negativeCorner = glm::vec2(static_cast<float>(negCorner.x), static_cast<float>(negCorner.z));
+
+			/* using the negative corner of the chunk */
+			/* the program calculates the positions of the corners of the chunk */
+			m_corners.nn = glm::vec2(negativeCorner.x - 0.5f,
+				negativeCorner.y - 0.5f);
+			m_corners.np = glm::vec2(negativeCorner.x - 0.5f,
+				negativeCorner.y + 15.5f);
+			m_corners.pn = glm::vec2(negativeCorner.x + 15.5f,
+				negativeCorner.y - 0.5f);
+			m_corners.pp = glm::vec2(negativeCorner.x + 15.5f,
+				negativeCorner.y + 15.5f);
+		}
 	private:
+		CCorners m_corners;
 		gpu::CGPUHandler m_gpuh;
+		noise::PerlinNoise::GradientVectors m_gradientVectors;
+		noise::PerlinNoise* m_perlinNoiseGenerator;
 		BlockYStrip m_blocks[16 * 16];
 	};
 }

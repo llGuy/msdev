@@ -17,4 +17,12 @@ struct WVec2
 	{ return (x == v.x && z == v.z); }
 };
 
+struct CCorners
+{
+	glm::vec2 nn;
+	glm::vec2 np;
+	glm::vec2 pn;
+	glm::vec2 pp;
+};
+
 #endif

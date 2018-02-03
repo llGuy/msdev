@@ -1,9 +1,10 @@
 #include "block.h"
 
-const unsigned int Block::AVAILABLE_TEXTURES = 
-	static_cast<unsigned int>(Block::BlType::INV) - 1;
+//const unsigned int Block::AVAILABLE_TEXTURES = 
+//	static_cast<unsigned int>(Block::BlType::INV) - 1;
 
-tex_id Block::m_textureID[3] { 0 };
+//Texture Block::TEXTURE_ATLAS = Texture("res\\textures\\texture_atlas.png");
+//unsigned int Block::m_textures[3] = { 0 };
 
 Block::Block(const CCoord& cc, const BlType& bt)
 	: m_cc(cc), m_bt(bt)

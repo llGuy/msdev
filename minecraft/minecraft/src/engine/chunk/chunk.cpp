@@ -2,14 +2,14 @@
 
 namespace chunk
 {
-	Chunk::Chunk(const WCoordChunk& wcoordChunk)
-		: m_wcoordChunk(wcoordChunk)
+	Chunk::Chunk(const WCoordChunk& wcoordChunk, signed int seed)
+		: m_wcoordChunk(wcoordChunk), m_dataBase(seed)
 	{
 		Init();
 	}
 
-	Chunk::Chunk(const WCoordChunk&& wcoordChunk)
-		: m_wcoordChunk(wcoordChunk)
+	Chunk::Chunk(const WCoordChunk&& wcoordChunk, signed int seed)
+		: m_wcoordChunk(wcoordChunk), m_dataBase(seed)
 	{
 		Init();
 	}
