@@ -26,10 +26,10 @@ namespace minecraft
 	}
 	void Engine::Init(void)
 	{
-		for (int z = 0; z < 8; ++z)
-			for (int x = 0; x < 8; ++x)
+		for (int z = 0; z < 2; ++z)
+			for (int x = 0; x < 2; ++x)
 			{
-				WVec2 c = { x - 4, z - 4 };
+				WVec2 c = { x - x / 2, z - z / 2 };
 				chunk::Chunk::WCoordChunk wcc = c;
 				m_chunkMap[wcc] = chunk::Chunk(wcc, m_seed);
 			}
@@ -139,7 +139,7 @@ namespace minecraft
 	{
 		m_udata.viewMatrix = m_camera.ViewMatrix();
 		m_udata.eyePosition = *(m_player->EntityWorldPosition());
-		m_udata.skyColor = glm::vec3(0.0f, 0.1f, 0.9f);
+		m_udata.skyColor = glm::vec3(0.2f, 0.4f, 1.0f);
 
 		m_time.deltaT = (double)((std::chrono::high_resolution_clock::now() - m_time.currentTime).count()) / 1000000000;
 		m_time.currentTime = std::chrono::high_resolution_clock::now();

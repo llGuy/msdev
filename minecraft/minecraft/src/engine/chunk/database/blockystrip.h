@@ -2,7 +2,7 @@
 #define BLOCKYSTRIP
 
 #include <unordered_map>
-#include "../block/block.h"
+#include "../../block/block.h"
 
 namespace chunk
 {

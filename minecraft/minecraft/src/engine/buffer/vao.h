@@ -1,7 +1,7 @@
 #ifndef VAO_HEADER
 #define VAO_HEADER
 
-#include "../chunk/gpublockdata.h"
+#include "../chunk/gpu/gpublockdata.h"
 
 class VAO
 {

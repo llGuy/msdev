@@ -1,7 +1,7 @@
 #ifndef GPUBLOCKDATA_HEADER
 #define GPUBLOCKDATA_HEADER
 
-#include "../block/block.h"
+#include "../../block/block.h"
 #include <glm/glm.hpp>
 
 namespace chunk

@@ -54,6 +54,15 @@
     <ClCompile Include="src\texture\texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\chunk\biome\plains\plains.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\chunk\gpu\cgpubuffer\cgpubuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\chunk\gpu\gpuhandler\chunk_gpu_side_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\log.h">
@@ -138,6 +147,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\chunk\biome\biome.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\chunk\biome\plains\plains.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\chunk\loader\chunk_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\chunk\cdata\cvec2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\chunk\database\blockystrip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\chunk\database\chunk_data_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\chunk\gpu\cgpubuffer\cgpubuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\chunk\gpu\gpuhandler\chunk_gpu_side_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\chunk\gpu\gpublockdata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

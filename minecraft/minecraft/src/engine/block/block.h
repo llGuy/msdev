@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 
 #include "../../texture/texture.h"
-#include "../chunk/cvec2.h"
+#include "../chunk/cdata/cvec2.h"
 
 /* the coordinate inside the chunk */
 /* is stored in an unsigned char to make it RAM efficient */
@@ -24,7 +24,7 @@ public:
 	enum class BlType
 		: unsigned char
 	{
-		STONE, DIRT, GRASS, INV /* will add more types of blocks */
+		STONE, DIRT, GRASS, BEDROCK, INV /* will add more types of blocks */
 	};
 	//static Texture TEXTURE_ATLAS;
 	//static unsigned int m_textures[3];

@@ -37,54 +37,25 @@ struct FaceTextureMap
 	int f;
 };
 
-// top sides bottom
-FaceTextureMap GenerateTopFaceTextureMap(void)
+FaceTextureMap GenerateTextureMap(int index)
 {
 	float center = 0.0007f;
 	FaceTextureMap ftm;
-	float tdu = mod(pass_texture_data[0].x, 16) / 16.0f;
-	float tdv = floor(pass_texture_data[0].x / 16.0f);
+	float tdu = mod(pass_texture_data[0][index], 16) / 16.0f;
+	float tdv = floor(pass_texture_data[0][index] / 16.0f) / 16.0f;
 	ftm.tx00 = vec2(tdu + center, tdv + center);
 	ftm.tx01 = vec2(tdu + 1.0f / 16.0f - center, tdv + center);
 	ftm.tx10 = vec2(tdu + center, tdv + 1.0f / 16.0f - center);
 	ftm.tx11 = vec2(tdu + 1.0f / 16.0f - center, tdv + 1.0f / 16.0f - center);
-	ftm.f = 0;
-	return ftm;
-}
-
-FaceTextureMap GenerateSidesTextureMap(void)
-{
-	float center = 0.0007f;
-	FaceTextureMap ftm;
-	float tdu = mod(pass_texture_data[0].y, 16) / 16.0f;
-	float tdv = floor(pass_texture_data[0].y / 16.0f);
-	ftm.tx00 = vec2(tdu + center, tdv + center);
-	ftm.tx01 = vec2(tdu + 1.0f / 16.0f - center, tdv + center);
-	ftm.tx10 = vec2(tdu + center, tdv + 1.0f / 16.0f - center);
-	ftm.tx11 = vec2(tdu + 1.0f / 16.0f - center, tdv + 1.0f / 16.0f - center);
-	ftm.f = 1;
-	return ftm;
-}
-
-FaceTextureMap GenerateBottomTextureMap(void)
-{
-	float center = 0.0007f;
-	FaceTextureMap ftm;
-	float tdu = mod(pass_texture_data[0].z, 16) / 16.0f;
-	float tdv = floor(pass_texture_data[0].z / 16.0f);
-	ftm.tx00 = vec2(tdu + center, tdv + center);
-	ftm.tx01 = vec2(tdu + 1.0f / 16.0f - center, tdv + center);
-	ftm.tx10 = vec2(tdu + center, tdv + 1.0f / 16.0f - center);
-	ftm.tx11 = vec2(tdu + 1.0f / 16.0f - center, tdv + 1.0f / 16.0f - center);
-	ftm.f = 2;
+	ftm.f = index;
 	return ftm;
 }
 
 FaceTextureMap GenerateFaceTextureMap(vec3 flags)
 {
-	if (abs(flags.x) > 0.1f || abs(flags.z) > 0.1f) return GenerateSidesTextureMap();
-	else if (flags.y > 0.1f) return GenerateTopFaceTextureMap();
-	else if (flags.y  < -0.1f) return GenerateBottomTextureMap();
+	if (abs(flags.x) > 0.1f || abs(flags.z) > 0.1f) return GenerateTextureMap(1);
+	else if (flags.y > 0.1f) return GenerateTextureMap(0);
+	else if (flags.y  < -0.1f) return GenerateTextureMap(2);
 }
 
 float CreateOutTextureData(int f)

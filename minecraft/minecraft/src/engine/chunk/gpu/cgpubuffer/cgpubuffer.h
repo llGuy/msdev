@@ -3,8 +3,8 @@
 
 #include <iostream>
 
-#include "gpublockdata.h"
-#include "../buffer/vao.h"
+#include "../gpublockdata.h"
+#include "../../../buffer/vao.h"
 
 namespace chunk
 {
@@ -24,10 +24,10 @@ namespace chunk
 		{
 		public:
 			explicit CGPUBuffer(void) = default;
-			void Init(std::size_t components, BData* data);
+			void Load(std::size_t components, BData* data);
 			VAO* Vao(void);
 		private:
-			void BufferInit(std::size_t components, BData* data);
+			void LoadBuffer(std::size_t components, BData* data);
 			void UnBind(void) const;
 		private:
 			unsigned int m_bufferID;

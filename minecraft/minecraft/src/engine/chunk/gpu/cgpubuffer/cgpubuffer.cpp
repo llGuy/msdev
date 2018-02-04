@@ -1,5 +1,5 @@
 #include "cgpubuffer.h"
-#include "gpublockdata.h"
+#include "../gpublockdata.h"
 
 namespace chunk
 {
@@ -33,15 +33,15 @@ namespace chunk
 
 		/* class CGPUBuffer: */
 
-		void CGPUBuffer::Init(::std::size_t components, BData* bd)
+		void CGPUBuffer::Load(::std::size_t components, BData* bd)
 		{
 			m_vao = new CGPUVAO();
-			BufferInit(components, bd);
+			LoadBuffer(components, bd);
 			m_vao->Init(bd);
 			UnBind();
 		}
 
-		void CGPUBuffer::BufferInit(::std::size_t components, BData* bd)
+		void CGPUBuffer::LoadBuffer(::std::size_t components, BData* bd)
 		{
 			glGenBuffers(1, &m_bufferID);
 			glBindBuffer(GL_ARRAY_BUFFER, m_bufferID);

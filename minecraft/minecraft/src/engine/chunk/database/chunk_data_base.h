@@ -3,24 +3,25 @@
 
 #include <unordered_map>
 
-#include "../block/block.h"
-#include "chunk_gpu_side_handler.h"
-#include "cvec2.h"
-#include "noise/regular/reg_perlin_noise.h"
+#include "../../block/block.h"
+#include "../gpu/gpuhandler/chunk_gpu_side_handler.h"
+#include "../cdata/cvec2.h"
+#include "../noise/regular/reg_perlin_noise.h"
 #include "blockystrip.h"
-#include "../utility/glm_vecio.h"
+#include "../biome/plains/plains.h"
+#include "../../utility/glm_vecio.h"
 
 namespace chunk
 {
 	class ChunkDB
 	{
 	public:
-		explicit ChunkDB(signed int seed)
-			: m_perlinNoiseGenerator(new noise::Reg_PerlinNoise(seed))
+		explicit ChunkDB(signed int seed, const signed int mh)
+			: m_perlinNoiseGenerator(new noise::Reg_PerlinNoise(seed, mh))
 		{
 		}
 	public:
-		void Init(WVec2 chunkCoords, WVec2 negCorner)
+		void Load(WVec2 chunkCoords, WVec2 negCorner, Biome* biome)
 		{
 			GenerateCorners(negCorner);
 			m_gradientVectors = m_perlinNoiseGenerator->GVectors(m_corners);
@@ -33,19 +34,15 @@ namespace chunk
 					{
 						CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
 						BlockYStrip& bys = m_blocks[Index(cc)];
-
-						if(y == static_cast<signed int>(height) - 1)
-							bys.ystrip[y] = Block(CompressChunkCoord(cc), Block::BlType::GRASS);
-						else 
-							bys.ystrip[y] = Block(CompressChunkCoord(cc), Block::BlType::DIRT);
-						m_gpuh.Init(&bys, Index(cc), y, chunkCoords, negCorner);
+						bys.ystrip[y] = Block(CompressChunkCoord(cc), biome->BlockType(y, static_cast<signed int>(height) + 30, -30));
 					}
 				}
 			}
+			LoadGPUData(chunkCoords, negCorner);
 		}
 		void AfterGLEWInit(void)
 		{
-			m_gpuh.CGPUBuffersInit();
+			m_gpuh.LoadGPUBuffer();
 		}
 	public:
 		/* getter */
@@ -70,6 +67,43 @@ namespace chunk
 			return m_gpuh.Vao();
 		}
 	private:
+		void LoadGPUData(WVec2 chunkCoords, WVec2 negCorner)
+		{
+			for (signed int z = 0; z < 16; ++z)
+			{
+				for (signed int x = 0; x < 16; ++x)
+				{
+					CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
+					BlockYStrip& bys = m_blocks[Index(cc)];
+					for (auto& i : bys.ystrip)
+					{
+						if(BlockIsVisible(x, i.first, z, bys)) m_gpuh.Load(&bys, Index(cc), i.first, chunkCoords, negCorner);
+					}
+				}
+			}
+		}
+		bool BlockIsVisible(signed int x, signed int y, signed int z, const BlockYStrip& bys)
+		{
+			// is at the edge of the chunk
+			if (x == 15 || z == 15 || x == 0 || z == 0) return true;
+			// check x axis
+			CVec2 cc = { static_cast<unsigned char>(x + 1), static_cast<unsigned char>(z) };
+			if (m_blocks[Index(cc)].ystrip.find(y) == m_blocks[Index(cc)].ystrip.end()) return true;
+			cc = { static_cast<unsigned char>(x - 1), static_cast<unsigned char>(z) };
+			if (m_blocks[Index(cc)].ystrip.find(y) == m_blocks[Index(cc)].ystrip.end()) return true;
+
+			cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z + 1) };
+			if (m_blocks[Index(cc)].ystrip.find(y) == m_blocks[Index(cc)].ystrip.end()) return true;
+			cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z - 1) };
+			if (m_blocks[Index(cc)].ystrip.find(y) == m_blocks[Index(cc)].ystrip.end()) return true;
+
+			// check y axis
+			cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
+			if (m_blocks[Index(cc)].ystrip.find(y + 1) == m_blocks[Index(cc)].ystrip.end()) return true;
+			if (m_blocks[Index(cc)].ystrip.find(y - 1) == m_blocks[Index(cc)].ystrip.end()) return true;
+
+			else return false;
+		}
 		CCoord CompressChunkCoord(CVec2 cc) const
 		{
 			unsigned char x = static_cast<unsigned char>(cc.x);

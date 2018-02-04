@@ -20,9 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine\block\block.cpp" />
+    <ClCompile Include="src\engine\chunk\biome\plains\plains.cpp" />
     <ClCompile Include="src\engine\chunk\cgpubuffer.cpp" />
     <ClCompile Include="src\engine\chunk\chunk.cpp" />
     <ClCompile Include="src\engine\chunk\chunk_gpu_side_handler.cpp" />
+    <ClCompile Include="src\engine\chunk\gpu\cgpubuffer\cgpubuffer.cpp" />
+    <ClCompile Include="src\engine\chunk\gpu\gpuhandler\chunk_gpu_side_handler.cpp" />
     <ClCompile Include="src\engine\chunk\noise\regular\reg_perlin_noise.cpp" />
     <ClCompile Include="src\engine\engine.cpp" />
     <ClCompile Include="src\engine\entities\camera\camera.cpp" />
@@ -37,13 +40,21 @@
     <ClInclude Include="src\engine\block\block.h" />
     <ClInclude Include="src\engine\buffer\vao.h" />
     <ClInclude Include="src\engine\chunk\biome\biome.h" />
+    <ClInclude Include="src\engine\chunk\biome\plains\plains.h" />
     <ClInclude Include="src\engine\chunk\blockystrip.h" />
+    <ClInclude Include="src\engine\chunk\cdata\cvec2.h" />
     <ClInclude Include="src\engine\chunk\cgpubuffer.h" />
     <ClInclude Include="src\engine\chunk\chunk.h" />
     <ClInclude Include="src\engine\chunk\chunk_data_base.h" />
     <ClInclude Include="src\engine\chunk\chunk_gpu_side_handler.h" />
     <ClInclude Include="src\engine\chunk\cvec2.h" />
+    <ClInclude Include="src\engine\chunk\database\blockystrip.h" />
+    <ClInclude Include="src\engine\chunk\database\chunk_data_base.h" />
     <ClInclude Include="src\engine\chunk\gpublockdata.h" />
+    <ClInclude Include="src\engine\chunk\gpu\cgpubuffer\cgpubuffer.h" />
+    <ClInclude Include="src\engine\chunk\gpu\gpublockdata.h" />
+    <ClInclude Include="src\engine\chunk\gpu\gpuhandler\chunk_gpu_side_handler.h" />
+    <ClInclude Include="src\engine\chunk\loader\chunk_loader.h" />
     <ClInclude Include="src\engine\chunk\map\cmap.h" />
     <ClInclude Include="src\engine\chunk\noise\perlinnoise.h" />
     <ClInclude Include="src\engine\chunk\noise\regular\reg_perlin_noise.h" />

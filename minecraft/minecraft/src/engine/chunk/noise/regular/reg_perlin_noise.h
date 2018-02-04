@@ -11,7 +11,7 @@ namespace chunk
 			: public PerlinNoise
 		{
 		public:
-			explicit Reg_PerlinNoise(signed int seed);
+			explicit Reg_PerlinNoise(signed int seed, const signed int maxheight);
 		public:
 			float Height(const glm::vec2& blockwCoordXZ, const CCorners& coords, const GradientVectors& gv) override;
 			const GradientVectors GVectors(const CCorners& ccoords) override;
@@ -25,7 +25,6 @@ namespace chunk
 			}
 		private:
 			const signed int MAX;
-			const glm::vec2 m_permutations[4];
 		};
 	}
 }

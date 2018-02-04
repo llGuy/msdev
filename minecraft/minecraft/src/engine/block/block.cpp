@@ -3,14 +3,12 @@
 const unsigned int Block::AVAILABLE_TEXTURES = 
 	static_cast<unsigned int>(Block::BlType::INV);
 
-//Texture Block::TEXTURE_ATLAS = Texture("res\\textures\\texture_atlas.png");
-//unsigned int Block::m_textures[3] = { 0 };
-
 const TextureData Block::BLOCK_TEXTURE_DATA[static_cast<unsigned int>(BlType::INV)]
 {
 	{glm::vec3(1.0f, 1.0f, 1.0f)},
 	{glm::vec3(2.0f, 2.0f, 2.0f)},
-	{glm::vec3(0.0f, 3.0f, 2.0f)}
+	{glm::vec3(0.0f, 3.0f, 2.0f)},
+	{glm::vec3(17.0f, 17.0f, 17.0f)}
 };
 
 Block::Block(const CCoord& cc, const BlType& bt)

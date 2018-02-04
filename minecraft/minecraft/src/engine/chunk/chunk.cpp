@@ -3,20 +3,20 @@
 namespace chunk
 {
 	Chunk::Chunk(const WCoordChunk& wcoordChunk, signed int seed)
-		: m_wcoordChunk(wcoordChunk), m_dataBase(seed)
+		: m_wcoordChunk(wcoordChunk), m_biome(new Plains), m_dataBase(seed, m_biome->MaxHeight())
 	{
-		Init();
+		Load();
 	}
 
 	Chunk::Chunk(const WCoordChunk&& wcoordChunk, signed int seed)
-		: m_wcoordChunk(wcoordChunk), m_dataBase(seed)
+		: m_wcoordChunk(wcoordChunk), m_biome(new Plains), m_dataBase(seed, m_biome->MaxHeight())
 	{
-		Init();
+		Load();
 	}
 
-	void Chunk::Init(void)
+	void Chunk::Load(void)
 	{
-		m_dataBase.Init(m_wcoordChunk.wpos, NegativeCornerWPos());
+		m_dataBase.Load(m_wcoordChunk.wpos, NegativeCornerWPos(), m_biome);
 	}
 
 	void Chunk::AfterGLEWInit(void)

@@ -2,7 +2,7 @@
 #define PERLIN_NOISE
 
 #include <glm/glm.hpp>
-#include "../cvec2.h"
+#include "../cdata/cvec2.h"
 
 namespace chunk
 {

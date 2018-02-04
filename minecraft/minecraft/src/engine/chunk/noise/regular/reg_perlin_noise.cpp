@@ -6,8 +6,8 @@ namespace chunk
 {
 	namespace noise
 	{
-		Reg_PerlinNoise::Reg_PerlinNoise(signed int seed)
-			: MAX(20), m_permutations{ glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, -1.0f), glm::vec2(-1.0f, 1.0f), glm::vec2(-1.0f, -1.0f) }
+		Reg_PerlinNoise::Reg_PerlinNoise(signed int seed, const signed int maxheight)
+			: MAX(maxheight)
 		{
 			m_seed = seed;
 		}

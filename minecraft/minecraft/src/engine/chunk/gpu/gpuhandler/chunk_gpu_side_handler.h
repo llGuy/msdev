@@ -1,9 +1,9 @@
 #ifndef CHUNK_GPU_SIDE_HANDLER_HEADER
 #define CHUNK_GPU_SIDE_HANDLER_HEADER
 
-#include "blockystrip.h"
-#include "cgpubuffer.h"
-#include "gpublockdata.h"
+#include "../../database/blockystrip.h"
+#include "../cgpubuffer/cgpubuffer.h"
+#include "../gpublockdata.h"
 
 namespace chunk
 {
@@ -17,14 +17,14 @@ namespace chunk
 		public:
 			/* initializations are gradual							*/
 			/* (done in the for loop in the ChunkDB)				*/
-			void Init(BlockYStrip* ys, unsigned int index, signed int y,
+			void Load(BlockYStrip* ys, unsigned int index, signed int y,
 				WVec2 chunkCoords, WVec2 negCorner);
 			::std::size_t NumBlocks(void);
 		public:
 			/* gets called in Init to initialize the texture maps	*/
 			/* for the buffers to map   the blocks properly			*/
 			/* in order to instance the block drawing				*/
-			void CGPUBuffersInit(void);
+			void LoadGPUBuffer(void);
 			VAO* Vao(void);
 		private:
 			CGPUBuffer m_buff;
