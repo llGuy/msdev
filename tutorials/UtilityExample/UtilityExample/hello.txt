@@ -1,4 +1,0 @@
-argv[0]=Z:\Development\msdev\tutorials\UtilityExample\Debug\UtilityExample.exe
-argv[1]=hello
-argv[2]=world
-argv[3]=again
