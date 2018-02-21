@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{AE955A0A-7995-4197-B852-DE7D34C52716}</ProjectGuid>
-    <RootNamespace>parsercalculator</RootNamespace>
+    <ProjectGuid>{6995D4F6-A4A9-4791-A8B8-67B129237163}</ProjectGuid>
+    <RootNamespace>epictimer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -116,15 +116,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\parser\parser.cpp" />
-    <ClCompile Include="src\parser\token\handler\token_handler.cpp" />
+    <ClCompile Include="src\timer\timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\parser\expr\expr.h" />
-    <ClInclude Include="src\parser\parser.h" />
-    <ClInclude Include="src\parser\token\handler\token_handler.h" />
-    <ClInclude Include="src\parser\token\token\token.h" />
-    <ClInclude Include="src\parser\utility.h" />
+    <ClInclude Include="src\timer\timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

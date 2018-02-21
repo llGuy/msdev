@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{AE955A0A-7995-4197-B852-DE7D34C52716}</ProjectGuid>
-    <RootNamespace>parsercalculator</RootNamespace>
+    <ProjectGuid>{B482AC0E-9AFF-4434-A72B-108A31560953}</ProjectGuid>
+    <RootNamespace>colortest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -115,16 +115,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\parser\parser.cpp" />
-    <ClCompile Include="src\parser\token\handler\token_handler.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\parser\expr\expr.h" />
-    <ClInclude Include="src\parser\parser.h" />
-    <ClInclude Include="src\parser\token\handler\token_handler.h" />
-    <ClInclude Include="src\parser\token\token\token.h" />
-    <ClInclude Include="src\parser\utility.h" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
