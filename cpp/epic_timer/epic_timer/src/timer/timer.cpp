@@ -82,7 +82,7 @@ const Timet Timer::CalculateTime(void)
 	Timet t;
 	int32_t totalCasti32 = static_cast<int32_t>(m_total);
 	t.seconds = totalCasti32 % 60;
-	t.minutes = totalCasti32 / 60;
+	t.minutes = (totalCasti32 / 60) % 60;
 	t.hours = totalCasti32 / (60 * 60);
 
 	return t;
