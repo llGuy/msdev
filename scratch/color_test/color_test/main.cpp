@@ -1,13 +1,7 @@
-#include <windows.h>
+// letting us use functions like printing to the console
 #include <iostream>
 
 int main(void)
 {
-	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-	for (int32_t k = 0; k < 255; ++k)
-	{
-		SetConsoleTextAttribute(h, k);
-		std::cout << k << " hello world!" << std::endl;
-	}
-	std::cin.get();
+	
 }
