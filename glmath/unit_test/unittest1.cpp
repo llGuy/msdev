@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../glmath/src/math/math.h"
+#include "../glmath/src/math/vmath.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -12,9 +12,9 @@ namespace unit_test
 		
 		TEST_METHOD(TestMethod1)
 		{
-			glmath::Vec3 base1(1.0f, 0.0f, 0.0f);
-			glmath::Vec3 base2(0.0f, 1.0f, 0.0f);
-			glmath::Vec3 base3 = glmath::Cross(base1, base2);
+			glmath::Vector3f base1(1.0f, 0.0f, 0.0f);
+			glmath::Vector3f base2(0.0f, 1.0f, 0.0f);
+			glmath::Vector3f base3 = glmath::Cross(base1, base2);
 
 			float perp = glmath::Dot(base3, base1);
 			

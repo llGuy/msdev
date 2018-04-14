@@ -116,6 +116,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\math\math.h" />
+    <ClInclude Include="src\math\mat\mat.h" />
+    <ClInclude Include="src\math\vmath.h" />
     <ClInclude Include="src\math\vec\vec.h" />
     <ClInclude Include="src\testing\test.h" />
     <ClInclude Include="src\vec\vec.h" />

@@ -21,10 +21,16 @@
     <ClInclude Include="src\math\vec\vec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\testing\test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\vmath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\math\math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\testing\test.h">
+    <ClInclude Include="src\math\mat\mat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

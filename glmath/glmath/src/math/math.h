@@ -26,35 +26,6 @@ namespace glmath
 		}
 		return res;
 	}
-
-	__forceinline
-	float Length(const Vec3& v)
-	{
-		return Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-	}
-	__forceinline
-	Vec3 Normalize(Vec3& v)
-	{
-		return v / Length(v);
-	}
-	__forceinline
-	float Dot(Vec3& v1, Vec3& v2)
-	{
-		float res = 0.0f;
-		for (uint32_t i = 0; i < 3; ++i) res += v1[i] * v2[i];
-		return res;
-	}
-	__forceinline 
-	Vec3 Cross(Vec3& v1, Vec3& v2)
-	{
-		Vec3 res;
-		uint32_t c = 1;
-		for (; c <= 3; ++c)
-		{
-			res[c - 1] = v1[c % 3] * v2[(c + 1) % 3] - v1[(c + 1) % 3] * v2[c % 3];
-		}
-		return res;
-	}
 }
 
 #endif

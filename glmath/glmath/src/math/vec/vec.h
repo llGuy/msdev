@@ -4,90 +4,59 @@
 #include <stdint.h>
 #include <utility>
 
+#include "../math.h"
+
 namespace glmath
 {
-	template<uint32_t _Dm>
-	class Vec
+	template<uint32_t _Dm, typename _Ty>
+	class Vector
 	{
 	public:
-		Vec(void) = default;
+		Vector(void) = default;
 		template<typename... _Args>
-		Vec(_Args... c)
+		Vector(_Args&&... c)
 		{
 			const uint32_t size = 1 + sizeof...(c);
-			float arr[size] = {0.0f, c...};
+			_Ty arr[size] = {static_cast<_Ty>(0), c...};
 			for (uint32_t i = 0; i < _Dm; ++i)
-				c[i] = arr[i + 1];
+				m_c[i] = arr[i + 1];
 		}
 
 		// accessing the components of the vector
-		__forceinline	
-		float& operator[](const uint32_t& i)
-		{
-			return c[i];
-		}
-		__forceinline
-		Vec<_Dm>&& operator*(const float& f)
-		{
-			Vec<_Dm> v;
-			for (uint32_t i = 0; i < _Dm; ++i) v.c[i] = f * c[i];
-			return std::move(v);
-		}
-		Vec<_Dm>&& operator/(const float& f)
-		{
-			Vec<_Dm> v;
-			for (uint32_t i = 0; i < 3; ++i) v.c[i] = c[i] / f;
-			return std::move(v);
-		}
-	public:
-		union
-		{
-			float c[_Dm];
-		};
-	};
-
-	template<>
-	class Vec<3>
-	{
-	public:
-		Vec(void) = default;
-		Vec(float x, float y, float z)
-			: x(x), y(y), z(z)
-		{
-		}
-	public:
-		// access
 		__forceinline
 		float& operator[](const uint32_t& i)
 		{
-			return c[i];
+			return m_c[i];
 		}
 		__forceinline
-		Vec operator*(const float& f)
+		Vector<_Dm, _Ty>&& operator*(const float& f)
 		{
-			Vec<3> v;
-			for (uint32_t i = 0; i < 3; ++i) v.c[i] = f * c[i];
-			return v;
+			Vector<_Dm, _Ty> v;
+			for (uint32_t i = 0; i < _Dm; ++i) v.m_c[i] = f * m_c[i];
+			return std::move(v);
+		}
+		Vector<_Dm, _Ty>&& operator/(const float& f)
+		{
+			Vector<_Dm, _Ty> v;
+			for (uint32_t i = 0; i < 3; ++i) v.m_c[i] = m_c[i] / f;
+			return std::move(v);
 		}
 		__forceinline
-		Vec<3> operator/(const float& f)
+		_Ty Length(void)
 		{
-			Vec<3> v;
-			for (uint32_t i = 0; i < 3; ++i) v.c[i] = c[i] / f;
-			return v;
+			_Ty result = static_cast<_Ty>(0);
+			for (uint32_t i = 0; i < _Dm; ++i)
+				result += m_c[i] * m_c[i];
+			return Sqrt(result);
 		}
-
+	private:
 		union
 		{
-			struct
-			{
-				float x, y, z;
-			};
-			float c[3];
+			// components of the vector
+			_Ty m_c[_Dm];
 		};
 	};
-
-	using Vec3 = Vec<3>;
+	using Vector3f = Vector<3, float>;
 }
 
 #endif
