@@ -1,0 +1,30 @@
+protocol : agreement about the packets exchanged by communicating programs and what they mean
+	 : it tells the program how the packets are structured
+	      | where the destination information is located in the packet and how big it is
+	      | how the information is to be interpreted
+	 : used to solvbe a specific problem using given capabilities
+	      | HTTP solves the problem of transferring hypertext objects between servers
+
+TCP/IP 	 : a collection of solutions, sometimes called protocol suite.
+	 : happens to be the suite of protocols used in the Internet
+	 : main protocols in the TCP/IP suite are the Internet Protocol IP,
+	   Transmission Control Protocol (TCP) and the User Datagram Protocol (UDP)
+
+layers 	 : useful way to organize protocols
+	      | Application --- Socket TCP IP (Channel | Ethernet) Router Channel IP TCP --- Socket Application
+	 : in TCP/IP the bottom layer consists of the underlying communication channels
+	      | Ethernet or dialup modem connections.
+
+IP	 : provides a datagram service - every packet is handled and delivered by the network independently
+	 : each IP packet has to contain the address of its destination
+
+
+Transport layer : layer above the IP
+	  	: offers the choice between 2 protocols (TCP and UDP)
+		: each buils on the service provided by IP, but they do so in different kinds of transport
+		: TCP and UDP have one function in common - addressing
+		: recall that IP delivers packets to hosts
+
+Dotted quad notation : way of writing addresses (IPv4)
+       	    	       | 10.1.2.3
+

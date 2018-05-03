@@ -1,7 +1,0 @@
-%token			END 0
-%token			RETURN "return" WHILE "while" IF "if" VAR "var" IDENTIFIER NUMCONST STRINGCONST
-%token			OR "||" AND "&&" EQ "==" NE "!=" PP "++" MM "--" PL_EQ "+=" MI_EQ "-="
-%%
-
-library :	functions;
-functions:	IDENTIFIER paramdecls ":" 

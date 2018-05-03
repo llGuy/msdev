@@ -1,0 +1,62 @@
+integer : non-empty string of   DIGITS
+
+digit = '0' + '1' + '2' + '3' + ... '9'
+
+integer : digit digit*
+digit* means 0 or more digits
+
+
+identifier : strings of letters of digits, starting with a letter
+letter = 'a' + 'b' + ...
+
+letter = [a-zA-Z]
+
+letter (letter + digit)*
+       letter OR digit
+
+
+whitespace : non-empty sequence of blanks, newlines and tabs
+
+
+(' ' + '\n' + '\t')+
+
+
+email uses language
+
+ilotem@lyceefrancais.org.uk
+      ^             ^   ^
+
+username = letter+ '@' letter+ '.' letter+ '.' letter+
+
+
+lexical specification of Pascal
+digit = '0' + '1' + ...
+digits = digit+
+opt_fraction = ('.' digits) + Epsilon = empty string
+opt_exponents = ('E'('+' + '-' + e)digits) + e
+num 	      = digits opt_franction opt_exponent
+
+
+At least one : A+      = AA*
+Union 	     : A | B   = A + B
+Option: A?     	       = A + epsilon
+Range:		       = [a-z]
+excluded range:	       = [^a-z]
+	 every char except a-z
+
+Number = digit+
+Keyword = 'if' + 'else' + ...
+Identifier = letter (letter + digit)+
+OpenPar = '('
+...
+
+R = Keyword + Identifier + Number + ...
+  = R1 + R2 + ...
+
+
+Maximal Munch
+When faced with a choice between two different tokens, that are the same, always take the longer one
+
+
+error = all strings not in the lexical specification of the language
+-> put it last in priority

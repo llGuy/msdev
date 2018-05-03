@@ -4,6 +4,9 @@ CFLAGS=$(IPATH)
 CC=g++ $(CFLAGS)
 WINCC=i686-w64-mingw32-gcc $(CFLAGS)
 
+windows: main.o window.o
+	$(WINCC) main.o window.o -o output -lglfw3.libs
+
 linux: main.o window.o
 	$(CC) main.o window.o -o output  -lglfw
 

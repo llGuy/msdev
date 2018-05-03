@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <utility>
+#include <type_traits>
 
 #include "../math.h"
 
@@ -16,10 +17,22 @@ namespace glmath
 		template<typename... _Args>
 		Vector(_Args&&... c)
 		{
-			const uint32_t size = 1 + sizeof...(c);
-			_Ty arr[size] = {static_cast<_Ty>(0), c...};
-			for (uint32_t i = 0; i < _Dm; ++i)
-				m_c[i] = arr[i + 1];
+			using CommonType = typename std::common_type<_Args...>::type;
+
+			if (sizeof...(c) > 0)
+			{
+				if (std::is_same<CommonType, _Ty>::value)
+				{
+					const uint32_t size = 1 + sizeof...(c);
+					_Ty arr[size] = { static_cast<_Ty>(0), c... };
+					for (uint32_t i = 0; i < _Dm; ++i)
+						m_c[i] = arr[i + 1];
+				}
+				else if (std::is_same<CommonType, Vector<_Dm, _Ty>>::value)
+				{
+					// initialize with vector
+				}
+			}
 		}
 
 		// accessing the components of the vector

@@ -1,0 +1,51 @@
+.	matches any single character except the newline character
+
+[]	character class that matches any character within the brackets
+	if the first character is a '^', it means everything else
+
+^	matches the beginning of a line as the first character of a regexp.
+	also used for negation within square brackets
+
+$	matches the end of a line as the last character of a regular expression
+
+*	matches zero or more copies of the preceeding expression
+	[ \t]* is a common pattern to match optional spaces and tabs
+
++	matches one or more occurrences of the preceeding regexp
+
+? 	matches zero or one occurrence of the preceeding regexp
+	-?[0-9]
+
+|	the alternation operator; matches either the preceeding
+	regexp or the following regexp
+
+// examples
+
+[-+]?[0-9]+
+    ^ optional sign
+
+[-+]?[0-9]+\.?[0-9]+
+// matches too little, misses .12 or 12
+
+[-+]?[0-9]*\.?[0-9]+
+// doesn't match 12
+
+[-+]?[0-9]+\.?[0-9]*
+// doesn't match .12
+
+[-+]?([0-9]*\.?[0-9]+|[0-9]+\.)
+
+[-+]?([0-9]*\.?[0-9]+|[0-9]+\.[0-9]*)	// this is overkill but also works
+
+E(+|-)?[0-9]+
+
+[-+]?([0-9]*\.?[0-9]+|[0-9]+\.)(E(+|-)?[0-9]+)?
+
+
+"+"	{ return ADD; }
+"="	{ return ASSIGN; }
+"+="	{ return ASSIGNADD; }
+
+"if"	{ return KEYWORDIF; }
+"else"	{ return KEYWORDELSE; }
+[a-zA-Z_][a-zA-Z0-9]*	      { return IDENTIFIER; }

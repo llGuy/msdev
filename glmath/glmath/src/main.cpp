@@ -6,7 +6,7 @@
 
 int main(void)
 {
-	glmath::Test crossdot(
+	/*glmath::Test crossdot(
 		[=](float expected)->bool
 		{
 			glmath::Vector3f base1(1.0f, 0.0f, 0.0f);
@@ -28,6 +28,9 @@ int main(void)
 
 	crossdot.RunTest();
 	length.RunTest();
+	*/
 
+	glmath::Vector<3, float> vec3(1.0f, 2.0f, 3.0f);
+	glmath::Vector<3, float> vec = vec3;
  	std::cin.get();
 }

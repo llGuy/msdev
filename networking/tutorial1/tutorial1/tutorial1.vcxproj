@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{BEB60E66-C5E9-496E-BEC0-D33D5BCD5B45}</ProjectGuid>
-    <RootNamespace>glmath</RootNamespace>
+    <ProjectGuid>{3207C288-A541-44B2-8F49-2D83C0C9F0EA}</ProjectGuid>
+    <RootNamespace>tutorial1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -76,7 +76,6 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -116,15 +115,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\math\math.h" />
-    <ClInclude Include="src\math\mat\mat.h" />
-    <ClInclude Include="src\math\vmath.h" />
-    <ClInclude Include="src\math\vec\vec.h" />
-    <ClInclude Include="src\testing\test.h" />
-    <ClInclude Include="src\vec\vec.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
