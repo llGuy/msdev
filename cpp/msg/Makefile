@@ -30,4 +30,5 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 $(BUILD_DIR)/%.d: $(SRC_DIR)/%.cpp
-	$(CC) $(CFLAGS) -MMD -MF $@ -c $^ -o $(@:.d=.o)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -MM -MF $@ $<
