@@ -35,7 +35,7 @@ public:
     void Listen(int32_t maxPending);
 public:
     // init
-    void IP(const std::string& pip);
+    void IP(int32_t iptype, const std::string& pip);
     void IPFamily(int32_t family);
     void Port(const std::string& pport);
 

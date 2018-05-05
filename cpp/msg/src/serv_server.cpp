@@ -16,7 +16,7 @@ void Server::Accept(void)
 {
     struct sockaddr_in clientAddress;
     socklen_t clientAddressLength = sizeof(clientAddress);
-    int32_t clientSockHandle = accept(m_socket.Handle(), (struct sockaddr*)(clientAddress), &clientAddressLength);
+    int32_t clientSocketHandle = accept(m_socket.Handle(), (struct sockaddr*)(&clientAddress), &clientAddressLength);
     // create socket
     Socket clientSocket(clientSocketHandle, clientAddress);
 }
