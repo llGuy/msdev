@@ -6,7 +6,7 @@ class Server
 {
 public:
     Server(void) = default;
-    Server(void);
+    //Server(void);
 
     void Launch(const std::string& port);
     void Accept(void);
