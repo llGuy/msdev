@@ -5,7 +5,7 @@ TARGET_DIR=bin
 LIB=
 
 CC=g++
-CFLAGS=-g -std=c++1z
+CFLAGS=-g -std=c++11
 
 ## Find all source file automatically
 ## this will make SRC equal to "src/serv_main.cpp src/server.cpp ..."
