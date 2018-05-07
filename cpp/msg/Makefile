@@ -32,6 +32,10 @@ directories:
 clean:
 	rm -fr $(BUILD_DIR)
 	rm -fr $(TARGET_DIR)
+	rm -f $(SRC_DIR)/*.o
+	rm -f $(SRC_DIR)/*.d
+	rm -f $(SRC_DIR)/*~
+	rm -f *~
 
 -include $(DEPS)
 $(TARGET_DIR)/serv: $(OBJ)
