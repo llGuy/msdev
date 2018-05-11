@@ -1,16 +1,11 @@
 #ifndef _LOG_H_
 #define _LOG_H_
 
+#include <string>
 
-void Log(const char* msg)
-{
-    std::cout << "---------- LOG : " << msg << " ----------\n";
-}
-
-void Error(const char* msg)
-{
-    std::cerr << "--------- ERROR LOG : " << msg << "----------\n";
-}
+extern void NewLog(const std::string& msg);
+extern void Log(const std::string& msg);
+extern void Error(const std::string& msg);
 
 
 #endif /* _LOG_H_ */

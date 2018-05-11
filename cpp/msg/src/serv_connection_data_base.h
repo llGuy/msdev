@@ -9,6 +9,7 @@
 #include <iterator>
 #include <algorithm>
 
+#include "log.h"
 #include "serv_connection.h"
 
 class ConnectionDataBase
@@ -26,7 +27,7 @@ public:
 	    Connection& c = m_connections[i];
 	    if(c.BoundIP() == pip)
 	    {
-		std::cout << c.BoundUsername() << "  DISCONNECTED\n";
+		NewLog(c.BoundUsername() + " disconnected");
 		c.Disable();
 		m_threads[i].reset();
 	    }
@@ -72,11 +73,11 @@ public:
 private:
     Connection& AddConnection(const std::string& pip, std::size_t ptr, const Socket& servSocket)
     {
-	std::cout << "new user joined server ";
 	new(&(m_connections[ptr])) Connection(pip, ptr);
 	// default name
 	m_connections[ptr].BoundUsername() = "client" + std::to_string(ptr);
-	std::cout << m_connections[ptr].BoundUsername() << '\n';
+
+	NewLog(m_connections[ptr].BoundUsername() + " user joined server ");
 	
 	m_threads[ptr] = std::make_unique<std::thread>(&ConnectionDataBase::Communicate, this, servSocket, ptr);
 	
@@ -106,7 +107,7 @@ private:
     {
 	int8_t first = static_cast<int8_t>(r); 
 	std::string msg(data);
-	std::cout << "sending message to  " << c.BoundUsername() << " : " << msg << std::endl;
+	Log("sending message to " + c.BoundUsername() + " : \n" + msg);
 	msg.insert(0, 1, first); 
 	c.Send(msg);
     }
@@ -141,14 +142,14 @@ private:
     void Communicate(const Socket& servSocket, std::size_t i)
     {
 	Connection& connection = m_connections[i];
-	std::cout << "launched new communication thread with " << connection.BoundUsername();
+	Log(std::string("launched new communication thread with ") + connection.BoundUsername());
 	// while the connection is enabled
 	while(connection.BoundID() != -1)
 	{
 	    static constexpr std::size_t BUFFER_SIZE = 64;
 	    Byte buffer[BUFFER_SIZE];
-	    connection.Receive(buffer, BUFFER_SIZE);
-	    HandleRequest(buffer, servSocket, connection);
+	    if(connection.Receive(buffer, BUFFER_SIZE))
+		HandleRequest(buffer, servSocket, connection);
 	}
     }
 private:

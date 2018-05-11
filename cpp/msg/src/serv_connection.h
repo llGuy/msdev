@@ -15,7 +15,7 @@ public:
     Connection(const std::string& name, const std::string& ip, Socket sock);
 
     void Send(const std::string& msg);
-    void Receive(Byte* buffer, std::size_t size) const;
+    bool Receive(Byte* buffer, std::size_t size) const;
     
     inline
     Socket& Sock(void)

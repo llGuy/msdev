@@ -17,11 +17,10 @@ Connection::Connection(const std::string& name, const std::string& ip, Socket so
 
 void Connection::Send(const std::string& msg)
 {
-    std::cout << "sending message to " << m_boundUsername << " : message = " << msg << '\n';
     m_socket.Send(msg.c_str(), msg.size());
 }
 
-void Connection::Receive(Byte* buffer, std::size_t size) const
+bool Connection::Receive(Byte* buffer, std::size_t size) const
 {
-    m_socket.Receive(buffer, size);
+    return m_socket.Receive(buffer, size);
 }

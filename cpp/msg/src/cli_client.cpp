@@ -1,5 +1,6 @@
 #include <optional>
 #include "cli_client.h"
+#include "log.h"
 
 TCPIPClient::TCPIPClient(void)
     : m_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
@@ -55,8 +56,7 @@ void TCPIPClient::Send(const ConsoleInputHandler::CommandRet& comm)
     if(msg.has_value())
     {
 	std::string destinationUser;
-	std::cout << "\r\t\t\t\r";
-	std::cin >> destinationUser;
+
 	std::string finalMessage = destinationUser + static_cast<char>(RequestDelimiter::REQ_END_OF_USERNAME) + *msg;
 	finalMessage.insert(0, 1, static_cast<char>(UserRequest::SEND));
 	SendMessage(finalMessage);
