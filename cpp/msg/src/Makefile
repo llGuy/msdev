@@ -1,5 +1,8 @@
-all:
-	cd .. && $(MAKE) all
+CC=g++
+CFLAGS=-std=c++1z
 
-clean:
-	cd .. && $(MAKE) clean
+server: serv_main.cpp serv_server.cpp serv_connection.cpp socket.cpp
+	$(CC) $(CFLAGS) -o $@ $^ -lpthread
+
+client: cli_client.cpp cli_main.cpp socket.cpp cli_console.cpp -lncurses 
+	$(CC) $(CFLAGS) -g -o $@ $^

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _SOCKET_H_
+#define _SOCKET_H_
 
 /* c functions for socket API */
 #include <netinet/in.h>
@@ -9,7 +10,7 @@
 
 #include <iostream>
 
-using Byte = int8_t;
+using Byte = char;
 
 class Socket
 {
@@ -21,18 +22,21 @@ public:
 	CLIENT
     };
 
-    Socket(void) = default;
+    Socket(void);
+    Socket(const Socket&) = default;
     Socket(int32_t handle, const sockaddr_in& address);
     Socket(int32_t iptype, int32_t socktype, int32_t prototype);
 
     // close socket
     ~Socket(void) = default;
-
+    
     void Connect(void);
-    void Send(Byte*, std::size_t size) const;
-    void Receive(Byte* buffer, std::size_t size) const;
+    void Send(const Byte*, std::size_t size) const;
+    bool Receive(Byte* buffer, std::size_t size) const;
     void Bind(void);
     void Listen(int32_t maxPending);
+    void Close(void);
+    Socket AcceptConnection(void) const;
 public:
     // init
     void IP(int32_t iptype, const std::string& pip);
@@ -48,9 +52,14 @@ public:
 	return m_handle;
     }
     inline
-    sockaddr_in& Adddress(void)
+    sockaddr_in& Address(void)
     {
 	return m_serverAddress;
+    }
+    inline
+    bool Connected(void)
+    {
+	return m_handle != 0;
     }
 private:
     // init
@@ -59,3 +68,5 @@ private:
     struct sockaddr_in m_serverAddress;
     int32_t m_handle;
 };
+
+#endif /* _SOCKET_H_ */
