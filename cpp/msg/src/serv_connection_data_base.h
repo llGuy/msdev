@@ -119,8 +119,9 @@ private:
 	switch(first)
 	{
 	case UserRequest::DISCONNECT: { Disconnect(c.BoundIP()); break; }
-	case UserRequest::USERNAME: { c.BoundUsername() = raw.substr(1); break; }
+	case UserRequest::USERNAME: { c.BoundUsername() = raw.substr(1); Log("username change"); break; }
 	case UserRequest::LIST_AVAILABILITY: {
+	    Log("list availability request");
 	    std::string users(AvailableUsers());
 	    // send the available users back to the requesting client
 	    SendMessage(ServerRequest::LIST_AVAILABILITY, users, c);

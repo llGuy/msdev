@@ -1,5 +1,4 @@
 #include <string>
-
 #include "log.h"
 #include "socket.h"
 
@@ -36,7 +35,7 @@ void Socket::Connect(void)
 void Socket::Send(const Byte* data, std::size_t size) const
 {
     std::size_t numBytes = send(m_handle, data, size, 0);
-    
+
     if(numBytes < 0) Error("send() failed\n");
     else if(numBytes != size) Error(std::string("send() ") + "sent unexpected number of bytes " + std::to_string(numBytes));
 }
@@ -44,7 +43,6 @@ void Socket::Send(const Byte* data, std::size_t size) const
 bool Socket::Receive(Byte* buffer, std::size_t size) const
 {
     int32_t bytesReceived = recv(m_handle, buffer, size - 1, 0);
-    
     return bytesReceived > 0;
 }
 

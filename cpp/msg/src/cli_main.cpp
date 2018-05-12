@@ -9,7 +9,9 @@ int main(int argc, char* argv[])
     client.Init("192.168.1.230", "5000");
 
     client.Username(ConsoleInputHandler::CommandRet{ {}, "luc rosenzweig"});
+    std::cin.get();
     client.List(ConsoleInputHandler::CommandRet{});
+    std::cout << "sent message\n";
     
     auto msg = client.ReceiveMessage();
     if(msg.has_value())

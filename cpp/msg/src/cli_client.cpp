@@ -77,6 +77,7 @@ void TCPIPClient::Username(const ConsoleInputHandler::CommandRet& comm)
 	msge.insert(0, 1, static_cast<char>(UserRequest::USERNAME));
 	SendMessage(msge);
     }
+    std::cout << "sent username\n";
 }
 void TCPIPClient::Disconnect(const ConsoleInputHandler::CommandRet& comm)
 {
