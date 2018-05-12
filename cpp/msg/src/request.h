@@ -3,6 +3,12 @@
 
 #include <stdint.h>
 
+/*
+  when requesting to send a message to another user
+  user must put [character code for sending messages] + [destination user] +
+  [username delimiter] + [message]
+*/
+
 enum UserRequest
 : int8_t
 {    

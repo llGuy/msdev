@@ -16,7 +16,20 @@ int main(int argc, char* argv[])
     auto msg = client.ReceiveMessage();
     if(msg.has_value())
     {
-	std::cout << msg.value();
+	std::cout << msg.value() << std::endl;
+    }
+
+    std::cout << "preparing to send message to luc rosenzweig" << std::endl;
+    std::cin.get();
+    // sending message to myself
+    std::string message = "hello friend!";
+    client.Send({ {}, message }, "luc rosenzweig");
+
+    std::cin.get();
+    auto msg2 = client.ReceiveMessage();
+    if(msg2.has_value())
+    {
+	std::cout << msg2.value() << std::endl;
     }
 
     return 0;

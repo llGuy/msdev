@@ -97,9 +97,11 @@ private:
     std::string ExtractUsernameFromRequest(const std::string& msg) const
     {
 	std::string username;
-	for(const auto& ch : msg)
-	    if(ch != static_cast<int8_t>(RequestDelimiter::REQ_END_OF_USERNAME))
-		username.push_back(ch);
+	for(uint32_t i = 1; msg[i] != static_cast<char>(RequestDelimiter::REQ_END_OF_USERNAME); ++i)
+	{
+	    username.push_back(msg[i]);
+	}
+	std::cout << username << '\n';
 	return username;
     }
 
@@ -128,9 +130,12 @@ private:
 	    break; }
 	case UserRequest::SEND: {
 	    std::optional<Connection*> conn = AtName(ExtractUsernameFromRequest(raw));
+	    std::cout << "received send request" << std::flush;
+
 	    if(conn.has_value())
 	    {
 		Connection& clientConnection = **conn;
+		Log(c.BoundUsername() + " requested to send message to " + clientConnection.BoundUsername()); 
 		std::string requestingUsername = c.BoundUsername();
 		std::string message(requestingUsername);
 		message += static_cast<int8_t>(RequestDelimiter::REQ_END_OF_USERNAME);

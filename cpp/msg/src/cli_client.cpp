@@ -44,18 +44,18 @@ void TCPIPClient::ReceiveCommand(const ConsoleInputHandler::CommandRet& comm)
 	case UserRequest::DISCONNECT:       Disconnect(comm); return;
 	case UserRequest::USERNAME:         Username(comm); return;
 	case UserRequest::LIST_AVAILABILITY:List(comm); return;
-	case UserRequest::SEND:             Send(comm); return;
+//	case UserRequest::SEND:             Send(comm); return;
 	}
     }
     // hasn't received a command or hasn't received valid command
 }
 
-void TCPIPClient::Send(const ConsoleInputHandler::CommandRet& comm)
+void TCPIPClient::Send(const ConsoleInputHandler::CommandRet& comm, const std::string& dest)
 {
     auto& msg = comm.msg;
     if(msg.has_value())
     {
-	std::string destinationUser;
+	std::string destinationUser = dest;
 
 	std::string finalMessage = destinationUser + static_cast<char>(RequestDelimiter::REQ_END_OF_USERNAME) + *msg;
 	finalMessage.insert(0, 1, static_cast<char>(UserRequest::SEND));
