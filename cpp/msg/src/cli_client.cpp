@@ -1,9 +1,10 @@
 #include <optional>
 #include "cli_client.h"
+#include "algorithm.h"
 #include "log.h"
 
 TCPIPClient::TCPIPClient(void)
-    : m_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
+    : m_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP, MSG_DONTWAIT)
 {
 }
 
@@ -27,10 +28,13 @@ void TCPIPClient::SendMessage(const std::string& message)
 std::optional<std::string> TCPIPClient::ReceiveMessage(void) const
 {
     static constexpr uint32_t BUFFER_SIZE = 128;
-    Byte destination[BUFFER_SIZE];
+    Byte destination[BUFFER_SIZE] { 0 };
     bool res = m_socket.Receive(destination, BUFFER_SIZE);
-
-    if(res) return { std::string(destination + 1) };
+    if(res)
+    {
+	std::string m(destination);
+	return { m };
+    }
     return std::optional<std::string>{};
 }
 
@@ -44,20 +48,21 @@ void TCPIPClient::ReceiveCommand(const ConsoleInputHandler::CommandRet& comm)
 	case UserRequest::DISCONNECT:       Disconnect(comm); return;
 	case UserRequest::USERNAME:         Username(comm); return;
 	case UserRequest::LIST_AVAILABILITY:List(comm); return;
-//	case UserRequest::SEND:             Send(comm); return;
+	case UserRequest::SEND:             Send(comm); return;
 	}
     }
     // hasn't received a command or hasn't received valid command
 }
 
-void TCPIPClient::Send(const ConsoleInputHandler::CommandRet& comm, const std::string& dest)
+void TCPIPClient::Send(const ConsoleInputHandler::CommandRet& comm)
 {
     auto& msg = comm.msg;
     if(msg.has_value())
     {
-	std::string destinationUser = dest;
+	std::string destinationUser = CopyBefore(msg.value(), ' ');
+	std::string actualMessage = msg.value().substr(destinationUser.size() + 1);
 
-	std::string finalMessage = destinationUser + static_cast<char>(RequestDelimiter::REQ_END_OF_USERNAME) + *msg;
+	std::string finalMessage = destinationUser + static_cast<char>(RequestDelimiter::REQ_END_OF_USERNAME) + actualMessage;
 	finalMessage.insert(0, 1, static_cast<char>(UserRequest::SEND));
 	SendMessage(finalMessage);
     }
@@ -77,7 +82,6 @@ void TCPIPClient::Username(const ConsoleInputHandler::CommandRet& comm)
 	msge.insert(0, 1, static_cast<char>(UserRequest::USERNAME));
 	SendMessage(msge);
     }
-    std::cout << "sent username\n";
 }
 void TCPIPClient::Disconnect(const ConsoleInputHandler::CommandRet& comm)
 {

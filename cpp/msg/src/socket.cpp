@@ -4,18 +4,18 @@
 
 #define DEBUG true
 
-Socket::Socket(void)
-    : m_handle(0)
+Socket::Socket(int32_t recvflag)
+    : m_handle(0), m_recvFlag(recvflag)
 {
 }
 
-Socket::Socket(int32_t handle, const sockaddr_in& address)
-    : m_handle(handle), m_serverAddress(address)
+Socket::Socket(int32_t handle, const sockaddr_in& address, int32_t recvflag)
+    : m_handle(handle), m_serverAddress(address), m_recvFlag(recvflag)
 {
 }
 
-Socket::Socket(int iptype, int socktype, int prototype)
-    : m_handle(socket(iptype, socktype, prototype))
+Socket::Socket(int iptype, int socktype, int prototype, int32_t recvflag)
+    : m_handle(socket(iptype, socktype, prototype)), m_recvFlag(recvflag)
 {
     if(m_handle < 0) Error("socket() failed\n");
     EmptyServAddressStruct();
@@ -42,7 +42,7 @@ void Socket::Send(const Byte* data, std::size_t size) const
 
 bool Socket::Receive(Byte* buffer, std::size_t size) const
 {
-    int32_t bytesReceived = recv(m_handle, buffer, size - 1, 0);
+    int32_t bytesReceived = recv(m_handle, buffer, size - 1, m_recvFlag);
     return bytesReceived > 0;
 }
 

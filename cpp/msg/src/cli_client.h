@@ -18,7 +18,7 @@ public:
     void ReceiveCommand(const ConsoleInputHandler::CommandRet& comm);
     void SendMessage(const std::string& message);
 public:
-    void Send(const ConsoleInputHandler::CommandRet& comm, /*debugging*/ const std::string& dest);
+    void Send(const ConsoleInputHandler::CommandRet& comm);
     void List(const ConsoleInputHandler::CommandRet& comm);
     void Username(const ConsoleInputHandler::CommandRet& comm);
     void Disconnect(const ConsoleInputHandler::CommandRet& comm);

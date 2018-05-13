@@ -101,7 +101,6 @@ private:
 	{
 	    username.push_back(msg[i]);
 	}
-	std::cout << username << '\n';
 	return username;
     }
 
@@ -121,16 +120,19 @@ private:
 	switch(first)
 	{
 	case UserRequest::DISCONNECT: { Disconnect(c.BoundIP()); break; }
-	case UserRequest::USERNAME: { c.BoundUsername() = raw.substr(1); Log("username change"); break; }
+	case UserRequest::USERNAME: {
+	    std::string old = c.BoundUsername();
+	    c.BoundUsername() = raw.substr(1);
+	    Log(old + " changed username to " + c.BoundUsername());
+	    break; }
 	case UserRequest::LIST_AVAILABILITY: {
-	    Log("list availability request");
+	    Log("list availability request from " + c.BoundUsername());
 	    std::string users(AvailableUsers());
 	    // send the available users back to the requesting client
 	    SendMessage(ServerRequest::LIST_AVAILABILITY, users, c);
 	    break; }
 	case UserRequest::SEND: {
 	    std::optional<Connection*> conn = AtName(ExtractUsernameFromRequest(raw));
-	    std::cout << "received send request" << std::flush;
 
 	    if(conn.has_value())
 	    {
@@ -153,9 +155,12 @@ private:
 	while(connection.BoundID() != -1)
 	{
 	    static constexpr std::size_t BUFFER_SIZE = 64;
-	    Byte buffer[BUFFER_SIZE];
+	    Byte buffer[BUFFER_SIZE] { 0 };
 	    if(connection.Receive(buffer, BUFFER_SIZE))
+	    {
+		Log("received request from " + connection.BoundUsername());
 		HandleRequest(buffer, servSocket, connection);
+	    }
 	}
     }
 private:

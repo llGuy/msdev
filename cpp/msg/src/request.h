@@ -26,11 +26,11 @@ enum UserRequest
 enum class ServerRequest
 : int8_t
 {
-    LIST_AVAILABILITY,
+    LIST_AVAILABILITY = 1,
 
-    SEND,
+    SEND = 2,
 
-    INVALID
+    INVALID = 3
 };
 
 enum class RequestDelimiter

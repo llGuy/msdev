@@ -22,10 +22,10 @@ public:
 	CLIENT
     };
 
-    Socket(void);
+    Socket(int32_t recvflag = 0);
     Socket(const Socket&) = default;
-    Socket(int32_t handle, const sockaddr_in& address);
-    Socket(int32_t iptype, int32_t socktype, int32_t prototype);
+    Socket(int32_t handle, const sockaddr_in& address, int32_t recvflag = 0);
+    Socket(int32_t iptype, int32_t socktype, int32_t prototype, int32_t recvflag = 0);
 
     // close socket
     ~Socket(void) = default;
@@ -67,6 +67,7 @@ private:
 private:
     struct sockaddr_in m_serverAddress;
     int32_t m_handle;
+    int32_t m_recvFlag;
 };
 
 #endif /* _SOCKET_H_ */
