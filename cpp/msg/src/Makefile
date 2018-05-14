@@ -1,9 +1,12 @@
 CXX=g++
+
+
 OS=$(shell uname)
-
-CFLAGS=-std=c++14 -L/usr/local/lib
-#CFLAGS=-std=c++1z 
-
+ifeq ($(OS),Darwin)
+	CFLAGS=-std=c++14 -L/usr/local/lib
+else
+	CFLAGS=-std=c++1z
+endif
 
 all: server client
 
