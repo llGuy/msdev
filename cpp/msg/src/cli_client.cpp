@@ -1,4 +1,8 @@
+#if (defined __cplusplus) && (__cplusplus >= 201700L)
 #include <optional>
+#else
+#include "optional.hpp"
+#endif
 #include "cli_client.h"
 #include "algorithm.h"
 #include "log.h"

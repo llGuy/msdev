@@ -1,10 +1,17 @@
-CC=g++
-CFLAGS=-std=c++1z
+CXX=g++
+OS=$(shell uname)
+
+CFLAGS=-std=c++14 -L/usr/local/lib
+#CFLAGS=-std=c++1z 
+
 
 all: server client
 
 server: serv_main.cpp serv_server.cpp serv_connection.cpp socket.cpp log.cpp
-	$(CC) $(CFLAGS) -o $@ $^ -lpthread
+	$(CXX) $(CFLAGS) -o $@ $^ -lpthread
 
-client: cli_client.cpp cli_main.cpp socket.cpp cli_console.cpp log.cpp cli_message.cpp algorithm.cpp -lncurses 
-	$(CC) $(CFLAGS) -g -o $@ $^
+client: cli_client.cpp cli_main.cpp socket.cpp cli_console.cpp log.cpp cli_message.cpp algorithm.cpp 
+	$(CXX) $(CFLAGS) -g -o $@ $^ -lncurses 
+
+clean:
+	/bin/rm -f client server

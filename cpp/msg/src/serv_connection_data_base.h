@@ -5,7 +5,11 @@
 #include <array>
 #include <tuple>
 #include <string>
+#if (defined __cplusplus) && (__cplusplus >= 201700L)
 #include <optional>
+#else
+#include "optional.hpp"
+#endif
 #include <iterator>
 #include <algorithm>
 

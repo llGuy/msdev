@@ -1,7 +1,11 @@
 #ifndef _CLI_CONSOLE_H_
 #define _CLI_CONSOLE_H_
 
+#if (defined __cplusplus) && (__cplusplus >= 201700L)
 #include <optional>
+#else
+#include "optional.hpp"
+#endif
 #include <iostream>
 #include <string>
 #include <functional>
