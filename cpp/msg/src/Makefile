@@ -5,7 +5,7 @@ OS=$(shell uname)
 ifeq ($(OS),Darwin)
 	CFLAGS=-std=c++14 -L/usr/local/lib
 else
-    ifeq ($(shell uname -r | cut -d"." -f2),15)CFLAGS
+    ifeq ($(shell uname -r | cut -d"." -f2),15)
 	    CFLAGS=-std=c++1z
     else
         CFLAGS=-std=c++14
