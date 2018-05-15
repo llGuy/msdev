@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 {
     std::cout << "welcome to the Ultimate GUI chat application\n\n" << std::endl;
     TCPIPClient client;
-    client.Init("192.168.1.230", "5000");
+    client.Init("81.187.137.2 31", "5000");
     
     ConsoleInputHandler cihandler;
     for(;;)

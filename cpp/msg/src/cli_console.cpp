@@ -1,4 +1,5 @@
 #include "cli_console.h"
+
 #include "algorithm.h"
 
 const char* ConsoleInputHandler::COMMANDS[4]
@@ -18,15 +19,21 @@ ConsoleInputHandler::ConsoleInputHandler(void)
     keypad(stdscr, TRUE);
     // window at the bottom of screen
     m_commandWindow = newwin(5, COLS, LINES - 5, 0);
+    printw("welcome to the ultimate GUI messaging system\n\n");
     refresh();
     box(m_commandWindow, (int)' ', 0);
     wmove(m_commandWindow, 1, 1);
+
+    nodelay(stdscr, TRUE);
+    nodelay(m_commandWindow, TRUE);
+    
     wrefresh(m_commandWindow);
 }
 
 void ConsoleInputHandler::Refresh(const std::string& msg) 
 {
     waddstr(stdscr, msg.c_str());
+    waddstr(stdscr, "\n\n");
     refresh();
 }
 
@@ -48,7 +55,14 @@ ConsoleInputHandler::CommandRet ConsoleInputHandler::CheckCommand(const std::str
     else if(commandKeyword == COMMANDS[UserRequest::SEND])
     {
 	if(message.has_value())
+	{
+	    // print message that client sends
+	    printw("you > ");
+	    printw(message.value().c_str());
+	    addstr("\n\n");
+	    refresh();
 	    return CommandRet{ UserRequest::SEND, message.value() };
+	}
 	m_state = State::COMPOSING_STRING_STATE;
     }
 
@@ -114,7 +128,7 @@ std::string ConsoleInputHandler::GetComposedMessage(void)
     return ClearSpacesFromWindowString(buffer, BUFFER_SIZE);
 }
 
-std::optional<ConsoleInputHandler::CommandRet> ConsoleInputHandler::InputKey(void) 
+std::optional<ConsoleInputHandler::CommandRet> ConsoleInputHandler::InputKey(void)
 {
     char ch = getch();
     if(ch != ERR)
